@@ -56,10 +56,10 @@ export default function Page() {
     <View>
       {!isLoading ? (
         <VStack width={"$full"} h={"$full"}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
             <Box
               width={"$full"}
-              height={250}
+              height={300}
               backgroundColor="$violet600"
               borderRadius={"$xl"}
             />
@@ -147,9 +147,9 @@ export default function Page() {
           </Box>
         </VStack>
       ) : (
-        <Box w={"$full"} h={"$full"}>
+        <Center w={"$full"} h={"$full"}>
           <Spinner size="large" />
-        </Box>
+        </Center>
       )}
     </View>
   );
