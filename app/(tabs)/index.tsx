@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { Text, View } from "../../components/Themed";
 import { useRouter } from "expo-router";
-import { Button } from "@gluestack-ui/themed";
+import { Button, Text, View } from "native-base";
 
 export default function TabOneScreen() {
   const router = useRouter();

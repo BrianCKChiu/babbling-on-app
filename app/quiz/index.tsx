@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import {
   Box,
   Button,
@@ -9,7 +8,8 @@ import {
   ScrollView,
   Spinner,
   Center,
-} from "@gluestack-ui/themed";
+  View,
+} from "native-base";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 
@@ -55,22 +55,29 @@ export default function Page() {
   return (
     <View>
       {!isLoading ? (
-        <VStack width={"$full"} h={"$full"}>
-          <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+        <VStack h={"100%"}>
+          <ScrollView
+            w="full"
+            h={"100%"}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
             <Box
-              width={"$full"}
+              w={"full"}
               height={300}
-              backgroundColor="$violet600"
-              borderRadius={"$xl"}
+              backgroundColor="violet.600"
+              borderRadius={"lg"}
             />
             <VStack
               space="md"
               justifyContent="space-between"
               pb={20}
-              paddingHorizontal={45}
+              paddingX={"45px"}
             >
-              <Heading size="xl">{quizData?.title}</Heading>
-              <HStack w={"$full"} justifyContent="space-between">
+              <Heading size="xl" mt={3}>
+                {quizData?.title}
+              </Heading>
+              <HStack w={"full"} justifyContent="space-between">
                 <QuizDetailTile
                   label={quizData?.questionNum.toString() ?? "0"}
                   heading="Questions"
@@ -85,6 +92,9 @@ export default function Page() {
                 />
               </HStack>
               <VStack>
+                <Text fontWeight={"semibold"} mb={2}>
+                  Description
+                </Text>
                 <Text>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Aliquam mi sem, ultrices vitae orci egestas, dictum fringilla
@@ -122,32 +132,29 @@ export default function Page() {
           </ScrollView>
           <Box
             paddingBottom={30}
-            w={"$full"}
-            backgroundColor="$secondary0"
-            py={20}
+            w={"100%"}
+            h={90}
             borderTopWidth={1}
-            borderTopColor="$secondary200"
-            shadowOffset={{ width: 0, height: -3 }}
-            shadowOpacity={0.3}
-            shadowRadius={8}
-            shadowColor="$secondary200"
-            paddingHorizontal={"$5"}
+            borderTopColor="gray.100"
+            shadow={0.3}
+            paddingX={10}
+            pt="4"
           >
             <Button
               variant="solid"
-              size="xl"
-              width={"$full"}
-              backgroundColor="$violet600"
+              size={"lg"}
+              w={"full"}
+              backgroundColor="violet.500"
               onPress={() => {
                 startQuiz();
               }}
             >
-              <Text color="$textLight0">Start Quiz!</Text>
+              <Text color="white">Start Quiz!</Text>
             </Button>
           </Box>
         </VStack>
       ) : (
-        <Center w={"$full"} h={"$full"}>
+        <Center w={"full"} h={"full"}>
           <Spinner size="large" />
         </Center>
       )}
@@ -164,11 +171,11 @@ function QuizDetailTile({
 }) {
   return (
     <Center
-      borderWidth={"$1"}
-      borderColor={"$secondary200"}
-      w={"$1/4"}
-      h={"$20"}
-      borderRadius={"$md"}
+      borderWidth={1}
+      borderColor={"gray.300"}
+      w={"25%"}
+      h={20}
+      borderRadius={"md"}
     >
       <VStack alignItems="center" alignContent="center">
         <Text>{heading}</Text>

@@ -1,4 +1,4 @@
-import { VStack, HStack, Box, Text } from "@gluestack-ui/themed";
+import { VStack, HStack, Box, Text } from "native-base";
 import { useQuizStore } from "../../stores/quizStore";
 
 export function ProgressBar() {
@@ -9,14 +9,14 @@ export function ProgressBar() {
     return 20;
   }
   return (
-    <VStack>
-      <Text alignSelf="flex-end" size="xs">
+    <VStack alignItems={"flex-end"}>
+      <Text fontSize={"xs"}>
         {/* {currentQuestionIndex + 1}/{questions.length} */}
         2/10
       </Text>
-      <HStack w={"$full"} h={2}>
-        <Box bgColor="$violet500" w={`${getPercentage()}%`} />
-        <Box bgColor="$secondary200" w={`${100 - getPercentage()}%`} />
+      <HStack w={"full"} h={"2px"}>
+        <Box bgColor="violet.500" w={`${getPercentage()}%`} />
+        <Box bgColor="gray.200" w={`${100 - getPercentage()}%`} />
       </HStack>
     </VStack>
   );

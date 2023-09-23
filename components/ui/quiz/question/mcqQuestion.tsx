@@ -8,7 +8,7 @@ import {
   Pressable,
   Button,
   View,
-} from "@gluestack-ui/themed";
+} from "native-base";
 import { useState } from "react";
 import { ProgressBar } from "../progressBar";
 
@@ -22,34 +22,34 @@ export function McqQuestion({
   const a = ["a", "b", "c", "d"];
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   return (
-    <View mx={40} pt={50} h={"$full"} display="flex">
+    <View mx={"45px"} pt={50} h={"full"} display="flex">
       <VStack flex={1}>
         {/* Image */}
         <Box
           alignSelf="center"
-          w={"$full"}
+          w={"full"}
           h={265}
-          backgroundColor="$violet600"
+          backgroundColor="violet.600"
           borderRadius={8}
         />
         {/* Question */}
-        <Heading bold={true} mb={"$6"} mt={36}>
+        <Heading bold={true} mb={6} mt={"36px"}>
           What is this Gesture?
         </Heading>
         {/* Choices */}
         {a.map((choice, index) => (
           <Pressable
             key={choice}
-            w={"$full"}
+            w={"full"}
             h={65}
             borderColor="#D8D8D8"
             borderWidth={1}
             borderRadius={8}
-            my={10}
+            my={2}
             justifyContent="center"
             onPress={() => setSelectedAnswer(choice)}
             backgroundColor={
-              selectedAnswer === choice ? "$violet600" : "transparent"
+              selectedAnswer === choice ? "violet.600" : "transparent"
             }
           >
             <HStack
@@ -58,21 +58,15 @@ export function McqQuestion({
               alignItems="center"
               space="md"
             >
-              <Center h={44} w={44}>
+              <Center h={"44px"} w={"44px"}>
                 <Text
-                  fontWeight="$semibold"
-                  color={
-                    selectedAnswer === choice ? "$secondary0" : "$secondary950"
-                  }
+                  fontWeight="semibold"
+                  color={selectedAnswer === choice ? "white" : "black"}
                 >
                   {index + 1}
                 </Text>
               </Center>
-              <Text
-                color={
-                  selectedAnswer === choice ? "$secondary0" : "$secondary950"
-                }
-              >
+              <Text color={selectedAnswer === choice ? "white" : "black"}>
                 {choice}
               </Text>
             </HStack>
@@ -80,19 +74,15 @@ export function McqQuestion({
         ))}
       </VStack>
       <ProgressBar />
-      <Box w="$full" h={110} pt={20}>
+      <Box w="full" h={110} pt={5}>
         <Button
-          disabled={selectedAnswer === ""}
-          backgroundColor="$violet600"
-          h={50}
-          sx={{
-            ":disabled": {
-              backgroundColor: "$violet200",
-            },
-          }}
+          isDisabled={selectedAnswer === ""}
+          backgroundColor="violet.600"
+          h={"50px"}
           onPress={() => submitAnswer(selectedAnswer)}
+          _disabled={{ backgroundColor: "violet.500" }}
         >
-          <Text color="$secondary0">Next Question</Text>
+          <Text color="white">Next Question</Text>
         </Button>
       </Box>
     </View>
