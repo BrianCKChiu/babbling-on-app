@@ -43,7 +43,6 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   const pathname = usePathname();
 
   return (
@@ -55,7 +54,11 @@ function RootLayoutNav() {
           options={{
             title: "",
             headerTransparent: true,
-            headerShown: pathname.match(/^\/quiz\/q\/.+/) ? false : true,
+            headerShown:
+              pathname.match(/^\/quiz\/q\/.+/) ||
+              pathname.match(/^\/quiz\/results\/*/)
+                ? false
+                : true,
           }}
         />
 

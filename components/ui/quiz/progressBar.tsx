@@ -5,14 +5,12 @@ export function ProgressBar() {
   const { currentQuestionIndex, questions } = useQuizStore();
 
   function getPercentage(): number {
-    //return ((currentQuestionIndex + 1) / questions.length) * 100;
-    return 20;
+    return ((currentQuestionIndex + 1) / questions.length) * 100;
   }
   return (
     <VStack alignItems={"flex-end"}>
       <Text fontSize={"xs"}>
-        {/* {currentQuestionIndex + 1}/{questions.length} */}
-        2/10
+        {currentQuestionIndex + 1}/{questions.length}
       </Text>
       <HStack w={"full"} h={"2px"}>
         <Box bgColor="violet.500" w={`${getPercentage()}%`} />

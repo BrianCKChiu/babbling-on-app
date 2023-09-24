@@ -1,6 +1,6 @@
-import { JSX, ReactElement, useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { McqQuestionComponent } from "../../../components/ui/quiz/question/mcqQuestion";
-import { Select, VStack, Box, HStack, Heading, CheckIcon } from "native-base";
+import { VStack, useToast } from "native-base";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Answer,
@@ -10,12 +10,9 @@ import {
 import { useQuizStore } from "../../../components/stores/quizStore";
 
 export default function Page() {
-  const [question, setQuestion] = useState<Question | null>(null);
-  const [questionComponent, setQuestionComponent] = useState<JSX.Element>(
-    <></>
-  );
-  const router = useRouter();
   const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const toast = useToast();
   const {
     setCurrentQuestionIndex,
     currentQuestionIndex,
@@ -23,20 +20,24 @@ export default function Page() {
     addAnswer,
   } = useQuizStore();
 
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [questionComponent, setQuestionComponent] = useState<JSX.Element>(
+    <></>
+  );
+
   function handleAnswer(userAnswer: string) {
+    console.log(userAnswer);
     const question = questions[currentQuestionIndex];
 
     let result: Answer | null = null;
     if (question.getType() === "mcq") {
       const mcqQuestion = question as QuestionMcq;
-      if (mcqQuestion.getAnswer() === userAnswer) {
-        result = {
-          questionId: question.getId(),
-          isCorrect: true,
-          answer: [userAnswer],
-        };
-        addAnswer(result);
-      }
+
+      result = {
+        questionId: question.getId(),
+        isCorrect: mcqQuestion.getAnswer() === userAnswer,
+        answer: [userAnswer],
+      };
     } else if (question.getType() === "matching") {
       const matchingQuestion = question as QuestionMcq;
 
@@ -46,20 +47,37 @@ export default function Page() {
         answer: [userAnswer],
       };
     }
+
     if (result == null) return;
     addAnswer(result);
-
-    if (currentQuestionIndex === questions.length - 1) {
-    } else {
-      // get next question id
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      console.log(currentQuestionIndex); // navigate to next question
-      router.push({
-        pathname: "/quiz/q/[id]",
-        params: { id: questions[currentQuestionIndex + 1].getId() }, // replace with question id
-      });
-    }
+    console.log(result);
+    toast.show({
+      description: result.isCorrect ? "Correct" : "Incorrect",
+      duration: 1000,
+      bgColor: result.isCorrect ? "green.500" : "red.500",
+      width: "300px",
+      height: "80px",
+      alignItems: "center",
+      justifyContent: "center",
+      placement: "top",
+    });
+    setTimeout(() => {
+      if (currentQuestionIndex === questions.length - 1) {
+        router.replace("/quiz/results");
+      } else {
+        console.log("next question");
+        // get next question id
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        console.log(currentQuestionIndex); // navigate to next question
+        router.replace({
+          pathname: "/quiz/q/[id]",
+          params: { id: questions[currentQuestionIndex + 1].getId() }, // replace with question id
+        });
+      }
+    }, 1000);
   }
+
+  function nextQuestion() {}
 
   useEffect(() => {
     const currentQuestion = questions.filter((q) => q.getId() === id)[0];

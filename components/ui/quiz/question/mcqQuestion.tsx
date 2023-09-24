@@ -9,7 +9,7 @@ import {
   Button,
   View,
 } from "native-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProgressBar } from "../progressBar";
 
 export function McqQuestionComponent({
@@ -20,6 +20,7 @@ export function McqQuestionComponent({
   submitAnswer: (answer: string) => void;
 }) {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+
   return (
     <View mx={"45px"} pt={50} h={"full"} display="flex">
       <VStack flex={1}>
@@ -78,7 +79,9 @@ export function McqQuestionComponent({
           isDisabled={selectedAnswer === ""}
           backgroundColor="violet.600"
           h={"50px"}
-          onPress={() => submitAnswer(selectedAnswer)}
+          onPress={() => {
+            submitAnswer(selectedAnswer);
+          }}
           _disabled={{ backgroundColor: "violet.500" }}
         >
           <Text color="white">Next Question</Text>

@@ -11,10 +11,9 @@ import {
   View,
 } from "native-base";
 import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuizStore } from "../../components/stores/quizStore";
 import { QuestionMatching, QuestionMcq } from "../../components/quiz/question";
-import { generateUuid62 } from "../../components/utils/uuid";
 
 type QuizDataProp = {
   id: string;
@@ -30,10 +29,15 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [quizData, setQuizData] = useState<QuizDataProp | null>(null);
   const router = useRouter();
-  const { setQuestions, questions, setQuizId } = useQuizStore();
+  const { setQuestions } = useQuizStore();
+  const { type } = useLocalSearchParams<{ type?: string }>();
+  const params = useLocalSearchParams();
+
   useEffect(() => {
     setIsLoading(true);
-    // todo: fetch quiz data from node js server
+    // todo: fetch quiz data from node js server via the id
+    const quizDetailId = params.id;
+    console.log(quizDetailId);
     setTimeout(() => {
       setQuizData({
         id: "aa",
@@ -45,7 +49,7 @@ export default function Page() {
         description: "",
       });
       setIsLoading(false);
-    }, 2000);
+    }, 500);
   }, []);
 
   function startQuiz() {
@@ -58,10 +62,10 @@ export default function Page() {
         mediaRef: "asdas",
       }),
       new QuestionMcq({
-        id: "asdas",
+        id: "asdaaas",
         choices: ["e", "f", "h", "g"],
         answer: "f",
-        mediaRef: "asdas",
+        mediaRef: "asdaaaas",
       }),
     ];
     setQuestions(a);
@@ -155,7 +159,7 @@ export default function Page() {
             w={"100%"}
             h={90}
             borderTopWidth={1}
-            borderTopColor="gray.100"
+            borderTopColor="gray.300"
             shadow={0.3}
             paddingX={10}
             pt="4"
