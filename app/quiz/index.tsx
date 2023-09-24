@@ -12,6 +12,9 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
+import { useQuizStore } from "../../components/stores/quizStore";
+import { QuestionMatching, QuestionMcq } from "../../components/quiz/question";
+import { generateUuid62 } from "../../components/utils/uuid";
 
 type QuizDataProp = {
   id: string;
@@ -27,10 +30,10 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [quizData, setQuizData] = useState<QuizDataProp | null>(null);
   const router = useRouter();
-
+  const { setQuestions, questions, setQuizId } = useQuizStore();
   useEffect(() => {
     setIsLoading(true);
-    // todo: fetch quiz data
+    // todo: fetch quiz data from node js server
     setTimeout(() => {
       setQuizData({
         id: "aa",
@@ -46,9 +49,26 @@ export default function Page() {
   }, []);
 
   function startQuiz() {
-    router.push({
+    // todo: sent request to server to generate quiz
+    const a = [
+      new QuestionMcq({
+        id: "asdas",
+        choices: ["a", "b", "c", "d"],
+        answer: "a",
+        mediaRef: "asdas",
+      }),
+      new QuestionMcq({
+        id: "asdas",
+        choices: ["e", "f", "h", "g"],
+        answer: "f",
+        mediaRef: "asdas",
+      }),
+    ];
+    setQuestions(a);
+    // set data to quiz router
+    router.replace({
       pathname: "/quiz/q/[id]",
-      params: { id: quizData?.id ?? "a" },
+      params: { id: a[0].getId() }, // replace with question id
     });
   }
 

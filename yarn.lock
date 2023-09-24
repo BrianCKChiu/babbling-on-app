@@ -4634,6 +4634,11 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+crypo@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/crypo/-/crypo-0.1.4.tgz"
+  integrity sha512-pX1LcnXyV+MAogzsxRx4kwnzt7gVjKX5SeUZ3vgzX0UUBxwzL6nzF8JmmDEInAr+Eg8cmZDCasE2lZjsKledhw==
+
 crypt@~0.0.1, crypt@0.0.2:
   version "0.0.2"
   resolved "https://registry.npmjs.org/crypt/-/crypt-0.0.2.tgz"

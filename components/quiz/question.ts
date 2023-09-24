@@ -8,8 +8,9 @@ export abstract class Question {
   private id: string;
   private type: QuestionType | undefined;
 
-  constructor(type?: QuestionType) {
-    this.id = generateUuid62();
+  constructor(id: string, type: QuestionType) {
+    this.id = id;
+    this.type = type;
   }
   getId() {
     return this.id;
@@ -19,47 +20,62 @@ export abstract class Question {
   }
 }
 export class QuestionMcq extends Question {
-  private gesture: { gestureId: string; mediaRef: string };
+  private mediaRef: string;
+  private answer: string;
   private choices: Array<string>;
 
-  constructor(
-    gesture: { gestureId: string; mediaRef: string },
-    choices: Array<string>
-  ) {
-    super("mcq");
-    this.gesture = gesture;
+  constructor({
+    id,
+    mediaRef,
+    answer,
+    choices,
+  }: {
+    id: string;
+    mediaRef: string;
+    answer: string;
+    choices: Array<string>;
+  }) {
+    super(id, "mcq");
+
+    this.answer = answer;
+    this.mediaRef = mediaRef;
     this.choices = choices;
   }
-  getGesture() {
-    return this.gesture;
-  }
+
   getChoices() {
     return this.choices;
+  }
+  getAnswer() {
+    return this.answer;
+  }
+  getMediaRef() {
+    return this.mediaRef;
   }
 }
 
 export class QuestionMatching extends Question {
-  private gestures: [{ gestureId: string; mediaRef: string }];
+  private gestures: [{ answer: string; mediaRef: string }];
 
-  constructor(gestures: [{ gestureId: string; mediaRef: string }]) {
-    super("matching");
+  constructor({
+    id,
+    gestures,
+  }: {
+    id: string;
+    gestures: [{ answer: string; mediaRef: string }];
+  }) {
+    super(id, "matching");
     this.gestures = gestures;
   }
   getGestures() {
     return this.gestures;
   }
+  getAnswer() {
+    return this.gestures.map((g) => g.answer);
+  }
 }
 
-// translate GestureMedia object into prisma table
-type GestureMedia = {
-  id: string;
-  type: "image" | "video";
-  gestureId: string; // reference to gesture in prisma table
-  mediaRef: string; // reference to media in firebase storage
-};
-// translate gesture object into prisma table
-type Gesture = {
-  id: string;
-  phrase: string;
-  topic: string;
+export type Answer = {
+  questionId: string;
+  answer: string[];
+  isCorrect: boolean;
 };

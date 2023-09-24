@@ -12,14 +12,13 @@ import {
 import { useState } from "react";
 import { ProgressBar } from "../progressBar";
 
-export function McqQuestion({
+export function McqQuestionComponent({
   choices,
   submitAnswer,
 }: {
   choices: string[];
   submitAnswer: (answer: string) => void;
 }) {
-  const a = ["a", "b", "c", "d"];
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   return (
     <View mx={"45px"} pt={50} h={"full"} display="flex">
@@ -37,7 +36,7 @@ export function McqQuestion({
           What is this Gesture?
         </Heading>
         {/* Choices */}
-        {a.map((choice, index) => (
+        {choices.map((choice, index) => (
           <Pressable
             key={choice}
             w={"full"}

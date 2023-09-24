@@ -17,13 +17,12 @@ export async function createQuiz(
 
   const questionArray = [];
   for (let i = 0; i < options.numQuestions; i++) {
-    const q = new QuestionMcq(
-      {
-        gestureId: generateUuid62(),
-        mediaRef: "",
-      },
-      ["A", "B", "C", "D"]
-    );
+    const q = new QuestionMcq({
+      choices: ["A", "B", "C", "D"],
+      answer: "A",
+      mediaRef: "",
+      id: generateUuid62(),
+    });
     questionArray.push(q);
   }
 
