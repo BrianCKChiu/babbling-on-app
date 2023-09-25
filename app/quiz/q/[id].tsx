@@ -53,13 +53,12 @@ export default function Page() {
     console.log(result);
     toast.show({
       description: result.isCorrect ? "Correct" : "Incorrect",
-      duration: 1000,
+      duration: 900,
       bgColor: result.isCorrect ? "green.500" : "red.500",
       width: "300px",
       height: "80px",
       alignItems: "center",
       justifyContent: "center",
-      placement: "top",
     });
     setTimeout(() => {
       if (currentQuestionIndex === questions.length - 1) {
@@ -68,6 +67,7 @@ export default function Page() {
         console.log("next question");
         // get next question id
         setCurrentQuestionIndex(currentQuestionIndex + 1);
+        toast.closeAll();
         console.log(currentQuestionIndex); // navigate to next question
         router.replace({
           pathname: "/quiz/q/[id]",
