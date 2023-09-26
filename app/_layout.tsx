@@ -6,6 +6,7 @@ import { useColorScheme } from "react-native";
 import { NativeBaseProvider } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../components/firebase";
+import React from "react";
 
 export {
   // Catch any errors thrown by the Layout component.

@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button, Text, View } from "native-base";
 import { generateUuid62 } from "../../components/utils/uuid";
+import React from "react";
 
 export default function TabOneScreen() {
   const router = useRouter();
