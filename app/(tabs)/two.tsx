@@ -4,6 +4,8 @@ import { Camera } from 'expo-camera';
 import { v4 as uuidv4 } from 'uuid';
 import firebase from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import 'react-native-get-random-values';
+
 
 export default function TabTwoScreen() {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
@@ -26,18 +28,16 @@ export default function TabTwoScreen() {
   const uploadImageToFirebase = async (uri: string) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    //const uniqueID = uuidv4();
-    console.log('trying');
+    const uniqueID = uuidv4();
+    console.log({uniqueID});
 
-  
-    // Create the file metadata
     const metadata = {
       contentType: 'image/webp'
     };
   
     // Create a reference for the file based on its unique ID
-    //const storageRef = ref(storage, `images/${uniqueID}.webp`);
-    const storageRef = ref(storage, `images/first.webp`);
+    const storageRef = ref(storage, `images/${uniqueID}.webp`);
+    //const storageRef = ref(storage, `images/first.webp`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
     // Listen for state changes, errors, and completion of the upload.
@@ -68,9 +68,9 @@ export default function TabTwoScreen() {
         }
       },
       async () => {
-        // Upload completed successfully, now we can get the download URL
+        // Upload completed successfully. Now we get the download URL
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        console.log('File available at', downloadURL);
+        console.log('Image available at:', downloadURL);
       }
     );
   };
