@@ -8,6 +8,7 @@ import {
   QuestionMcq,
 } from "../../../components/quiz/question";
 import { useQuizStore } from "../../../components/stores/quizStore";
+import { getFile } from "../../../components/firebase";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
@@ -79,6 +80,11 @@ export default function Page() {
 
   function nextQuestion() {}
 
+  async function getMediaLink(ref: string): Promise<string> {
+    const url = await getFile(ref);
+    return url;
+  }
+
   useEffect(() => {
     const currentQuestion = questions.filter((q) => q.getId() === id)[0];
     setQuestion(currentQuestion);
@@ -87,25 +93,29 @@ export default function Page() {
   useEffect(() => {
     if (question == null) return;
 
-    if (question.getType() === "mcq") {
-      setQuestionComponent(
-        <McqQuestionComponent
-          choices={(question as QuestionMcq).getChoices()}
-          submitAnswer={(answer: string) => {
-            handleAnswer(answer);
-          }}
-        />
-      );
-    } else if (question.getType() === "matching") {
-      setQuestionComponent(
-        <McqQuestionComponent
-          choices={["e", "f", "g", "h"]}
-          submitAnswer={(answer: string) => {
-            handleAnswer(answer);
-          }}
-        />
-      );
-    }
+    getMediaLink((question as QuestionMcq).getMediaRef()).then((url) => {
+      if (question.getType() === "mcq") {
+        setQuestionComponent(
+          <McqQuestionComponent
+            mediaRef={url}
+            choices={(question as QuestionMcq).getChoices()}
+            submitAnswer={(answer: string) => {
+              handleAnswer(answer);
+            }}
+          />
+        );
+      } else if (question.getType() === "matching") {
+        setQuestionComponent(
+          <McqQuestionComponent
+            mediaRef={url}
+            choices={["e", "f", "g", "h"]}
+            submitAnswer={(answer: string) => {
+              handleAnswer(answer);
+            }}
+          />
+        );
+      }
+    });
   }, [question]);
 
   return <VStack>{questionComponent}</VStack>;

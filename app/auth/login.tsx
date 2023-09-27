@@ -31,26 +31,39 @@ export default function Page() {
     setIsLoggingIn(true);
 
     if (email === "") {
-      toasts.show({ title: "Email cannot be empty", bgColor: "red.500", duration: 2000 });
+      toasts.show({
+        title: "Email cannot be empty",
+        bgColor: "red.500",
+        duration: 2000,
+      });
       setIsLoggingIn(false);
       return;
     }
 
     if (!validateEmail(email)) {
-      toasts.show({ title: "Invalid email", bgColor: "red.500", duration: 2000 });
+      toasts.show({
+        title: "Invalid email",
+        bgColor: "red.500",
+        duration: 2000,
+      });
       setIsLoggingIn(false);
       return;
     }
 
     if (password === "") {
-      toasts.show({ title: "Password cannot be empty", bgColor: "red.500", duration: 2000 });
+      toasts.show({
+        title: "Password cannot be empty",
+        bgColor: "red.500",
+        duration: 2000,
+      });
       setIsLoggingIn(false);
       return;
     }
 
     if (!isValidPassword(password)) {
       toasts.show({
-        title: "Password must be at least 8 characters long and contain both letters and numbers",
+        title:
+          "Password must be at least 8 characters long and contain both letters and numbers",
         bgColor: "red.500",
         duration: 2000,
       });
@@ -60,11 +73,19 @@ export default function Page() {
 
     signInWithEmailAndPassword(auth, email.toLowerCase(), password)
       .then(() => {
-        toasts.show({ title: "Sign in successful", bgColor: "green.500", duration: 2000 });
+        toasts.show({
+          title: "Sign in successful",
+          bgColor: "green.500",
+          duration: 2000,
+        });
         router.replace("/(tabs)/");
       })
       .catch((error) => {
-        toasts.show({ title: error.message, bgColor: "red.500", duration: 2000 });
+        toasts.show({
+          title: error.message,
+          bgColor: "red.500",
+          duration: 2000,
+        });
         setIsLoggingIn(false);
       });
   }
@@ -78,16 +99,14 @@ export default function Page() {
           size="lg"
           placeholder="email"
           value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
+          onChangeText={(text) => setEmail(text)}
         />
         <Input
           size="lg"
           placeholder="password"
           type="password"
           value={password}
-          onChangeText={setPassword}
-          autoCapitalize="none"
+          onChangeText={(text) => setPassword(text)}
         />
         <Button w="full" onPress={handleSignIn} isDisabled={isLoggingIn}>
           Sign in
