@@ -13,7 +13,14 @@ import {
 import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuizStore } from "../../components/stores/quizStore";
-import { QuestionMatching, QuestionMcq } from "../../components/quiz/question";
+import {
+  Question,
+  QuestionMatching,
+  QuestionMcq,
+} from "../../components/quiz/question";
+import { post } from "../../components/api/backend";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../components/firebase";
 
 type QuizDataProp = {
   id: string;
@@ -30,7 +37,7 @@ export default function Page() {
   const [quizData, setQuizData] = useState<QuizDataProp | null>(null);
   const router = useRouter();
   const { setQuestions } = useQuizStore();
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const [user] = useAuthState(auth);
   const params = useLocalSearchParams();
 
   useEffect(() => {
@@ -52,27 +59,54 @@ export default function Page() {
     }, 500);
   }, []);
 
-  function startQuiz() {
+  async function startQuiz() {
     // todo: sent request to server to generate quiz
-    const a = [
-      new QuestionMcq({
-        id: "asdas",
-        choices: ["a", "b", "c", "d"],
-        answer: "a",
-        mediaRef: "asdas",
+    const token = await user?.getIdToken();
+
+    const quizData = await fetch("http://localhost:8080/quiz/create", {
+      method: "POST",
+      body: JSON.stringify({
+        token: token,
+        topic: "1",
+        options: null,
       }),
-      new QuestionMcq({
-        id: "asdaaas",
-        choices: ["e", "f", "h", "g"],
-        answer: "f",
-        mediaRef: "asdaaaas",
-      }),
-    ];
-    setQuestions(a);
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        return json;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    const questions: Array<Question> = quizData.questions.map(
+      (question: any) => {
+        if (question.type === "mcq") {
+          return new QuestionMcq({
+            id: question.id,
+            mediaRef: question.mediaRef,
+            choices: question.choices,
+            answer: question.answer,
+          });
+        } else if (question.type === "matching") {
+          return new QuestionMatching({
+            id: question.id,
+            gestures: question.gestures as [
+              { answer: string; mediaRef: string }
+            ],
+          });
+        }
+      }
+    );
+    console.log(questions);
+    setQuestions(questions);
     // set data to quiz router
     router.replace({
       pathname: "/quiz/q/[id]",
-      params: { id: a[0].getId() }, // replace with question id
+      params: { id: questions[0].getId() }, // replace with question id
     });
   }
 

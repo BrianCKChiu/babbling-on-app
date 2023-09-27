@@ -8,15 +8,19 @@ import {
   Pressable,
   Button,
   View,
+  Image,
 } from "native-base";
 import { useEffect, useState } from "react";
 import { ProgressBar } from "../progressBar";
+import { getFile } from "../../../firebase";
 
 export function McqQuestionComponent({
   choices,
+  mediaRef,
   submitAnswer,
 }: {
   choices: string[];
+  mediaRef: string;
   submitAnswer: (answer: string) => void;
 }) {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
@@ -25,13 +29,19 @@ export function McqQuestionComponent({
     <View mx={"45px"} pt={50} h={"full"} display="flex">
       <VStack flex={1}>
         {/* Image */}
-        <Box
-          alignSelf="center"
-          w={"full"}
-          h={265}
-          backgroundColor="violet.600"
-          borderRadius={8}
-        />
+
+        <Center>
+          <Image
+            source={{
+              uri: mediaRef,
+            }}
+            key={mediaRef}
+            alt="Alternate Text"
+            h={265}
+            w={"full"}
+          />
+        </Center>
+
         {/* Question */}
         <Heading bold={true} mb={6} mt={"36px"}>
           What is this Gesture?
@@ -81,6 +91,7 @@ export function McqQuestionComponent({
           h={"50px"}
           onPress={() => {
             submitAnswer(selectedAnswer);
+            setSelectedAnswer("");
           }}
           _disabled={{ backgroundColor: "violet.500" }}
         >

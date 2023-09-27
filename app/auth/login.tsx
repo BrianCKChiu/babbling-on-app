@@ -84,14 +84,14 @@ export default function Page() {
           size="lg"
           placeholder="email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => setEmail(text)}
         />
         <Input
           size="lg"
           placeholder="password"
           type="password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text)}
         />
         <Button w="full" onPress={handleSignIn} isDisabled={isLoggingIn}>
           Sign in

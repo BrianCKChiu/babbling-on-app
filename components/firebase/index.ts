@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getStorage, ref } from "firebase/storage";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, initializeAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,9 +26,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 const storage = getStorage();
 
-export function getFile(path: string) {
-  return ref(
-    storage,
-    `https://firebasestorage.googleapis.com/b/bucket/o/${path}`
-  );
+export async function getFile(path: string): Promise<string> {
+  const mediaRef = ref(storage, `gs://babbling-on-2023.appspot.com/${path}`);
+  return await getDownloadURL(mediaRef);
 }
