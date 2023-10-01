@@ -9,6 +9,7 @@ import {
 } from "../../../components/quiz/question";
 import { useQuizStore } from "../../../components/stores/quizStore";
 import { getFile } from "../../../components/firebase";
+import React from "react";
 
 export default function Page() {
   const { id } = useLocalSearchParams();

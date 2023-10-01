@@ -18,9 +18,9 @@ import {
   QuestionMatching,
   QuestionMcq,
 } from "../../components/quiz/question";
-import { post } from "../../components/api/backend";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../components/firebase";
+import React from "react";
 
 type QuizDataProp = {
   id: string;
@@ -36,7 +36,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [quizData, setQuizData] = useState<QuizDataProp | null>(null);
   const router = useRouter();
-  const { setQuestions } = useQuizStore();
+  const { setQuestions, setQuizId } = useQuizStore();
   const [user] = useAuthState(auth);
   const params = useLocalSearchParams();
 
@@ -103,6 +103,7 @@ export default function Page() {
     );
     console.log(questions);
     setQuestions(questions);
+    setQuizId(quizData.id);
     // set data to quiz router
     router.replace({
       pathname: "/quiz/q/[id]",

@@ -10,9 +10,8 @@ import {
   View,
   Image,
 } from "native-base";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ProgressBar } from "../progressBar";
-import { getFile } from "../../../firebase";
 
 export function McqQuestionComponent({
   choices,

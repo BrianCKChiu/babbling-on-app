@@ -10,6 +10,7 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { ProgressBar } from "../progressBar";
+import React from "react";
 
 export function MatchingQuestionComponent({
   choices,
