@@ -13,6 +13,8 @@ import { auth } from "../../components/firebase";
 import { useRouter } from "expo-router";
 import { validateEmail } from "../../components/auth";
 import React from "react";
+import { Link } from "expo-router";
+import { isValidPassword } from "../../components/auth/validatePassword";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -20,12 +22,6 @@ export default function Page() {
   const toasts = useToast();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const isValidPassword = (pass: string) => {
-    const hasNumber = /\d/;
-    const hasLetter = /[a-zA-Z]/;
-    return pass.length >= 8 && hasNumber.test(pass) && hasLetter.test(pass);
-  };
 
   function handleSignIn() {
     setIsLoggingIn(true);
@@ -78,7 +74,8 @@ export default function Page() {
           bgColor: "green.500",
           duration: 2000,
         });
-        router.replace("/(tabs)/");
+
+        router.replace("/home");
       })
       .catch((error) => {
         toasts.show({
@@ -92,9 +89,15 @@ export default function Page() {
 
   return (
     <View>
-      <VStack px={"40px"} py={"40px"} alignItems={"center"} space={5}>
-        <Heading>Babbling On</Heading>
-        <Text>Sign in</Text>
+      <VStack
+        px={"40px"}
+        py={"40px"}
+        alignItems={"center"}
+        space={5}
+        mt={"17%"}
+      >
+        <Heading mb={"20%"}>Babbling On</Heading>
+        <Text w={"100%"}>Sign in</Text>
         <Input
           size="lg"
           placeholder="email"
@@ -111,6 +114,12 @@ export default function Page() {
         <Button w="full" onPress={handleSignIn} isDisabled={isLoggingIn}>
           Sign in
         </Button>
+        <Text>
+          Need an account?{" "}
+          <Link href="/auth/signUp">
+            <Text color={"blue.400"}>Sign up</Text>
+          </Link>
+        </Text>
       </VStack>
     </View>
   );

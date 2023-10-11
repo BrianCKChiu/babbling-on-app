@@ -2,7 +2,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
 import { NativeBaseProvider } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../components/firebase";
@@ -52,7 +51,13 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (!pathname.endsWith("/auth/login") && user == null) {
+    console.log(pathname);
+    if (
+      !(
+        pathname.endsWith("/auth/login") || pathname.endsWith("/auth/signUp")
+      ) &&
+      user == null
+    ) {
       router.replace("/auth/login");
     }
   }, [isLoading, pathname]);
@@ -61,6 +66,14 @@ function RootLayoutNav() {
     <NativeBaseProvider>
       <Stack>
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="auth/signUp"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="quiz"
