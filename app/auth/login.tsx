@@ -75,7 +75,7 @@ export default function Page() {
           duration: 2000,
         });
 
-        router.replace("/home");
+        router.push("/home");
       })
       .catch((error) => {
         toasts.show({

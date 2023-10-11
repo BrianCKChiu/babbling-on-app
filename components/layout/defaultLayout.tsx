@@ -9,10 +9,8 @@ import {
 } from "native-base";
 import React from "react";
 import { View, ViewProps } from "react-native";
+import IBlock from "../ui/IBlock";
 
-interface IBlock extends ViewProps {
-  children?: React.ReactNode;
-}
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
   return (
     <View {...props}>
