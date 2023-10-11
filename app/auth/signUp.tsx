@@ -98,7 +98,7 @@ export default function Page() {
           bgColor: "green.500",
           placement: "bottom",
         });
-        console.log(user?.uid);
+
         // add user to Prisma
         fetch("http://localhost:8080/user/signup", {
           method: "POST",

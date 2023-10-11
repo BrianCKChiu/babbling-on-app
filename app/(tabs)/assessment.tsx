@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -9,9 +9,12 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import "react-native-get-random-values";
+import { DefaultLayout } from "../../components/layout/defaultLayout";
+import { Center, Modal } from "native-base";
 
-export default function App() {
+export default function TabAssessmentScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState(CameraType.back);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const cameraRef = useRef<Camera | null>(null);
@@ -23,6 +26,12 @@ export default function App() {
       setHasPermission(status === "granted");
     })();
   }, []);
+
+  // display modal if user has no camera permissions
+  useEffect(() => {
+    if (hasPermission) return;
+    setShowModal(true);
+  }, [hasPermission]);
 
   const toggleCameraType = () => {
     setType((current) =>
@@ -68,32 +77,64 @@ export default function App() {
     );
   };
 
-  if (hasPermission === null) {
-    return <View />;
+  async function requestCameraPermission() {
+    if (permission?.granted === true) return;
+    await Camera.requestCameraPermissionsAsync();
+    setShowModal(false);
   }
 
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  if (!true) {
+    return (
+      <DefaultLayout>
+        <Center>
+          <Modal isOpen={showModal}>
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header>Insufficient Camera Permissions</Modal.Header>
+              <Modal.Body>
+                <Text>
+                  Please enable camera permissions in your device settings
+                </Text>
+                <Button
+                  title="Close"
+                  onPress={() => {
+                    setShowModal(false);
+                  }}
+                />
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+          <Text>No access to camera</Text>
+        </Center>
+      </DefaultLayout>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      {isCameraVisible ? (
-        <Camera ref={cameraRef} style={styles.camera} type={type}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={toggleCameraType} style={styles.button}>
-              <Text style={styles.text}>Flip Camera</Text>
-            </TouchableOpacity>
-            <Button title="Take Picture" onPress={takeAndUploadPicture} />
-          </View>
-        </Camera>
-      ) : (
-        <Button title="Open Camera" onPress={() => setIsCameraVisible(true)} />
-      )}
-    </View>
+    <DefaultLayout>
+      <View style={styles.container}>
+        {isCameraVisible ? (
+          <Camera ref={cameraRef} style={styles.camera} type={type}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={toggleCameraType}
+                style={styles.button}
+              >
+                <Text style={styles.text}>Flip Camera</Text>
+              </TouchableOpacity>
+              <Button title="Take Picture" onPress={takeAndUploadPicture} />
+            </View>
+          </Camera>
+        ) : (
+          <Button
+            title="Open Camera"
+            onPress={() => setIsCameraVisible(true)}
+          />
+        )}
+      </View>
+    </DefaultLayout>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

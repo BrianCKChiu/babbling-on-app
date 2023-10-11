@@ -36,24 +36,25 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="selfAssessmentTab"
-        options={{
-          title: "Self Assessment",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="list-ul" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="lesson"
         options={{
           headerShown: false,
-          title: "Assessments",
+          title: "Courses",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="clipboard" color={color} />
           ),
         }}
       />
+      <Tabs.Screen
+        name="assessment"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="list-ul" color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="profile"
         options={{
