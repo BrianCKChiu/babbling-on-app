@@ -93,15 +93,14 @@ export default function Page() {
       .then((userCredential: UserCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
         Toast.show({
           title: "Sign up successful",
           bgColor: "green.500",
           placement: "bottom",
         });
-
+        console.log(user?.uid);
         // add user to Prisma
-        fetch("http://localhost:8080/user/signUp", {
+        fetch("http://localhost:8080/user/signup", {
           method: "POST",
           body: JSON.stringify({
             uid: user?.uid,
@@ -111,8 +110,15 @@ export default function Page() {
           headers: {
             "Content-Type": "application/json",
           },
-        });
-        router.push("/home");
+        })
+          .then(async (res) => {
+            const json = await res.json();
+            console.log(json);
+            router.push("/home");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {

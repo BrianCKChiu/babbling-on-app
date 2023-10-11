@@ -42,11 +42,21 @@ export default function Page() {
   useEffect(() => {
     setIsLoading(true);
     // todo: fetch quiz data from node js server via the id
-    getQuizDetails().then((data) => {
-      console.log(data);
-      setQuizData({ id: "", ...data });
-      setIsLoading(false);
-    });
+    getQuizDetails()
+      .then((data) => {
+        console.log(data);
+        if (data == null) {
+          router.replace("/home");
+
+          throw new Error("Quiz data is null");
+        }
+        setQuizData({ id: "", ...data });
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        router.replace("/home");
+      });
   }, []);
 
   async function getQuizDetails() {
@@ -131,12 +141,12 @@ export default function Page() {
     for (const key in quizData.description) {
       console.log(key);
       elements.push(
-        <>
+        <Text key={key}>
           {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
-          <Text key={key}>
+          <Text>
             {quizData.description[key]} {`\n`}
           </Text>
-        </>
+        </Text>
       );
     }
 
