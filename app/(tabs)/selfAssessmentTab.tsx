@@ -1,10 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Button, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
-import { v4 as uuidv4 } from 'uuid';
-import firebase from 'firebase/app';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import 'react-native-get-random-values';
+import React, { useRef, useState, useEffect } from "react";
+import { Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Camera, CameraType } from "expo-camera";
+import { v4 as uuidv4 } from "uuid";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import "react-native-get-random-values";
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -16,12 +20,14 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     })();
   }, []);
 
   const toggleCameraType = () => {
-    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+    setType((current) =>
+      current === CameraType.back ? CameraType.front : CameraType.back
+    );
   };
 
   const takeAndUploadPicture = async () => {
@@ -39,23 +45,25 @@ export default function App() {
     const uniqueID = uuidv4();
 
     const metadata = {
-      contentType: 'image/jpeg',
+      contentType: "image/jpeg",
     };
 
     const storageRef = ref(storage, `images/${uniqueID}.jpeg`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
-    uploadTask.on('state_changed',
+    uploadTask.on(
+      "state_changed",
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
       },
       (error) => {
         console.error(error);
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        console.log('Image available at:', downloadURL);
+        console.log("Image available at:", downloadURL);
       }
     );
   };
@@ -95,20 +103,20 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
+    backgroundColor: "transparent",
+    flexDirection: "row",
     margin: 20,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   button: {
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignSelf: "flex-end",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
     padding: 10,
     borderRadius: 5,
   },
   text: {
     fontSize: 18,
-    color: 'white',
+    color: "white",
   },
 });

@@ -1,7 +1,3 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import { generateUuid62 } from "../utils/uuid";
-import { db } from "../firebase";
-
 type QuestionType = "mcq" | "matching";
 
 export abstract class Question {

@@ -8,7 +8,7 @@ import {
   Menu,
 } from "native-base";
 import React from "react";
-import { View, ViewProps } from "react-native";
+import { View } from "react-native";
 import IBlock from "../ui/IBlock";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
