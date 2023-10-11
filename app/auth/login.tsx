@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
 import {
   View,
   Heading,
@@ -15,6 +15,7 @@ import { validateEmail } from "../../components/auth";
 import React from "react";
 import { Link } from "expo-router";
 import { isValidPassword } from "../../components/auth/validatePassword";
+import { useUserStore } from "../../components/stores/userStore";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ export default function Page() {
   const toasts = useToast();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { setDisplayName } = useUserStore();
 
   function handleSignIn() {
     setIsLoggingIn(true);
@@ -68,7 +70,9 @@ export default function Page() {
     }
 
     signInWithEmailAndPassword(auth, email.toLowerCase(), password)
-      .then(() => {
+      .then((userCredential: UserCredential) => {
+        const user = userCredential.user;
+        setDisplayName(user?.displayName ?? "");
         toasts.show({
           title: "Sign in successful",
           bgColor: "green.500",
