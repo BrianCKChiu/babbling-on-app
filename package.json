@@ -7,18 +7,20 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "postinstall": "patch-package"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
-    "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-async-storage/async-storage": "^1.18.2",
     "@react-native-firebase/storage": "^18.5.0",
     "@react-navigation/native": "^6.0.2",
     "@types/react-native-snap-carousel": "^3.8.6",
     "crypo": "^0.1.4",
+    "deprecated-react-native-prop-types": "^4.2.1",
     "expo": "~49.0.8",
     "expo-build-properties": "~0.8.3",
     "expo-camera": "~13.4.4",
@@ -32,6 +34,7 @@
     "firebase": "^10.4.0",
     "lib0": "^0.2.83",
     "native-base": "^3.4.28",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
