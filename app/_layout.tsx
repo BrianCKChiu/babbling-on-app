@@ -58,22 +58,15 @@ function RootLayoutNav() {
       ) &&
       user == null
     ) {
-      router.replace("/auth/login");
+      router.replace("/auth");
     }
   }, [isLoading, pathname]);
 
   return (
     <NativeBaseProvider>
       <Stack>
-        <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="auth/signUp"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerTransparent: true,
-          }}
-        />
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
+
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="quiz"

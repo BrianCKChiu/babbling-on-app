@@ -11,22 +11,35 @@ import {
 import React, { useState } from "react";
 import { auth } from "../../components/firebase";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   UserCredential,
+  updateProfile,
 } from "firebase/auth";
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useRouter } from "expo-router";
+import { useUserStore } from "../../components/stores/userStore";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [role, setRole] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const router = useRouter();
+  const { setDisplayName } = useUserStore();
+
   function handleSignUp() {
     setIsSigningUp(true);
+    if (userName === "") {
+      Toast.show({
+        title: "Username cannot be empty",
+        bgColor: "red.500",
+        placement: "bottom",
+      });
+      setIsSigningUp(false);
+      return;
+    }
 
     if (email === "") {
       Toast.show({
@@ -35,9 +48,9 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     if (password === "") {
       Toast.show({
         title: "Password cannot be empty",
@@ -45,9 +58,9 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     if (verifyPassword === "") {
       Toast.show({
         title: "Please verify password",
@@ -55,9 +68,9 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     if (password !== verifyPassword) {
       Toast.show({
         title: "Passwords do not match",
@@ -65,9 +78,9 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     if (role === "") {
       Toast.show({
         title: "Please select a role",
@@ -75,9 +88,9 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     if (!isValidPassword(password)) {
       Toast.show({
         title:
@@ -86,33 +99,32 @@ export default function Page() {
         placement: "bottom",
       });
       setIsSigningUp(false);
-
       return;
     }
+
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential: UserCredential) => {
+      .then(async (userCredential: UserCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
-        Toast.show({
-          title: "Sign up successful",
-          bgColor: "green.500",
-          placement: "bottom",
-        });
+        try {
+          await updateProfile(user, {
+            displayName: userName,
+          }).catch((error) => {
+            console.error(error);
+          });
+          setDisplayName(user.displayName ?? "");
+          Toast.show({
+            title: `Welcome ${user.displayName}!`,
+            bgColor: "green.500",
+            placement: "bottom",
+          });
+          router.push("/home");
+          setIsSigningUp(false);
+        } catch (e) {
+          console.error(e);
+        }
 
         // add user to Prisma
-        fetch("http://localhost:8080/user/signUp", {
-          method: "POST",
-          body: JSON.stringify({
-            uid: user?.uid,
-            email: email,
-            role: role,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        router.push("/home");
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
@@ -138,6 +150,13 @@ export default function Page() {
       >
         <Heading mb={"20%"}>Babbling On</Heading>
         <Text w={"100%"}>Sign up to start learning ASL!</Text>
+        <Input
+          size="lg"
+          placeholder="username"
+          value={userName}
+          type="text"
+          onChangeText={(text) => setUserName(text)}
+        />
         <Input
           size="lg"
           placeholder="email"
@@ -176,7 +195,7 @@ export default function Page() {
           By signing up, you agree to our Terms and Services
         </Text>
         <Button mt="5" w="full" onPress={handleSignUp} isDisabled={isSigningUp}>
-          Sign Up
+          {isSigningUp ? "Signing Up" : "Sign Up"}
         </Button>
       </VStack>
     </View>

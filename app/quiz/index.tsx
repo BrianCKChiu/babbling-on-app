@@ -11,7 +11,7 @@ import {
   View,
 } from "native-base";
 import { useEffect, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useQuizStore } from "../../components/stores/quizStore";
 import {
   Question,
@@ -26,10 +26,10 @@ type QuizDataProp = {
   id: string;
   topic: string;
   title: string;
-  questionNum: number;
+  numOfQuestion: number;
   estTime: number;
-  points: number;
-  description: string;
+  exp: number;
+  description: Object;
 };
 
 export default function Page() {
@@ -38,26 +38,51 @@ export default function Page() {
   const router = useRouter();
   const { setQuestions, setQuizId } = useQuizStore();
   const [user] = useAuthState(auth);
-  const params = useLocalSearchParams();
 
   useEffect(() => {
     setIsLoading(true);
     // todo: fetch quiz data from node js server via the id
-    const quizDetailId = params.id;
-    console.log(quizDetailId);
-    setTimeout(() => {
-      setQuizData({
-        id: "aa",
-        topic: "daily",
-        title: "Daily Quiz",
-        questionNum: 10,
-        estTime: 5,
-        points: 200,
-        description: "",
+    getQuizDetails()
+      .then((data) => {
+        console.log(data);
+        if (data == null) {
+          router.replace("/home");
+
+          throw new Error("Quiz data is null");
+        }
+        setQuizData({ id: "", ...data });
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        router.replace("/home");
       });
-      setIsLoading(false);
-    }, 500);
   }, []);
+
+  async function getQuizDetails() {
+    const token = await user?.getIdToken();
+    try {
+      const response = await fetch("http://localhost:8080/quiz/details", {
+        method: "POST",
+        body: JSON.stringify({
+          token: token,
+          quizId: "eJE9f2tfYe7PJjO3YPrK",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const json = await response.json();
+        return json;
+      } else {
+        const text = await response.text();
+        throw new Error("Error fetching quiz details:" + text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async function startQuiz() {
     // todo: sent request to server to generate quiz
@@ -101,7 +126,6 @@ export default function Page() {
         }
       }
     );
-    console.log(questions);
     setQuestions(questions);
     setQuizId(quizData.id);
     // set data to quiz router
@@ -109,6 +133,24 @@ export default function Page() {
       pathname: "/quiz/q/[id]",
       params: { id: questions[0].getId() }, // replace with question id
     });
+  }
+
+  function formatDescription() {
+    if (quizData == null) return <></>;
+    const elements: JSX.Element[] = [];
+    for (const key in quizData.description) {
+      console.log(key);
+      elements.push(
+        <Text key={key}>
+          {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
+          <Text>
+            {quizData.description[key]} {`\n`}
+          </Text>
+        </Text>
+      );
+    }
+
+    return elements;
   }
 
   return (
@@ -138,7 +180,7 @@ export default function Page() {
               </Heading>
               <HStack w={"full"} justifyContent="space-between">
                 <QuizDetailTile
-                  label={quizData?.questionNum.toString() ?? "0"}
+                  label={quizData?.numOfQuestion.toString() ?? "0"}
                   heading="Questions"
                 />
                 <QuizDetailTile
@@ -146,47 +188,11 @@ export default function Page() {
                   heading="Minutes"
                 />
                 <QuizDetailTile
-                  label={quizData?.points.toString() ?? "0"}
-                  heading="Points"
+                  label={quizData?.exp.toString() ?? "0"}
+                  heading="EXP"
                 />
               </HStack>
-              <VStack>
-                <Text fontWeight={"semibold"} mb={2}>
-                  Description
-                </Text>
-                <Text>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aliquam mi sem, ultrices vitae orci egestas, dictum fringilla
-                  purus. Phasellus ultricies, velit iaculis euismod finibus,
-                  neque risus mattis purus, non auctor turpis nisi vitae leo. In
-                  molestie suscipit elit, quis sollicitudin massa aliquet et.
-                  Nunc non fermentum massa.
-                </Text>
-                <Text>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aliquam mi sem, ultrices vitae orci egestas, dictum fringilla
-                  purus. Phasellus ultricies, velit iaculis euismod finibus,
-                  neque risus mattis purus, non auctor turpis nisi vitae leo. In
-                  molestie suscipit elit, quis sollicitudin massa aliquet et.
-                  Nunc non fermentum massa.
-                </Text>
-                <Text>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aliquam mi sem, ultrices vitae orci egestas, dictum fringilla
-                  purus. Phasellus ultricies, velit iaculis euismod finibus,
-                  neque risus mattis purus, non auctor turpis nisi vitae leo. In
-                  molestie suscipit elit, quis sollicitudin massa aliquet et.
-                  Nunc non fermentum massa.
-                </Text>
-                <Text>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aliquam mi sem, ultrices vitae orci egestas, dictum fringilla
-                  purus. Phasellus ultricies, velit iaculis euismod finibus,
-                  neque risus mattis purus, non auctor turpis nisi vitae leo. In
-                  molestie suscipit elit, quis sollicitudin massa aliquet et.
-                  Nunc non fermentum massa.
-                </Text>
-              </VStack>
+              <VStack>{formatDescription()}</VStack>
             </VStack>
           </ScrollView>
           <Box
