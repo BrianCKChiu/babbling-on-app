@@ -1,34 +1,40 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
-const HeaderSection: React.FC = () => {
+interface Styles {
+  header: ViewStyle;
+  headerText: TextStyle & { fontSize: number };
+}
+
+interface SAHeaderSectionProps {
+  text: string;
+  fontSize?: number;
+}
+
+const SAHeaderSection: React.FC<SAHeaderSectionProps> = ({ text, fontSize = 24 }) => {
+  const dynamicStyles = StyleSheet.create<Styles>({
+    header: {
+      backgroundColor: '#FFE874',
+      height: '35%',
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      alignItems: 'flex-start',
+      justifyContent: 'flex-end',
+      paddingLeft: 25,
+      paddingBottom: 15,
+    },
+    headerText: {
+      fontSize,
+      fontWeight: 'bold',
+      color: 'black',
+    },
+  });
+
   return (
-    <View style={styles.header}>
-      <Text style={styles.headerText}>Your Header Text</Text>
+    <View style={dynamicStyles.header}>
+      <Text style={dynamicStyles.headerText}>{text}</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#FFE874',
-    height: '40%', 
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    alignItems: 'flex-start', 
-    justifyContent: 'flex-end', 
-    paddingLeft: 20, 
-    paddingBottom: 10, 
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0, 
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold', 
-    color: 'black', 
-  },
-});
-
-export default HeaderSection;
+export default SAHeaderSection;

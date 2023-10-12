@@ -80,7 +80,7 @@ function RootLayoutNav() {
                 : true,
           }}
         />
-
+        <Stack.Screen name="selfAssessment" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
     </NativeBaseProvider>

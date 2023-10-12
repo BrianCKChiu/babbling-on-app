@@ -21,18 +21,19 @@ const CustomButton: React.FC<CustomButtonProps> = ({ text, buttonColor, onPress 
 const styles = StyleSheet.create({
   button: {
     width: '80%',
-    height: '20%',
-    borderRadius: 10,
+    height: '10%',
+    borderRadius: 7,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 15, 
-    margin:20,
-    borderWidth:3,
-    borderColor:'black',
+    justifyContent: 'center', 
+    margin:'10%',
+    marginBottom:0,
+    marginTop: '5%',
+    borderWidth:1,
+    borderColor:'#D8D8D8',
   },
   buttonText: {
     color: 'black',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold'
   },
 });
