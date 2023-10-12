@@ -16,6 +16,7 @@ import React from "react";
 import { Link } from "expo-router";
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useUserStore } from "../../components/stores/userStore";
+import { checkUserIsInDB } from "../../components/api/backend";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -70,7 +71,7 @@ export default function Page() {
     }
 
     signInWithEmailAndPassword(auth, email.toLowerCase(), password)
-      .then((userCredential: UserCredential) => {
+      .then(async (userCredential: UserCredential) => {
         const user = userCredential.user;
         setDisplayName(user?.displayName ?? "");
         toasts.show({
@@ -78,7 +79,9 @@ export default function Page() {
           bgColor: "green.500",
           duration: 2000,
         });
-
+        console.log(user);
+        const token = await user.getIdToken();
+        await checkUserIsInDB(token);
         router.push("/home");
       })
       .catch((error) => {
