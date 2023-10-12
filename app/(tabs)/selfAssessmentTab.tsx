@@ -5,6 +5,9 @@ import { v4 as uuidv4 } from 'uuid';
 import firebase from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import 'react-native-get-random-values';
+import CustomButton from '../../components/selfAssessment/customButton';
+import { Stack } from 'expo-router';
+import { Center } from 'native-base';
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -42,7 +45,7 @@ export default function App() {
       contentType: 'image/jpeg',
     };
 
-    const storageRef = ref(storage, `images/${uniqueID}.jpeg`);
+    const storageRef = ref(storage, `saImages/${uniqueID}.jpeg`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
     uploadTask.on('state_changed',
@@ -80,7 +83,15 @@ export default function App() {
           </View>
         </Camera>
       ) : (
+        <View>
         <Button title="Open Camera" onPress={() => setIsCameraVisible(true)} />
+        <CustomButton text="Self Assessment with AI" buttonColor="white" onPress={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
+        <CustomButton text="Practice ASL " buttonColor="white" onPress={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
+        </View>
       )}
     </View>
   );
@@ -89,6 +100,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    backgroundColor:'FFE874'
   },
   camera: {
     flex: 1,
