@@ -17,12 +17,8 @@ export default function TabAssessmentScreen() {
         our intelligent Self-Assessment, 
         engage in focused Practice sessions, and keep tabs 
         on your journey!"/>
-        <CustomButton text="Self Assessment with AI" buttonColor="white" onPress={function (): void {
-              throw new Error('Function not implemented.');
-            } } />
-        <CustomButton text="Practice ASL " buttonColor="white" onPress={function (): void {
-              throw new Error('Function not implemented.');
-            } } />
+        <CustomButton text="Self Assessment with AI" buttonColor="white"  onPress={() => router.push("/selfAssessment")} />
+        <CustomButton text="Practice ASL " buttonColor="white" onPress={() => router.push("/saPractice/")} />
       </View>
   );
 }

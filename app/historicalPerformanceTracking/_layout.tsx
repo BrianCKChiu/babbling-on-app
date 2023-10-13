@@ -5,11 +5,18 @@ export default function Layout() {
   return (
     <Stack>
       <Stack.Screen
-        name="selfAssessmentStart"
+        name="performanceTrackingStart"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="practiceAlphabetStart"
         options={{
           headerShown: false,
         }}
       />
     </Stack>
+
   );
 }

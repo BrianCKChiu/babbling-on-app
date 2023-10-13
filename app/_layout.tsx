@@ -80,7 +80,21 @@ function RootLayoutNav() {
                 : true,
           }}
         />
-        <Stack.Screen name="selfAssessment" options={{ headerShown: false }} />
+        <Stack.Screen name="selfAssessment" options={{ 
+          headerShown: true,
+          title: "",
+          headerTransparent: true, }} />
+          <Stack.Screen name="historicalPerformanceTracking" options={{ 
+          headerShown: true,
+          title: "",
+          headerTransparent: true, }} />
+        <Stack.Screen name="saPractice" options={{ 
+          headerShown:
+          pathname.match(/^\/saPractice\/practiceStart$/)
+            ? true
+            : false,
+          title: "",
+          headerTransparent: true, }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
     </NativeBaseProvider>
