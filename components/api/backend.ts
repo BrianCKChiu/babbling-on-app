@@ -4,10 +4,13 @@ const isDev = true;
 
 export const API_URL = isDev ? "http://localhost:8080/" : "";
 
-export const post = async (
-  endpoint: string,
-  body: any
-): Promise<any | undefined> => {
+export function post({
+  endpoint,
+  body,
+}: {
+  endpoint: string;
+  body: any;
+}): Promise<Response> {
   return fetch(API_URL + endpoint, {
     method: "POST",
     body: JSON.stringify(body),
@@ -15,7 +18,7 @@ export const post = async (
       "Content-Type": "application/json",
     },
   });
-};
+}
 export function checkUserIsInDB(token: string) {
   console.log(token);
   return fetch(`${API_URL}user/`, {
