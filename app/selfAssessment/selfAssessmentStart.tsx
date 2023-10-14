@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import DescriptionSection from '../../components/selfAssessment/descriptionSection';
+import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
 import { HStack, Button } from 'native-base';
-import NextPageButton from '../../components/selfAssessment/nextPageButton';
+import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
 
 export default function selfAssessmentStart() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function selfAssessmentStart() {
     </HStack>
     <HStack style={styles.nextButton}>
       <NextPageButton text="Start Assessment"  onPress={() => router.push({
-    pathname: "/selfAssessment/selfAssessmentStart",
+    pathname: "/selfAssessment/selfAssessmentPage",
     params: { length: selectedValue.value },
   })} />
     </HStack>

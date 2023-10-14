@@ -1,9 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import DescriptionSection from '../../components/selfAssessment/descriptionSection';
+import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
 import { HStack, VStack, Button, ScrollView } from 'native-base';
-import NextPageButton from '../../components/selfAssessment/nextPageButton';
+import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
 
 export default function practiceAlphabetStart() {
   const router = useRouter();
@@ -15,6 +15,34 @@ export default function practiceAlphabetStart() {
     setSelectedLetter(letter);
     console.log(`Selected: ${letter}`);
   };
+const startPractice =()=>{
+  fetch("http://localhost:8080/selfAssessment/start-assessment", {
+  method: "POST",
+  body: JSON.stringify({
+    userId: "12345",  //ToDo: Replace with actual userId
+    isPractice: true,
+  }),
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
+.then((response) => {
+  if (!response.ok) {
+    return Promise.reject('Server Error');
+  }
+  return response.json();
+})
+.then((data) => {
+  console.log("Practice Started:", data);
+})
+.catch((err) => {
+  console.error("Error:", err);
+});
+router.push({
+  pathname: "/saPractice/practicePage",
+  params: { letter: selectedLetter},
+});
+};
 
   return (
     <View style={styles.container}>
@@ -52,10 +80,7 @@ export default function practiceAlphabetStart() {
         ))}
       </ScrollView>
     <HStack style={styles.nextButton}>
-      <NextPageButton text="Start Practice"  onPress={() => router.push({
-    pathname: "/saPractice/practicePage",
-    params: { letter: selectedLetter},
-  })} />
+      <NextPageButton text="Start Practice"  onPress={() => startPractice()} />
     </HStack>
     </View>
   );

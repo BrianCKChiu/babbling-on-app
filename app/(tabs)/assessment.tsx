@@ -2,9 +2,9 @@ import { useRouter } from "expo-router";
 import { View } from "native-base";
 import { StyleSheet } from 'react-native';
 import React from "react";
-import SAHeaderSection from '../../components/selfAssessment/headerSection';
-import DescriptionSection from "../../components/selfAssessment/descriptionSection";
-import CustomButton from "../../components/selfAssessment/customButton";
+import SAHeaderSection from '../../components/ui/selfAssessment/headerSection';
+import DescriptionSection from "../../components/ui/selfAssessment/descriptionSection";
+import CustomButton from "../../components/ui/selfAssessment/customButton";
 
 export default function TabAssessmentScreen() {
   const router = useRouter();

@@ -2,12 +2,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button, SafeAreaView } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
-import CustomButton from '../../components/selfAssessment/customButton';
+import CustomButton from '../../components/ui/selfAssessment/customButton';
 import { Camera, CameraType } from 'expo-camera';
 import { v4 as uuidv4 } from 'uuid';
 import firebase from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import 'react-native-get-random-values';
+import { Center, Image } from 'native-base';
+import { DisplayImage } from '../../components/ui/selfAssessment/displayImage';
 
 export default function practicePage() {
   const router = useRouter();
@@ -53,7 +55,7 @@ export default function practicePage() {
       const options = { quality: 0.5, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
       uploadImageToFirebase(photo.uri);
-      showMessage(true);                    //NEEDS TO CHANGE
+      showMessage(true);                    //ToDo: NEEDS TO CHANGE
       setIsCameraVisible(false);
     }
   };
@@ -106,6 +108,7 @@ export default function practicePage() {
         </Camera>
       ) : (
       <View>
+        <DisplayImage path={`aslAlphabets/${letter}_test.jpg`} />
       <Text style={styles.headerText}>This is the gesture for {letter}</Text>
       <TouchableOpacity
         style={styles.performGestureButton}
