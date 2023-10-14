@@ -139,7 +139,6 @@ export default function Page() {
     if (quizData == null) return <></>;
     const elements: JSX.Element[] = [];
     for (const key in quizData.description) {
-      console.log(key);
       elements.push(
         <Text key={key}>
           {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}

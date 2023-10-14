@@ -27,9 +27,8 @@ export default function Page() {
     }).catch((err) => {
       console.log(err);
     });
-    console.log("hi");
     clearQuiz();
-    router.push("/(tabs)/");
+    router.push("/(tabs)/home");
   }
 
   return (
