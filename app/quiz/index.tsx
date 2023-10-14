@@ -42,7 +42,6 @@ export default function Page() {
 
   useEffect(() => {
     setIsLoading(true);
-    // todo: fetch quiz data from node js server via the id
     getQuizDetails()
       .then((data) => {
         console.log(data);
@@ -139,7 +138,7 @@ export default function Page() {
         <Text key={key}>
           {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
           <Text>
-            {quizData.description[key]} {`\n`}
+            {(quizData.description as any)[key]} {`\n`}
           </Text>
         </Text>
       );
