@@ -2,18 +2,15 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button, SafeAreaView } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
-import CustomButton from '../../components/ui/selfAssessment/customButton';
 import { Camera, CameraType } from 'expo-camera';
 import { v4 as uuidv4 } from 'uuid';
-import firebase from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import 'react-native-get-random-values';
-import { Center, Image } from 'native-base';
-import { DisplayImage } from '../../components/ui/selfAssessment/displayImage';
+import SAHeaderSection from '../../components/ui/selfAssessment/headerSection';
 
-export default function practicePage() {
+export default function selfAssessmentPage() {
   const router = useRouter();
-  const { letter } = useLocalSearchParams();
+  const { length } = useLocalSearchParams();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [type, setType] = useState(CameraType.back);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
@@ -21,7 +18,21 @@ export default function practicePage() {
   const storage = getStorage();
   const [isMessageVisible, setIsMessageVisible] = React.useState(false);
   const [messageContent, setMessageContent] = React.useState<{text: string, color: string}>({text: '', color: ''});
+  const [isButtonClickable, setIsButtonClickable] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<number>(1);
+  const [score, setScore] = useState<number>(0);
+  const lengthInt = parseInt((length as string),10)
+   
+  
 
+  const questionString = `Question ${currentQuestion}/${length}`;
+
+  const getRandomLetter = () => {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    return alphabet[randomIndex];
+  };
+  const [currentLetter, setCurrentLetter] = useState(() => getRandomLetter());
 
   useEffect(() => {
     (async () => {
@@ -30,8 +41,32 @@ export default function practicePage() {
     })();
   }, []);
 
+  const updateScore = () => {
+    const ex = ((score*lengthInt) +1)/lengthInt
+    setScore(parseFloat(ex.toFixed(2)));
+  };
+
+  const handleNextClick = () => {
+    if (currentQuestion < lengthInt) {
+      setCurrentQuestion(currentQuestion+1);
+      enableButton();
+      setIsMessageVisible(false);
+      setCurrentLetter(getRandomLetter());
+    } else {
+      router.push({
+        pathname: "/selfAssessment/results",
+        params: { length: length, score: score,  },
+      })
+    }
+  };
+
+  const enableButton = () => {
+    setIsButtonClickable((prevIsButtonClickable) => !prevIsButtonClickable);
+  };
+
   const showMessage = (wasCorrect: boolean) => {
     if (wasCorrect) {
+      updateScore();
       setMessageContent({
         text: "YOU WERE CORRECT!",
         color: "#A9F8AC",
@@ -56,6 +91,7 @@ export default function practicePage() {
       const photo = await cameraRef.current.takePictureAsync(options);
       uploadImageToFirebase(photo.uri);
       showMessage(true);                    //ToDo: NEEDS TO CHANGE
+      enableButton();
       setIsCameraVisible(false);
     }
   };
@@ -96,8 +132,9 @@ export default function practicePage() {
   }
 
   return (
+    <View style={styles.container}>
+        {isCameraVisible ? (
     <SafeAreaView style={styles.container}>
-      {isCameraVisible ? (
         <Camera ref={cameraRef} style={styles.camera} type={type}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={toggleCameraType} style={styles.button}>
@@ -108,13 +145,22 @@ export default function practicePage() {
             </TouchableOpacity>
           </View>
         </Camera>
+        </SafeAreaView>
       ) : (
-      <View>
-        <DisplayImage path={`aslAlphabets/${letter}_test.jpg`} />
-      <Text style={styles.headerText}>This is the gesture for {letter}</Text>
+      <View style={styles.container}>
+        <SAHeaderSection text= {questionString} fontSize={24} ></SAHeaderSection>
+      <Text style={styles.bodyText}>Perform the gesture for: {currentLetter}</Text>
       <TouchableOpacity
-        style={styles.performGestureButton}
-        onPress={() => setIsCameraVisible(true)}>
+        style={[
+            styles.performGestureButton,
+            {
+              backgroundColor: !isButtonClickable
+                ? '#F7F9A9'
+                : '#B0B0B0',
+            },
+          ]}
+        onPress={() => setIsCameraVisible(true)}
+        disabled={isButtonClickable}>
         <Text style={styles.buttonText}>Perform Gesture</Text>
       </TouchableOpacity>
       {isMessageVisible && (
@@ -123,14 +169,20 @@ export default function practicePage() {
         </View>
         )}
       <TouchableOpacity
-        style={styles.backbutton}
-        onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={24} color="black"/>
-        <Text style={styles.buttonText}>End Practice</Text>
+        onPress={handleNextClick}
+        disabled={!isButtonClickable}
+        style={[
+          styles.nextButton,
+          {
+            backgroundColor: isButtonClickable ? '#F7F9A9' : '#B0B0B0',
+          },
+        ]}
+      >
+        <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
       </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -140,26 +192,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
-  headerText: {
-    fontSize: 32,
+  bodyText: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginLeft:'10%',
-    marginTop: '10%',
-  },
-  backbutton: {
-    width: '50%',
-    borderRadius: 7,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    padding: 20,
-    paddingLeft: 10,
-    margin: '7%',
-    marginBottom: '10%',
-    marginTop: '10%',
-    borderWidth: 1,
-    borderColor: '#D8D8D8',
-    backgroundColor: '#F7F9A9',
+    marginTop: '15%',
+    marginBottom: '20%',
   },
   performGestureButton: {
     width: 'auto',
@@ -172,7 +210,6 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     borderWidth: 1,
     borderColor: '#D8D8D8',
-    backgroundColor: '#F7F9A9',
   },
   buttonText: {
     color: 'black',
@@ -195,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 10,
     borderRadius: 5,
-    margin: 10,
+    margin:10,
   },
   text: {
     fontSize: 18,
@@ -214,6 +251,18 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  nextButton: {
+    width: '80%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 7,
+    padding: 30,
+    paddingVertical:20,
+    margin: '10%',
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    marginTop: 'auto',
   },
 });
 

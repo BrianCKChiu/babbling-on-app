@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
-import { HStack, Button } from 'native-base';
+import { HStack, } from 'native-base';
 import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
 
 export default function performanceTrackingStart() {
@@ -13,9 +13,8 @@ export default function performanceTrackingStart() {
       <Text style={styles.headerText}>Historical Performance Tracking</Text>
       <DescriptionSection bodyText='Track and celebrate your growth in the "Historical Performance Tracking" section. Visualize your evolution in ASL alphabet proficiency, monitor your advancements, and let your progress fuel your motivation to explore further into the enriching world of ASL.'/>
     <HStack style={styles.nextButton}>
-      <NextPageButton text="Start Assessment"  onPress={() => router.push({
-    pathname: "/selfAssessment/selfAssessmentStart",
-    params: { length: "hello"},
+      <NextPageButton text="See Progress"  onPress={() => router.push({
+    pathname: "/historicalPerformanceTracking/performanceTracking",
   })} />
     </HStack>
     </View>

@@ -11,7 +11,7 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="practiceAlphabetStart"
+        name="performanceTracking"
         options={{
           headerShown: false,
         }}

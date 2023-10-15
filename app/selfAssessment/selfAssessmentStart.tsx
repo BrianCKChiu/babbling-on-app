@@ -10,13 +10,13 @@ export default function selfAssessmentStart() {
 
   interface RadioButtonProps {
     label: string;
-    value: string;
+    value: number;
   }
   
   const RadioButtonOptions: RadioButtonProps[] = [
-    { label: 'Short', value: "2" },
-    { label: 'Normal', value: "5" },
-    { label: 'Long', value: "10" },
+    { label: 'Short', value: 2 },
+    { label: 'Normal', value: 5 },
+    { label: 'Long', value: 10 },
   ];
 
   const [selectedValue, setSelectedValue] = useState<RadioButtonProps>(
@@ -61,7 +61,7 @@ export default function selfAssessmentStart() {
     <HStack style={styles.nextButton}>
       <NextPageButton text="Start Assessment"  onPress={() => router.push({
     pathname: "/selfAssessment/selfAssessmentPage",
-    params: { length: selectedValue.value },
+    params: { length: selectedValue.value, },
   })} />
     </HStack>
     </View>
