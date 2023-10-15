@@ -4,7 +4,7 @@ import { useQuizStore } from "../../../components/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../components/firebase";
 import React from "react";
-import { post } from "../../../components/api/backend";
+import { HttpHandler } from "../../../components/api/backend";
 
 export default function Page() {
   const { answers, clearQuiz, quizId } = useQuizStore();
@@ -13,7 +13,7 @@ export default function Page() {
 
   async function handleExit() {
     const token = await user?.getIdToken();
-    post({
+    HttpHandler.post({
       endpoint: "quiz/submitAnswer",
       body: {
         token: token,

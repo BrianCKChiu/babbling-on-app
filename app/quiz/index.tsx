@@ -21,7 +21,7 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../components/firebase";
 import React from "react";
-import { post } from "../../components/api/backend";
+import { HttpHandler } from "../../components/api/backend";
 
 type QuizDataProp = {
   id: string;
@@ -62,7 +62,7 @@ export default function Page() {
   async function getQuizDetails() {
     const token = await user?.getIdToken();
     try {
-      const response = await post({
+      const response = await HttpHandler.post({
         endpoint: "quiz/details",
         body: {
           token: token,
@@ -86,7 +86,7 @@ export default function Page() {
     // todo: sent request to server to generate quiz
     const token = await user?.getIdToken();
 
-    const quizData = await post({
+    const quizData = await HttpHandler.post({
       endpoint: "quiz/create",
       body: {
         token: token,

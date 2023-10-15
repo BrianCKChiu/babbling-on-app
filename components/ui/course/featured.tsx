@@ -1,9 +1,8 @@
 import { View, VStack, Heading, Text, Box, ScrollView } from "native-base";
 import React, { useEffect, useState } from "react";
-import { post } from "../../api/backend";
+import { HttpHandler } from "../../api/backend";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import Carousel, { Pagination } from "react-native-snap-carousel";
 
 export function FeaturedCourses() {
   const [courses, setCourses] = useState([]);
@@ -20,7 +19,7 @@ export function FeaturedCourses() {
 
     const token = await user.getIdToken();
     console.log(token);
-    await post({
+    await HttpHandler.post({
       endpoint: "customCourses/featured",
       body: {
         token: token,
