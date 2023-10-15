@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     margin: 0.5,
     padding: 20,
     borderWidth: 1,
-    width:'30%',
+    width:'auto',
     borderColor: '#ccc',
     borderRadius: 5,
     backgroundColor: 'white',
