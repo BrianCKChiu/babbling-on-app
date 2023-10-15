@@ -7,8 +7,9 @@ import {
   CheckIcon,
   Button,
   Text,
+  Image,
 } from "native-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProgressBar } from "../progressBar";
 import React from "react";
 
@@ -16,17 +17,17 @@ export function MatchingQuestionComponent({
   choices,
   submitAnswer,
 }: {
-  choices: string[];
+  choices: { mediaRef: string; answer: string }[];
   submitAnswer: (answer: string[]) => void;
 }) {
-  const a = ["a", "b", "c", "d"];
-  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([
-    "",
-    "",
-    "",
-    "'",
-  ]);
+  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([""]);
 
+  // set selected answer array to match the number of choices
+  useEffect(() => {
+    if (selectedAnswer.length !== choices.length) {
+      setSelectedAnswer(choices.map(() => ""));
+    }
+  }, [choices]);
   return (
     <VStack alignContent="space-between" h={"full"} display="flex">
       <Box
@@ -40,17 +41,22 @@ export function MatchingQuestionComponent({
           Match the Gestures
         </Heading>
       </Box>
-      <VStack mt={"64px"} mx={"40px"} space={6} flex={1}>
-        {a.map((_, index) => (
+      <VStack mt={"20px"} mx={"40px"} space={6} flex={1}>
+        {choices.map((choice, index) => (
           <HStack alignItems={"center"} space={4} key={index}>
-            <Box
+            <Image
+              source={{
+                uri: choice.mediaRef,
+              }}
+              key={choice.mediaRef}
+              alt="Alternate Text"
               w={"95px"}
               h={"95px"}
-              bgColor={"red.600"}
               borderRadius={"lg"}
             />
             <DropdownAnswer
-              options={choices}
+              key={`${choice.mediaRef}_select`}
+              options={choices.map((choice) => choice.answer)}
               onSelect={(selected) => {
                 const newSelectedAnswer = [...selectedAnswer];
                 newSelectedAnswer[index] = selected;
@@ -90,14 +96,17 @@ function DropdownAnswer({
     <Select
       selectedValue={value}
       minWidth="200"
-      accessibilityLabel="Choose Service"
-      placeholder="Choose Service"
+      accessibilityLabel="Select Answer"
+      placeholder="Select Answer"
       _selectedItem={{
-        bg: "teal.600",
+        bg: "violet.500",
         endIcon: <CheckIcon size="5" />,
       }}
       mt={1}
-      onValueChange={(itemValue) => setValue(itemValue)}
+      onValueChange={(itemValue) => {
+        setValue(itemValue);
+        onSelect(itemValue);
+      }}
     >
       {options.map((option) => (
         <Select.Item label={option} value={option} />

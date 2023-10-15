@@ -3,19 +3,23 @@ import { User } from "firebase/auth";
 const isDev = true;
 
 export const API_URL = isDev ? "http://localhost:8080/" : "";
-
-export const post = async (
-  endpoint: string,
-  body: any
-): Promise<any | undefined> => {
-  return fetch(API_URL + endpoint, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+export class HttpHandler {
+  static post({
+    endpoint,
+    body,
+  }: {
+    endpoint: string;
+    body: any;
+  }): Promise<Response> {
+    return fetch(API_URL + endpoint, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+}
 export function checkUserIsInDB(token: string) {
   console.log(token);
   return fetch(`${API_URL}user/`, {

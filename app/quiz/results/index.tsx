@@ -4,6 +4,7 @@ import { useQuizStore } from "../../../components/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../components/firebase";
 import React from "react";
+import { HttpHandler } from "../../../components/api/backend";
 
 export default function Page() {
   const { answers, clearQuiz, quizId } = useQuizStore();
@@ -12,24 +13,18 @@ export default function Page() {
 
   async function handleExit() {
     const token = await user?.getIdToken();
-
-    // send answers to server
-    fetch("http://localhost:8080/quiz/submitAnswer", {
-      method: "POST",
-      body: JSON.stringify({
+    HttpHandler.post({
+      endpoint: "quiz/submitAnswer",
+      body: {
         token: token,
         results: answers,
         quizId: quizId,
-      }),
-      headers: {
-        "Content-Type": "application/json",
       },
     }).catch((err) => {
       console.log(err);
     });
-    console.log("hi");
     clearQuiz();
-    router.push("/(tabs)/");
+    router.push("/(tabs)/home");
   }
 
   return (

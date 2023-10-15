@@ -1,15 +1,17 @@
 import { JSX, useEffect, useState } from "react";
 import { McqQuestionComponent } from "../../../components/ui/quiz/question/mcqQuestion";
-import { VStack, useToast } from "native-base";
+import { Center, Spinner, VStack, useToast, Text } from "native-base";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Answer,
   Question,
+  QuestionMatching,
   QuestionMcq,
 } from "../../../components/quiz/question";
 import { useQuizStore } from "../../../components/stores/quizStore";
 import { getFile } from "../../../components/firebase";
 import React from "react";
+import { MatchingQuestionComponent } from "../../../components/ui/quiz/question/matchingQuestion";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
@@ -26,9 +28,9 @@ export default function Page() {
   const [questionComponent, setQuestionComponent] = useState<JSX.Element>(
     <></>
   );
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleAnswer(userAnswer: string) {
-    console.log(userAnswer);
+  function handleAnswer(userAnswer: string | string[]) {
     const question = questions[currentQuestionIndex];
 
     let result: Answer | null = null;
@@ -38,21 +40,22 @@ export default function Page() {
       result = {
         questionId: question.getId(),
         isCorrect: mcqQuestion.getAnswer() === userAnswer,
-        answer: [userAnswer],
+        answer: [userAnswer as string],
       };
     } else if (question.getType() === "matching") {
-      const matchingQuestion = question as QuestionMcq;
+      const matchingQuestion = question as QuestionMatching;
 
       result = {
         questionId: question.getId(),
-        isCorrect: matchingQuestion.getAnswer() === userAnswer,
-        answer: [userAnswer],
+        isCorrect: matchingQuestion
+          .getAnswer()
+          .every((v, i) => v === userAnswer[i]),
+        answer: userAnswer as string[],
       };
     }
 
     if (result == null) return;
     addAnswer(result);
-    console.log(result);
     toast.show({
       description: result.isCorrect ? "Correct" : "Incorrect",
       duration: 900,
@@ -66,11 +69,9 @@ export default function Page() {
       if (currentQuestionIndex === questions.length - 1) {
         router.replace("/quiz/results");
       } else {
-        console.log("next question");
         // get next question id
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         toast.closeAll();
-        console.log(currentQuestionIndex); // navigate to next question
         router.replace({
           pathname: "/quiz/q/[id]",
           params: { id: questions[currentQuestionIndex + 1].getId() }, // replace with question id
@@ -79,45 +80,79 @@ export default function Page() {
     }, 1000);
   }
 
-  function nextQuestion() {}
-
   async function getMediaLink(ref: string): Promise<string> {
     const url = await getFile(ref);
     return url;
   }
 
+  // generates an array of objects with mediaRef and answer for each gesture in matching question
+  async function generateMatchingMediaObj() {
+    const gestures = (question as QuestionMatching).getGestures();
+    const gestureArr: { mediaRef: string; answer: string }[] = [];
+    for (const gesture of gestures) {
+      await getMediaLink(gesture.mediaRef).then((url) => {
+        gestureArr.push({
+          mediaRef: url,
+          answer: gesture.answer,
+        });
+      });
+    }
+    return gestureArr;
+  }
+
+  // set question to current question when id param changes
   useEffect(() => {
     const currentQuestion = questions.filter((q) => q.getId() === id)[0];
     setQuestion(currentQuestion);
   }, [id]);
 
+  // render question component when question changes
   useEffect(() => {
     if (question == null) return;
-
-    getMediaLink((question as QuestionMcq).getMediaRef()).then((url) => {
-      if (question.getType() === "mcq") {
-        setQuestionComponent(
-          <McqQuestionComponent
-            mediaRef={url}
-            choices={(question as QuestionMcq).getChoices()}
-            submitAnswer={(answer: string) => {
-              handleAnswer(answer);
-            }}
-          />
-        );
-      } else if (question.getType() === "matching") {
-        setQuestionComponent(
-          <McqQuestionComponent
-            mediaRef={url}
-            choices={["e", "f", "g", "h"]}
-            submitAnswer={(answer: string) => {
-              handleAnswer(answer);
-            }}
-          />
-        );
-      }
-    });
+    setIsLoading(true);
+    if (question.getType() === "mcq") {
+      renderMcqQuestion().then(() => {
+        setIsLoading(false);
+      });
+    } else if (question.getType() === "matching") {
+      renderMatchingQuestion().then(() => {
+        setIsLoading(false);
+      });
+    }
   }, [question]);
 
-  return <VStack>{questionComponent}</VStack>;
+  async function renderMcqQuestion() {
+    const url = await getMediaLink((question as QuestionMcq).getMediaRef());
+    setQuestionComponent(
+      <McqQuestionComponent
+        mediaRef={url}
+        choices={(question as QuestionMcq).getChoices()}
+        submitAnswer={(answer: string) => {
+          handleAnswer(answer);
+        }}
+      />
+    );
+  }
+
+  async function renderMatchingQuestion() {
+    await generateMatchingMediaObj().then((choices) => {
+      setQuestionComponent(
+        <MatchingQuestionComponent
+          choices={choices}
+          submitAnswer={(answer: string[]) => {
+            handleAnswer(answer);
+          }}
+        />
+      );
+    });
+  }
+
+  return isLoading || questionComponent == null ? (
+    <Center w={"full"} h={"full"}>
+      <Spinner size="large" mb={3} />
+      <Text>Loading Question</Text>
+    </Center>
+  ) : (
+    <VStack>{questionComponent}</VStack>
+  );
 }

@@ -21,6 +21,7 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../components/firebase";
 import React from "react";
+import { HttpHandler } from "../../components/api/backend";
 
 type QuizDataProp = {
   id: string;
@@ -41,7 +42,6 @@ export default function Page() {
 
   useEffect(() => {
     setIsLoading(true);
-    // todo: fetch quiz data from node js server via the id
     getQuizDetails()
       .then((data) => {
         console.log(data);
@@ -62,16 +62,14 @@ export default function Page() {
   async function getQuizDetails() {
     const token = await user?.getIdToken();
     try {
-      const response = await fetch("http://localhost:8080/quiz/details", {
-        method: "POST",
-        body: JSON.stringify({
+      const response = await HttpHandler.post({
+        endpoint: "quiz/details",
+        body: {
           token: token,
           quizId: "eJE9f2tfYe7PJjO3YPrK",
-        }),
-        headers: {
-          "Content-Type": "application/json",
         },
       });
+
       if (response.status === 200) {
         const json = await response.json();
         return json;
@@ -88,15 +86,12 @@ export default function Page() {
     // todo: sent request to server to generate quiz
     const token = await user?.getIdToken();
 
-    const quizData = await fetch("http://localhost:8080/quiz/create", {
-      method: "POST",
-      body: JSON.stringify({
+    const quizData = await HttpHandler.post({
+      endpoint: "quiz/create",
+      body: {
         token: token,
         topic: "1",
         options: null,
-      }),
-      headers: {
-        "Content-Type": "application/json",
       },
     })
       .then(async (res) => {
@@ -139,12 +134,11 @@ export default function Page() {
     if (quizData == null) return <></>;
     const elements: JSX.Element[] = [];
     for (const key in quizData.description) {
-      console.log(key);
       elements.push(
         <Text key={key}>
           {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
           <Text>
-            {quizData.description[key]} {`\n`}
+            {(quizData.description as any)[key]} {`\n`}
           </Text>
         </Text>
       );

@@ -5,6 +5,7 @@ import { Button, Heading, View } from "native-base";
 import React from "react";
 import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { HomeCarousel } from "../../components/ui/carousel/home";
+import { FeaturedCourses } from "../../components/ui/course/featured";
 
 export default function TabOneScreen() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function TabOneScreen() {
     <DefaultLayout>
       <View>
         <HomeCarousel />
-        <Heading>Featured Courses</Heading>
+        <FeaturedCourses />
       </View>
       <Button size="md" onPress={() => router.push("/historicalPerformanceTracking")}> Historical Performance Tracking</Button>
     </DefaultLayout>
