@@ -4,9 +4,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
 import { HStack, Button } from 'native-base';
 import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../components/firebase';
 
 export default function selfAssessmentStart() {
   const router = useRouter();
+  const [user] = useAuthState(auth);
 
   interface RadioButtonProps {
     label: string;
@@ -25,6 +28,41 @@ export default function selfAssessmentStart() {
 
   const handlePress = (option: RadioButtonProps) => {
     setSelectedValue(option);
+  };
+
+  const startAssessment =()=>{
+    fetch("http://localhost:8080/selfAssessment/start-assessment", {
+  method: "POST",
+  body: JSON.stringify({
+    userId: user?.uid,
+    isPractice: false,
+  }),
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
+  .then((response) => {
+    if (!response.ok) {
+      return Promise.reject('Server Error');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Assessment Started:");
+    console.log(data); 
+    const { assessmentId } = data;
+
+    router.push({
+      pathname: "/selfAssessment/selfAssessmentPage",
+      params: {
+        length: selectedValue.value,
+        assessmentId,
+      },
+    });
+  })
+  .catch((err) => {
+    console.error("Error:", err);
+  });
   };
 
   return (
@@ -59,10 +97,7 @@ export default function selfAssessmentStart() {
       ))}
     </HStack>
     <HStack style={styles.nextButton}>
-      <NextPageButton text="Start Assessment"  onPress={() => router.push({
-    pathname: "/selfAssessment/selfAssessmentPage",
-    params: { length: selectedValue.value, },
-  })} />
+      <NextPageButton text="Start Assessment"  onPress={() => startAssessment()} />
     </HStack>
     </View>
   );

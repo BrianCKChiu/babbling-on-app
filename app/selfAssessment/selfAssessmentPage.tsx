@@ -8,10 +8,12 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import 'react-native-get-random-values';
 import SAHeaderSection from '../../components/ui/selfAssessment/headerSection';
 import imageAnalyzer from '../../components/selfAssessment/imageAnalyzer';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../components/firebase';
 
 export default function selfAssessmentPage() {
   const router = useRouter();
-  const { length } = useLocalSearchParams();
+  const { length, assessmentId } = useLocalSearchParams();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [type, setType] = useState(CameraType.back);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
@@ -23,6 +25,7 @@ export default function selfAssessmentPage() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const lengthInt = parseInt((length as string),10)
+  const [user] = useAuthState(auth);
    
   
 
@@ -54,6 +57,30 @@ export default function selfAssessmentPage() {
       setIsMessageVisible(false);
       setCurrentLetter(getRandomLetter());
     } else {
+      console.log(assessmentId);
+      fetch(`http://localhost:8080/selfAssessment/end-assessment/${assessmentId}`, {
+
+      method: "PUT",
+      body: JSON.stringify({
+      score: score,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        return Promise.reject('Server Error');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Assessment Updated:", data);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
+
       router.push({
         pathname: "/selfAssessment/results",
         params: { length: length, score: score,  },
