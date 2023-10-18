@@ -40,7 +40,7 @@ export default function Page() {
   const { setQuestions, setQuizId } = useQuizStore();
   const [user] = useAuthState(auth);
 
-  useEffect(() => {
+  useEffect(() => { // this will fetch quiz data from server
     setIsLoading(true);
     getQuizDetails()
       .then((data) => {

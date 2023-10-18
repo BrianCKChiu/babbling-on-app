@@ -25,6 +25,7 @@ export default function Page() {
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const { setDisplayName } = useUserStore();
+  const { setToken } = useUserStore();
 
   function handleSignIn() {
     setIsLoggingIn(true);
@@ -82,6 +83,8 @@ export default function Page() {
         console.log(user);
         const token = await user.getIdToken();
         await checkUserIsInDB(token);
+        // set the user token to the one here
+        setToken(token);
         router.push("/home");
       })
       .catch((error) => {

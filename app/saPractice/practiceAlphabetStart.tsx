@@ -11,10 +11,12 @@ export default function practiceAlphabetStart() {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const [selectedLetter, setSelectedLetter] = useState(alphabet[0]);
 
+  // button 
   const handlePress = (letter: React.SetStateAction<string>) => {
     setSelectedLetter(letter);
     console.log(`Selected: ${letter}`);
   };
+  // loads when the function is called somewhere
 const startPractice =()=>{
   fetch("http://localhost:8080/selfAssessment/start-assessment", {
   method: "POST",

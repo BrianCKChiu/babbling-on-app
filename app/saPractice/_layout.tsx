@@ -3,6 +3,8 @@ import React from "react";
 
 export default function Layout() {
   return (
+    // opens practiceStart first because it is the first stack screen 
+    // in here 
     <Stack>
       <Stack.Screen
         name="practiceStart"
