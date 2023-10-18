@@ -4,12 +4,15 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
 import { HStack, VStack, Button, ScrollView } from 'native-base';
 import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../components/firebase';
 
 export default function practiceAlphabetStart() {
   const router = useRouter();
   const { option } = useLocalSearchParams();
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const [selectedLetter, setSelectedLetter] = useState(alphabet[0]);
+  const [user] = useAuthState(auth);
 
   // button 
   const handlePress = (letter: React.SetStateAction<string>) => {
@@ -21,7 +24,7 @@ const startPractice =()=>{
   fetch("http://localhost:8080/selfAssessment/start-assessment", {
   method: "POST",
   body: JSON.stringify({
-    userId: "12345",  //ToDo: Replace with actual userId
+    userId: user?.uid, 
     isPractice: true,
   }),
   headers: {
@@ -32,17 +35,16 @@ const startPractice =()=>{
   if (!response.ok) {
     return Promise.reject('Server Error');
   }
-  return response.json();
+  router.push({
+    pathname: "/saPractice/practicePage",
+    params: { letter: selectedLetter},
+  });
 })
 .then((data) => {
   console.log("Practice Started:", data);
 })
 .catch((err) => {
   console.error("Error:", err);
-});
-router.push({
-  pathname: "/saPractice/practicePage",
-  params: { letter: selectedLetter},
 });
 };
 

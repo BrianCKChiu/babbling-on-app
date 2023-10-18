@@ -10,6 +10,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import 'react-native-get-random-values';
 import { Center, Image } from 'native-base';
 import { DisplayImage } from '../../components/ui/selfAssessment/displayImage';
+import imageAnalyzer from '../../components/selfAssessment/imageAnalyzer';
 
 export default function practicePage() {
   const router = useRouter();
@@ -54,38 +55,58 @@ export default function practicePage() {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
-      uploadImageToFirebase(photo.uri);
-      showMessage(true);                    //ToDo: NEEDS TO CHANGE
+  
+      try {
+        const downloadURL = await uploadImageToFirebase(photo.uri);
+        //Analyzing the code using AI:
+        const [success, isPredictionCorrect] = await imageAnalyzer(downloadURL, letter as string);
+
+        if (success && isPredictionCorrect) {
+          showMessage(true);    //if gesture is correct
+        } else if (success && !isPredictionCorrect) {
+          showMessage(false);   //if gesture is incorrect
+        } else {
+          console.log("Error analyzing image");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
       setIsCameraVisible(false);
     }
   };
-
-  const uploadImageToFirebase = async (uri: string) => {
+  
+  const uploadImageToFirebase = async (uri: string): Promise<string> => {
     const response = await fetch(uri);
     const blob = await response.blob();
     const uniqueID = uuidv4();
-
+  
     const metadata = {
       contentType: 'image/jpeg',
     };
-
+  
     const storageRef = ref(storage, `saImages/${uniqueID}.jpeg`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
-
-    uploadTask.on('state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-      },
-      (error) => {
-        console.error(error);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        console.log('Image available at:', downloadURL);
-      }
-    );
+  
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+        },
+        (error) => {
+          console.error(error);
+          reject(error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log('Image available at:', downloadURL);
+          resolve(downloadURL);
+        }
+      );
+    });
   };
+  
 
   if (hasPermission === null) {
     return <View />;
