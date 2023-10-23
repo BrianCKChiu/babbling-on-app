@@ -25,7 +25,8 @@ export default function Page() {
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const { setDisplayName } = useUserStore();
-  const { setToken } = useUserStore();
+  const { setToken, token } = useUserStore();
+  console.log(token);
 
   function handleSignIn() {
     setIsLoggingIn(true);
@@ -82,10 +83,10 @@ export default function Page() {
         });
         console.log(user);
         const token = await user.getIdToken();
-        await checkUserIsInDB(token);
+        // await checkUserIsInDB(token); // ERROR HAPPENS HERE BC TOKEN IS NULL 
         // set the user token to the one here
         setToken(token);
-        router.push("/home");
+        router.push("/customcourses");
       })
       .catch((error) => {
         toasts.show({

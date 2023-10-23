@@ -24,7 +24,7 @@ export function checkUserIsInDB(token: string) {
   console.log(token);
   return fetch(`${API_URL}user/`, {
     method: "POST",
-    body: JSON.stringify({ token: token }),
+    body: JSON.stringify({ token: token }), // HERE
   })
     .then((res) => res.json())
     .catch((err) => console.log(err));

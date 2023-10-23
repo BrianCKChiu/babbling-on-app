@@ -36,6 +36,8 @@ export default function Page() {
   // const [user] = useAuthState(auth);
   // const token = await user?.getIdToken();
 
+  console.log("Before Use Effect:", token);
+
   useEffect( () => {
 
     console.log("------------------------------Before fetch requests");
@@ -125,6 +127,7 @@ export default function Page() {
     console.log("otherCourses", otherCourses);
   }, [otherCourses]);
 
+  // FOR NAVIGATION 
   const onPressHandler = () => {
     router.push("/allCourses/");
   };
@@ -166,10 +169,18 @@ export default function Page() {
     <View>
       {/* Vertical Flex Box */}
       <View style={styles.verticalFlex}>
-      {
+      { 
         otherCourses.map(otherCourse => (
           <View style={styles.verticalItem} key={otherCourse.id}>
+            <TouchableOpacity onPress={() => router.push({
+          pathname: "/customcourse", 
+          params: {
+            courseId: otherCourse.id
+          }
+      }
+    )}>
             <Text>{otherCourse.name || "No name"}</Text>
+            </TouchableOpacity>
           </View>
         ))
       }
