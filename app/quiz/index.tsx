@@ -60,7 +60,7 @@ export default function Page() {
   }, []);
 
   async function getQuizDetails() {
-    const token = await user?.getIdToken();
+    const token = await user?.getIdToken(); // HERE IS WHERE YOU GET A TOKEN 
     try {
       const response = await HttpHandler.post({
         endpoint: "quiz/details",

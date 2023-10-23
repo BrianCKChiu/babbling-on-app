@@ -1,13 +1,15 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { useAuthState } from "react-firebase-hooks/auth";
-// import { auth } from "../../../components/firebase";
+import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import { SvgUri } from "react-native-svg";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text, VStack, View, FlatList } from "native-base";
 import React, { useState, useEffect } from 'react';
 import { Image } from 'react-native';
+
+// FOR TOKEN
 import { useUserStore } from '../../components/stores/userStore';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from '../../components/firebase';
 
 // IMPORT ALL COURSES PAGE
 import allCourses from "../allCourses"
@@ -21,78 +23,111 @@ interface Course {
 
 export default function Page() {
 
-  // when using useState the first thing is the variable and the second is the function to set the data to that variable
-  const [courseData, setCourseData] = useState<Course[]>([]); // initializing as an empty array
-  // when this component is rerendered the data in courseData will be kept
+  const [otherCourses, setOtherCourses] = useState<Course[]>([]);
+  const [myCourses, setMyCourses] = useState<Course[]>([]);
 
+  const {token} = useUserStore();
   const router = useRouter();
   // the difference is whenever this page rerenders 31 it will reinitialize this reference. 
-  // and create a new reference for this courseDatas variable and assign a new empty array to it 
-  const courseDatas = [];
+  // and create a new reference for this customCoursess variable and assign a new empty array to it 
 
-  // get the token 
-  const {token} = useUserStore();
+  // GET THE TOKEN
+  // const {token} = useUserStore();
+  // const [user] = useAuthState(auth);
+  // const token = await user?.getIdToken();
 
-  // loads when you open the page 
+  useEffect( () => {
+
+    console.log("------------------------------Before fetch requests");
+    const getCoursesURL = "http://localhost:8080/customCourses/getMyCourses";
+
+    const fetchCourses = async () => {
+      if (!token || token === "") {
+        console.log("Token is empty or undefined");
+        return;
+      }
+    try {
+      const response = await fetch(getCoursesURL, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({token}),
+      });
+
+      // IF REQUEST DOES NOT RETURN ANYTHING IT IS REJECTED
+      if (!response.ok){
+        console.log("SERVER ERROR")
+        return Promise.reject("Server Error"); // STUCK HEREEEEE
+      }
+
+      // IF IT DOES DATA IS THE PARSED JSON DATA 
+      const { myCourses, otherCourses } = await response.json();
+
+      // SET COURSES
+      setOtherCourses(otherCourses);
+      setMyCourses(otherCourses);
+    
+      console.log("data is set"); //  not getting here
+    } catch(error) {
+      console.error(error);
+    }
+      // const fetchCustomCourses = fetch(getCustomCoursesURL, {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+  
+      // const fetchMyCourses = fetch(getMyCoursesURL, {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   // body: JSON.stringify({ token }),
+      // });
+
+    // Promise.all([fetchCustomCourses, fetchMyCourses])
+    // .then((responses) => { // CAN ONLY RUN IF THE FETCH RETURNS SOMETHING
+
+    //   console.log("responses",responses); // not getting here 
+
+    //   const [customCoursesResponse, myCoursesResponse] = responses;
+
+    //   if (!customCoursesResponse.ok || !myCoursesResponse.ok) {
+    //     console.log("SERVER ERROR")
+    //     return Promise.reject('Server Error');
+    //   }
+
+    //   return Promise.all([
+    //     customCoursesResponse.json(),
+    //     myCoursesResponse.json()
+    //   ]);
+    // })
+    // // WILL BE SKIPPED IF THE FETCH REQUEST RETURNS NULL 
+    // .then(([customCourses, myCourses]) => {
+    //   // SET COURSES 
+    //   setCustomCourses(customCourses);
+    //   setMyCourses(myCourses);
+
+    //   console.log("data is set");
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+      // }, [token]); // use Effect needs []. inside it can be a dependency or variable that if it changes useEffect runs again (a condition for useEffect to run)
+  };
+  fetchCourses();
+}, [token]);
+
+  // updates customCourses
   useEffect(() => {
-    fetch("http://localhost:8080/customCourses/get", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
-    .then((response) => {
-      // check for the response
-      if (!response.ok) {
-        return Promise.reject('Server Error');
-      }
-      return response.json();
-    })
-    .then(data => { // .then accepts a callBack which returns a 
-      // set the courseData state variable to the fetched datafkdnjkdng
-      setCourseData(data); 
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }, []); // use Effect needs []. inside it can be a dependency or variable that if it changes useEffect runs again (a condition for useEffect to run)
+    console.log("otherCourses", otherCourses);
+  }, [otherCourses]);
 
-    console.log(courseData);
-
-  // async function handleExit(){
-  // // add authentication to verify the data the user pulls is theirs
-
-  // // get all the courses in a list
-  // fetch("http://localhost:8080/course/get", {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json"
-  //   }
-  // }).catch((err) => {
-  //   console.log(err);
-  // });
-  // console.log("fetch custom courses 'get' method ran");
-  // }
-
-  // return (
-  //   <View style={styles.container}>
-  //     <FlatList
-  //       data={[
-  //         {key: 'Devin'},
-  //         {key: 'Dan'},
-  //         {key: 'Dominic'},
-  //         {key: 'Jackson'},
-  //         {key: 'James'},
-  //         {key: 'Joel'},
-  //         {key: 'John'},
-  //         {key: 'Jillian'},
-  //         {key: 'Jimmy'},
-  //         {key: 'Julie'},
-  //       ]}
-  //       renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-  //     />
-  //   </View>
-  // );
+  const onPressHandler = () => {
+    router.push("/allCourses/");
+  };
 
   return (
     <><View style={styles.horizontalFlexMenu}>
@@ -114,59 +149,33 @@ export default function Page() {
 
     {/* Horizontal flex box for View All */}
     <View style={styles.viewAllFlexBox}>
-      {/* <TouchableOpacity onPress={() => navigation.navigate('ViewAllCourses')}>
+      <Pressable style={styles.rightItem} onPress={() => onPressHandler()}>
         <Text>View All</Text>
-      </TouchableOpacity> */}
-
-      <TouchableOpacity style= {styles.rightItem} onPress={() => router.push("/allCourses/")}>
-        <Text>View All</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
 
     {/* Horizontal flex box for the courses taken */}
     <View style={styles.horizontalFlexCourses}>
-      <View style={styles.courseItemHorizontal}>
-          <Text>Course One</Text>  
-      </View>
-      <View style={styles.courseItemHorizontal}>
-          <Text>Course Two</Text>
-      </View>
-      <View style={styles.courseItemHorizontal}>
-          <Text>Course Three</Text>
-      </View>
+        {myCourses.map((myCourse) => (
+          <View style={styles.courseItemHorizontal} key={myCourse.id}>
+            <Text>{myCourse.name || "No name"}</Text>
     </View>
+        ))}
+    </View> 
 
     <View>
       {/* Vertical Flex Box */}
       <View style={styles.verticalFlex}>
       {
-        courseData.map(el => (
-          <View style={styles.verticalItem}>
-            <Text>{el.name}</Text>
+        otherCourses.map(otherCourse => (
+          <View style={styles.verticalItem} key={otherCourse.id}>
+            <Text>{otherCourse.name || "No name"}</Text>
           </View>
         ))
       }
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 1</Text>
-        </View>
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 2</Text>
-        </View>
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 3</Text>
-        </View>
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 4</Text>
-        </View>
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 5</Text>
-        </View>
-        <View style={styles.verticalItem}>
-          <Text>Vertical Item 6</Text>
-        </View>
       </View>
-    </View></>
-    
+    </View>
+    </>
   );
 }
 

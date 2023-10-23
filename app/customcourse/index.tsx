@@ -22,7 +22,6 @@ export default function Page(){
     const [courseData, setCourseData] = useState<Course[]>([]);
     const router = useRouter();
 
-      // loads when you open the page 
   useEffect(() => {
     fetch("http://localhost:8080/customCourses/get", {
       method: "GET",
