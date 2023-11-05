@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "test": "jest",
     "postinstall": "patch-package",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "tsc"
   },
   "jest": {
     "preset": "jest-expo"
