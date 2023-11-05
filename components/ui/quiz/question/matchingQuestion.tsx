@@ -87,13 +87,16 @@ export function MatchingQuestionComponent({
 function DropdownAnswer({
   options,
   onSelect,
+  key,
 }: {
   options: string[];
+  key: string;
   onSelect: (option: string) => void;
 }) {
   const [value, setValue] = useState("");
   return (
     <Select
+      key={key}
       selectedValue={value}
       minWidth="200"
       accessibilityLabel="Select Answer"

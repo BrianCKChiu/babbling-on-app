@@ -5,8 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 
 export function FeaturedCourses() {
-  const [courses, setCourses] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [courses, setCourses] = useState<{ title: string }[]>([]);
 
   const [user] = useAuthState(auth);
 
@@ -18,7 +17,6 @@ export function FeaturedCourses() {
     if (user == null) return;
 
     const token = await user.getIdToken();
-    console.log(token);
     await HttpHandler.post({
       endpoint: "customCourses/featured",
       body: {
@@ -27,8 +25,11 @@ export function FeaturedCourses() {
     })
       .then(async (res) => {
         const json = await res.json();
-        console.log(json.courses.length);
-        setCourses(json.courses);
+        const testCourses = [
+          { name: "Introduction To Business" },
+          { name: "Food" },
+        ];
+        setCourses(testCourses);
       })
       .catch((err) => {
         console.log(err);

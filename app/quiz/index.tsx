@@ -44,7 +44,6 @@ export default function Page() {
     setIsLoading(true);
     getQuizDetails()
       .then((data) => {
-        console.log(data);
         if (data == null) {
           router.replace("/home");
 

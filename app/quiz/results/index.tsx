@@ -32,13 +32,15 @@ export default function Page() {
       <VStack
         mx="40px"
         alignItems={"center"}
-        py="40px"
+        pt={"80px"}
+        pb="40px"
+        h={"full"}
         justifyContent={"space-between"}
         display={"flex"}
       >
         <VStack alignItems={"center"}>
           <Heading>Quiz Results</Heading>
-          <Text>
+          <Text fontSize={"lg"} pt={"15px"}>
             {answers.filter((a) => a.isCorrect).length} / {answers.length}
           </Text>
         </VStack>
