@@ -81,12 +81,11 @@ export default function Page() {
           bgColor: "green.500",
           duration: 2000,
         });
-        console.log(user);
         const token = await user.getIdToken();
-        // await checkUserIsInDB(token); // ERROR HAPPENS HERE BC TOKEN IS NULL 
+        // await checkUserIsInDB(token); // ERROR HAPPENS HERE BC TOKEN IS NULL
         // set the user token to the one here
         setToken(token);
-        router.push("/customcourses");
+        router.push("/(tabs)/home");
       })
       .catch((error) => {
         toasts.show({

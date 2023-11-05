@@ -1,17 +1,17 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import DescriptionSection from '../../components/ui/selfAssessment/descriptionSection';
-import { HStack, Button, ScrollView } from 'native-base';
-import NextPageButton from '../../components/ui/selfAssessment/nextPageButton';
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import DescriptionSection from "../../components/ui/selfAssessment/descriptionSection";
+import { HStack, Button, ScrollView } from "native-base";
+import NextPageButton from "../../components/ui/selfAssessment/nextPageButton";
 
 export default function practiceStart() {
   const router = useRouter();
-  const options = ['Alphabets', 'Business', 'Greetings', 'Airport'];
+  const options = ["Alphabets", "Business", "Greetings", "Airport"];
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   const handlePress = (option: React.SetStateAction<string>) => {
-    if(option === 'Alphabets') {
+    if (option === "Alphabets") {
       setSelectedOption(option);
       console.log(`Selected: ${option}`);
     }
@@ -20,9 +20,11 @@ export default function practiceStart() {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Practice ASL </Text>
-      <DescriptionSection bodyText='Step into Practice ASL, your personalized playground for exploring and 
+      <DescriptionSection
+        bodyText="Step into Practice ASL, your personalized playground for exploring and 
       refining your ASL skills. Engage in hands-on exercises across a spectrum of ASL components, from alphabets to phrases, 
-      ensuring your practice sessions are both dynamic and constructive.'/>
+      ensuring your practice sessions are both dynamic and constructive."
+      />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -33,16 +35,16 @@ export default function practiceStart() {
             style={[
               styles.button,
               selectedOption === option && styles.selectedButton,
-              option !== 'Alphabets' && styles.disabledButton
+              option !== "Alphabets" && styles.disabledButton,
             ]}
             onPress={() => handlePress(option)}
-            disabled={option !== 'Alphabets'}
+            disabled={option !== "Alphabets"}
           >
             <Text
               style={[
                 styles.buttonText,
                 selectedOption === option && styles.selectedButtonText,
-                option !== 'Alphabets' && styles.disabledButtonText
+                option !== "Alphabets" && styles.disabledButtonText,
               ]}
             >
               {option}
@@ -50,68 +52,72 @@ export default function practiceStart() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-    <HStack style={styles.nextButton}>
-      <NextPageButton text="Start Practice"  onPress={() => router.push({
-    pathname: "/saPractice/practiceAlphabetStart",
-    params: { option: selectedOption},
-  })} />
-    </HStack>
+      <HStack style={styles.nextButton}>
+        <NextPageButton
+          text="Start Practice"
+          onPress={() =>
+            router.push({
+              pathname: "/saPractice/practiceAlphabetStart",
+              params: { option: selectedOption },
+            })
+          }
+        />
+      </HStack>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    backgroundColor: '#FFE874',
+    alignItems: "flex-start",
+    justifyContent: "center",
+    backgroundColor: "#FFE874",
   },
   headerText: {
     fontSize: 32,
-    fontWeight: 'bold',
-    marginLeft:'7%',
-    marginTop: '30%',
+    fontWeight: "bold",
+    marginLeft: "7%",
+    marginTop: "30%",
   },
   nextButton: {
-    alignItems: 'flex-end',
-    marginLeft: 'auto',
+    alignItems: "flex-end",
+    marginLeft: "auto",
   },
   scrollView: {
     maxHeight: 120,
-    width: '80%',
-    marginLeft: '10%',
+    width: "80%",
+    marginLeft: "10%",
   },
   scrollContent: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   button: {
-    width: '100%',
+    width: "100%",
     margin: 5,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
   },
   selectedButton: {
-    backgroundColor: '#F7F9A9',
+    backgroundColor: "#F7F9A9",
   },
   disabledButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: "#E0E0E0",
   },
   buttonText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   selectedButtonText: {
-    color: '#000',
+    color: "#000",
   },
   disabledButtonText: {
-    color: '#A0A0A0',
+    color: "#A0A0A0",
   },
 });
-

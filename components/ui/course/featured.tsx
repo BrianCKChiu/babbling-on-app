@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 
 export function FeaturedCourses() {
-  const [courses, setCourses] = useState<{ title: string }[]>([]);
+  const [courses, setCourses] = useState<{ name: string }[]>([]);
 
   const [user] = useAuthState(auth);
 
@@ -36,7 +36,7 @@ export function FeaturedCourses() {
       });
   }
   function renderCourses() {
-    const elements = [];
+    const elements: JSX.Element[] = [];
     courses.map((course, index) => {
       elements.push(<CourseItem item={course} index={index} />);
     });
@@ -58,7 +58,7 @@ function CourseItem({
   item,
   index,
 }: {
-  item: { title: string };
+  item: { name: string };
   index: number;
 }) {
   return (
