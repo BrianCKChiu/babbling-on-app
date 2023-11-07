@@ -30,7 +30,7 @@ type QuizDataProp = {
   numOfQuestion: number;
   estTime: number;
   exp: number;
-  description: Object;
+  description: { [key: string]: string };
 };
 
 export default function Page() {
@@ -40,7 +40,8 @@ export default function Page() {
   const { setQuestions, setQuizId } = useQuizStore();
   const [user] = useAuthState(auth);
 
-  useEffect(() => { // this will fetch quiz data from server
+  useEffect(() => {
+    // this will fetch quiz data from server
     setIsLoading(true);
     getQuizDetails()
       .then((data) => {
@@ -59,7 +60,7 @@ export default function Page() {
   }, []);
 
   async function getQuizDetails() {
-    const token = await user?.getIdToken(); // HERE IS WHERE YOU GET A TOKEN 
+    const token = await user?.getIdToken(); // HERE IS WHERE YOU GET A TOKEN
     try {
       const response = await HttpHandler.post({
         endpoint: "quiz/details",
@@ -102,18 +103,20 @@ export default function Page() {
       });
 
     const questions: Array<Question> = quizData.questions.map(
-      (question: any) => {
-        if (question.type === "mcq") {
+      (question: QuestionMcq | QuestionMatching) => {
+        if (question.getType() === "mcq") {
+          question = question as QuestionMcq;
           return new QuestionMcq({
-            id: question.id,
-            mediaRef: question.mediaRef,
-            choices: question.choices,
-            answer: question.answer,
+            id: question.getId(),
+            mediaRef: question.getMediaRef(),
+            choices: question.getChoices(),
+            answer: question.getAnswer(),
           });
-        } else if (question.type === "matching") {
+        } else if (question.getType() === "matching") {
+          question = question as QuestionMatching;
           return new QuestionMatching({
-            id: question.id,
-            gestures: question.gestures as [
+            id: question.getId(),
+            gestures: question.getGestures() as [
               { answer: string; mediaRef: string }
             ],
           });
@@ -137,7 +140,7 @@ export default function Page() {
         <Text key={key}>
           {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
           <Text>
-            {(quizData.description as any)[key]} {`\n`}
+            {quizData.description[key]} {`\n`}
           </Text>
         </Text>
       );

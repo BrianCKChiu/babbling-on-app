@@ -112,7 +112,7 @@ function DropdownAnswer({
       }}
     >
       {options.map((option) => (
-        <Select.Item label={option} value={option} />
+        <Select.Item key={option} label={option} value={option} />
       ))}
     </Select>
   );

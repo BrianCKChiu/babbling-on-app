@@ -16,7 +16,6 @@ import React from "react";
 import { Link } from "expo-router";
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useUserStore } from "../../components/stores/userStore";
-import { checkUserIsInDB } from "../../components/api/backend";
 
 export default function Page() {
   const [email, setEmail] = useState("");
