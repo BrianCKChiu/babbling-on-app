@@ -10,7 +10,7 @@
     "test": "jest",
     "postinstall": "patch-package",
     "prepare": "husky install",
-    "lint": "tsc"
+    "lint": "eslint --ext .tsx --ext .ts ."
   },
   "jest": {
     "preset": "jest-expo"
