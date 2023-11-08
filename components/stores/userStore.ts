@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { getLevelExp } from "../user/level";
+import { Toast } from "native-base";
 
 interface UserState {
   displayName: string;
@@ -30,6 +31,11 @@ export const useUserStore = create<UserAction & UserState>((set) => ({
       const currentLevelExp = getLevelExp(state.level);
       // handles user leveling up
       if (currentExp >= currentLevelExp) {
+        Toast.show({
+          description: `You leveled up to level ${state.level + 1}!`,
+          variant: "success",
+          duration: 3000,
+        });
         const level = state.level + 1;
         const extraExp = currentExp - currentLevelExp;
 
