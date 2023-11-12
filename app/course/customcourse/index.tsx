@@ -63,10 +63,11 @@ export default function Page() {
   // useEffect
   console.log("Course Data log before Return:", courseData);
   return (
-    <View>
-      <SAHeaderSection text={courseData?.name} />
-      <DescriptionSection bodyText={courseData?.description} />
-      <CustomButton
+        <View>
+          <SAHeaderSection text={courseData?.name || ''} />
+          <DescriptionSection bodyText={courseData?.description || ''} />
+
+          <CustomButton
         text="Start"
         buttonColor="white"
         onPress={() =>
@@ -74,12 +75,15 @@ export default function Page() {
             pathname: "/course/customlesson",
             params: {
               lessonId: courseData?.lessons[0]?.id || "",
-            },
-          })
-        }
-      />
-    </View>
-  );
-}
+              },
+            })
+          }
+        />
+        </View>
+      );
+
+    }
+
+// create a table that joins the two entities
 
 // create a table that joins the two entities
