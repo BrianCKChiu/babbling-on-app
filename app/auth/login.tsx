@@ -7,6 +7,7 @@ import {
   VStack,
   Button,
   useToast,
+  Box,
 } from "native-base";
 import { useState } from "react";
 import { auth } from "../../components/firebase";
@@ -16,6 +17,8 @@ import React from "react";
 import { Link } from "expo-router";
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useUserStore } from "../../components/stores/userStore";
+import { AuthLayout } from "../../components/layout/authLayout";
+import { authInputStyle } from "../../styles/authInputStyle";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -97,39 +100,58 @@ export default function Page() {
   }
 
   return (
-    <View>
-      <VStack
-        px={"40px"}
-        py={"40px"}
-        alignItems={"center"}
-        space={5}
-        mt={"17%"}
-      >
-        <Heading mb={"20%"}>Babbling On</Heading>
-        <Text w={"100%"}>Sign in</Text>
-        <Input
-          size="lg"
-          placeholder="email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <Input
-          size="lg"
-          placeholder="password"
-          type="password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <Button w="full" onPress={handleSignIn} isDisabled={isLoggingIn}>
-          Sign in
-        </Button>
-        <Text>
-          Need an account?{" "}
-          <Link href="/auth/signUp">
-            <Text color={"blue.400"}>Sign up</Text>
-          </Link>
-        </Text>
-      </VStack>
-    </View>
+    <AuthLayout>
+      <View>
+        <VStack px={"40px"} py={"40px"} alignItems={"center"} mt={"30%"}>
+          <Box mb={40}>
+            <Heading fontSize={44} mb={1}>
+              Babbling On
+            </Heading>
+            <Text color={"black"}>Start Learning ASL!</Text>
+          </Box>
+
+          <VStack space={5} w={"full"}>
+            <Text w={"100%"} fontWeight={"bold"} fontSize={16}>
+              Login
+            </Text>
+            <Input
+              size="lg"
+              placeholder="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              {...authInputStyle}
+            />
+            <Input
+              size="lg"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              {...authInputStyle}
+            />
+            <Box alignItems={"center"}>
+              <Button
+                w="full"
+                h={"55px"}
+                mb={2}
+                onPress={handleSignIn}
+                isDisabled={isLoggingIn}
+                bgColor={"#FFED4B"}
+              >
+                <Text fontWeight={"semibold"} color={"black"}>
+                  Sign in
+                </Text>
+              </Button>
+              <Text>
+                Need an account?{" "}
+                <Link href="/auth/signUp">
+                  <Text color={"blue.400"}>Sign up</Text>
+                </Link>
+              </Text>
+            </Box>
+          </VStack>
+        </VStack>
+      </View>
+    </AuthLayout>
   );
 }
