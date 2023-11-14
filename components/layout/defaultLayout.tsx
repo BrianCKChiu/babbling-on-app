@@ -1,36 +1,34 @@
-import {
-  Box,
-  HStack,
-  VStack,
-  Text,
-  Heading,
-  Pressable,
-  Menu,
-} from "native-base";
-import React, { useEffect, useState } from "react";
+import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
+import React from "react";
 import { View } from "react-native";
 import IBlock from "../ui/IBlock";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useUserStore } from "../stores/userStore";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
   const { displayName } = useUserStore();
+  const navigation = useNavigation();
 
   return (
     <View {...props}>
-      <VStack h={"full"} w="full" pt={"40px"}>
+      <VStack h={"full"} w="full" pt={"40px"} px={"16px"}>
         <HStack
           display={"flex"}
           flexDir={"row"}
           justifyContent={"end"}
-          px={"16px"}
           py={"8px"}
           mb={"4px"}
         >
           <Box flex={1} justifyContent={"center"}>
             <Heading color={"black"} size={"lg"}>
-              Babbling On
+              <MaterialIcons
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+                name="menu"
+                size={24}
+                color="black"
+              />
             </Heading>
           </Box>
           <Pressable {...props}>
@@ -63,7 +61,7 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
             </HStack>
           </Pressable>
         </HStack>
-        <Box px={"16px"}>{children}</Box>
+        <Box>{children}</Box>
       </VStack>
     </View>
   );

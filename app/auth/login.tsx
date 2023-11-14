@@ -84,7 +84,7 @@ export default function Page() {
         // await checkUserIsInDB(token); // ERROR HAPPENS HERE BC TOKEN IS NULL
         // set the user token to the one here
         setToken(token);
-        router.push("/(tabs)/home");
+        router.push("/(drawer)/home");
       })
       .catch((error) => {
         toasts.show({

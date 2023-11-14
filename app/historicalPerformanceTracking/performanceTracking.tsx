@@ -82,7 +82,7 @@ export default function PerformanceTracking() {
           ))}
         </ScrollView>
         <TouchableOpacity
-          onPress={() => router.push("/(tabs)/home")}
+          onPress={() => router.push("/(drawer)/home")}
           style={[styles.nextButton]}
         >
           <Text style={styles.buttonText}>Go Back</Text>

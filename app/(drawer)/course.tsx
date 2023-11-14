@@ -10,7 +10,7 @@ interface Course {
   name: string;
 }
 
-export default function TabLessonScreen() {
+export default function LessonScreen() {
   const [otherCourses, setOtherCourses] = useState<Course[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
 

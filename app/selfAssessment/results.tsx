@@ -23,7 +23,7 @@ export default function results() {
       </Text>
       <CustomButton
         text="Exit Assessment"
-        onPress={() => router.push("/(tabs)/assessment")}
+        onPress={() => router.push("/(drawer)/assessment")}
         buttonColor={"white"}
       ></CustomButton>
     </View>

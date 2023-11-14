@@ -10,7 +10,7 @@ import React from "react";
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "(drawer)",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -60,7 +60,7 @@ function RootLayoutNav() {
     <NativeBaseProvider>
       <Stack initialRouteName="auth">
         <Stack.Screen name="auth" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
         <Stack.Screen
           name="quiz"
           options={{

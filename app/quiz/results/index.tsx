@@ -24,7 +24,7 @@ export default function Page() {
       console.log(err);
     });
     clearQuiz();
-    router.push("/(tabs)/home");
+    router.push("/(drawer)/home");
   }
 
   return (
