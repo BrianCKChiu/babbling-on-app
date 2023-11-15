@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { useUserStore } from "../../components/stores/userStore";
 
+// CUSTOM COURSES HOMEPAGE
+
 interface Course {
   id: string;
   name: string;
@@ -46,50 +48,6 @@ export default function LessonScreen() {
       } catch (error) {
         console.error(error);
       }
-      // const fetchCustomCourses = fetch(getCustomCoursesURL, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-
-      // const fetchMyCourses = fetch(getMyCoursesURL, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   // body: JSON.stringify({ token }),
-      // });
-
-      // Promise.all([fetchCustomCourses, fetchMyCourses])
-      // .then((responses) => { // CAN ONLY RUN IF THE FETCH RETURNS SOMETHING
-
-      //   console.log("responses",responses); // not getting here
-
-      //   const [customCoursesResponse, myCoursesResponse] = responses;
-
-      //   if (!customCoursesResponse.ok || !myCoursesResponse.ok) {
-      //     console.log("SERVER ERROR")
-      //     return Promise.reject('Server Error');
-      //   }
-
-      //   return Promise.all([
-      //     customCoursesResponse.json(),
-      //     myCoursesResponse.json()
-      //   ]);
-      // })
-      // // WILL BE SKIPPED IF THE FETCH REQUEST RETURNS NULL
-      // .then(([customCourses, myCourses]) => {
-      //   // SET COURSES
-      //   setCustomCourses(customCourses);
-      //   setMyCourses(myCourses);
-
-      //   console.log("data is set");
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
-      // }, [token]); // use Effect needs []. inside it can be a dependency or variable that if it changes useEffect runs again (a condition for useEffect to run)
     };
     fetchCourses();
   }, [token]);
