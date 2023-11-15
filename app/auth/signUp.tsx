@@ -7,6 +7,7 @@ import {
   Button,
   Select,
   Toast,
+  Box,
 } from "native-base";
 import React, { useState } from "react";
 import { auth } from "../../components/firebase";
@@ -18,6 +19,8 @@ import {
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useRouter } from "expo-router";
 import { useUserStore } from "../../components/stores/userStore";
+import { AuthLayout } from "../../components/layout/authLayout";
+import { authInputStyle } from "../../styles/authInputStyle";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -140,64 +143,82 @@ export default function Page() {
     setIsSigningUp(false);
   }
   return (
-    <View>
-      <VStack
-        px={"40px"}
-        py={"40px"}
-        alignItems={"center"}
-        space={5}
-        mt={"17%"}
-      >
-        <Heading mb={"20%"}>Babbling On</Heading>
-        <Text w={"100%"}>Sign up to start learning ASL!</Text>
-        <Input
-          size="lg"
-          placeholder="username"
-          value={userName}
-          type="text"
-          onChangeText={(text) => setUserName(text)}
-        />
-        <Input
-          size="lg"
-          placeholder="email"
-          value={email}
-          type="text"
-          onChangeText={(text) => setEmail(text)}
-        />
-        <Input
-          size="lg"
-          placeholder="password"
-          type="password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <Input
-          size="lg"
-          placeholder="verify password"
-          type="password"
-          value={verifyPassword}
-          onChangeText={(text) => setVerifyPassword(text)}
-        />
-        <Select
-          size="lg"
-          _selectedItem={{
-            bg: "cyan.300",
-          }}
-          width={"100%"}
-          selectedValue={role}
-          placeholder="Select Role"
-          onValueChange={(v) => setRole(v)}
+    <AuthLayout>
+      <View>
+        <VStack
+          px={"40px"}
+          py={"40px"}
+          alignItems={"center"}
+          space={5}
+          mt={"20%"}
         >
-          <Select.Item label="Student" value="student" />
-          <Select.Item label="Professor / Teacher" value="teacher" />
-        </Select>
-        <Text w={"100%"}>
-          By signing up, you agree to our Terms and Services
-        </Text>
-        <Button mt="5" w="full" onPress={handleSignUp} isDisabled={isSigningUp}>
-          {isSigningUp ? "Signing Up" : "Sign Up"}
-        </Button>
-      </VStack>
-    </View>
+          <Box mb={12}>
+            <Heading fontSize={44} mb={1}>
+              Babbling On
+            </Heading>
+            <Text color={"black"}>Start Learning ASL!</Text>
+          </Box>
+          <Input
+            size="lg"
+            placeholder="Username"
+            value={userName}
+            type="text"
+            onChangeText={(text) => setUserName(text)}
+            {...authInputStyle}
+          />
+          <Input
+            size="lg"
+            placeholder="Email"
+            value={email}
+            type="text"
+            onChangeText={(text) => setEmail(text)}
+            {...authInputStyle}
+          />
+          <Input
+            size="lg"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            {...authInputStyle}
+          />
+          <Input
+            size="lg"
+            placeholder="Verify Password"
+            type="password"
+            value={verifyPassword}
+            onChangeText={(text) => setVerifyPassword(text)}
+            {...authInputStyle}
+          />
+          <Select
+            size="lg"
+            _selectedItem={{
+              bg: "#FFED4B",
+            }}
+            width={"100%"}
+            h={"55px"}
+            selectedValue={role}
+            placeholder="Select Role"
+            onValueChange={(v) => setRole(v)}
+          >
+            <Select.Item label="Student" value="student" />
+            <Select.Item label="Professor / Teacher" value="teacher" />
+          </Select>
+
+          <Button
+            w="full"
+            h={"55px"}
+            mb={2}
+            bgColor={"#FFED4B"}
+            isDisabled={isSigningUp}
+            onPress={handleSignUp}
+          >
+            <Text color={"black"} fontWeight={"semibold"}>
+              {isSigningUp ? "Signing Up" : "Sign Up"}
+            </Text>
+          </Button>
+        </VStack>
+      </View>
+    </AuthLayout>
   );
 }
