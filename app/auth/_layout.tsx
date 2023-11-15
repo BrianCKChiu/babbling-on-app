@@ -22,7 +22,7 @@ export default function Layout() {
           headerTransparent: true,
           headerLeft: () => (
             <Button {...backNavBtnStyle} onPress={() => navigation.goBack()}>
-              <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+              <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </Button>
           ),
         }}

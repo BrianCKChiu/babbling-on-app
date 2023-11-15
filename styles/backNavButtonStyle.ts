@@ -3,9 +3,9 @@ export const backNavBtnStyle = {
   borderColor: "gray.100",
   borderRadius: "full",
   display: "flex",
-  pl: "4",
+  pl: "3.5",
   justifyItems: "center",
-  w: "48px",
-  h: "48px",
+  w: "40px",
+  h: "40px",
   shadow: "1",
 };
