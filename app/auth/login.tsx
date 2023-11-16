@@ -26,9 +26,7 @@ export default function Page() {
   const toasts = useToast();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const { setDisplayName } = useUserStore();
-  const { setToken, token } = useUserStore();
-  console.log(token);
+  const { setDisplayName, setToken, setUid } = useUserStore();
 
   function handleSignIn() {
     setIsLoggingIn(true);
@@ -84,9 +82,9 @@ export default function Page() {
           duration: 2000,
         });
         const token = await user.getIdToken();
-        // await checkUserIsInDB(token); // ERROR HAPPENS HERE BC TOKEN IS NULL
-        // set the user token to the one here
         setToken(token);
+
+        setUid(user.uid);
         router.push("/(drawer)/home");
       })
       .catch((error) => {

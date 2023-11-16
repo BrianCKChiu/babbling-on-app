@@ -6,9 +6,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useUserStore } from "../stores/userStore";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
-  const { displayName } = useUserStore();
+  const { displayName, uid } = useUserStore();
+  const router = useRouter();
   const navigation = useNavigation();
 
   return (
@@ -31,7 +33,15 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
               />
             </Heading>
           </Box>
-          <Pressable {...props}>
+          <Pressable
+            {...props}
+            onPress={() => {
+              router.push({
+                pathname: "/profile",
+                params: { id: uid },
+              } as never);
+            }}
+          >
             <HStack display={"flex"} alignItems={"center"}>
               <Box
                 maxW={"150px"}

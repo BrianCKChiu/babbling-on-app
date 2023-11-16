@@ -53,17 +53,7 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Drawer.Screen
-          name="profile" // temporary change to quiz page
-          options={{
-            headerShown: false,
-            ...drawerItemProps,
-            title: "Quizzes",
-            drawerIcon: ({ color, size }) => (
-              <MaterialIcons name="assessment" size={size} color={color} />
-            ),
-          }}
-        />
+
         <Drawer.Screen
           name="assessment"
           {...drawerItemProps}
@@ -85,6 +75,14 @@ export default function TabLayout() {
             drawerIcon: ({ color, size }) => (
               <MaterialIcons name="settings" size={size} color={color} />
             ),
+          }}
+        />
+        <Drawer.Screen
+          name="profile" // temporary change to quiz page
+          options={{
+            headerShown: false,
+            ...drawerItemProps,
+            title: "Profile",
           }}
         />
       </Drawer>
