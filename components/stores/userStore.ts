@@ -14,7 +14,6 @@ interface UserAction {
 export const useUserStore = create<UserAction & UserState>((set) => ({
   level: 1,
   currentExp: 0,
-  levelExp: 100,
   setUserExp: (level: number, currentExp: number) => set({ level, currentExp }),
   addExp: (exp: number) => {
     set((state) => {
@@ -29,9 +28,11 @@ export const useUserStore = create<UserAction & UserState>((set) => ({
         });
         const level = state.level + 1;
         const extraExp = currentExp - currentLevelExp;
-
+        state.setUserExp(level, extraExp);
         return { level, currentExp: extraExp };
       }
+      state.setUserExp(state.level, currentExp);
+      // todo: firebase update
       return { currentExp };
     });
   },

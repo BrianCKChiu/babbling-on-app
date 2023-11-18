@@ -1,10 +1,21 @@
 import React from "react";
 import { ProfileLayout } from "../../components/layout/profileLayout";
-import { View, HStack, VStack, Box, ZStack, Heading, Text } from "native-base";
+import {
+  View,
+  HStack,
+  VStack,
+  Box,
+  ZStack,
+  Heading,
+  Text,
+  Button,
+} from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../components/firebase";
+import { useUserStore } from "../../components/stores/userStore";
 export default function ProfileScreen() {
   const [user, isLoading] = useAuthState(auth);
+  const { addExp, level } = useUserStore();
 
   return (
     <View>
@@ -40,7 +51,9 @@ export default function ProfileScreen() {
                     position={"absolute"}
                     top={"85px"}
                     left={"15px"}
-                  />
+                  >
+                    <Text>{level}</Text>
+                  </Box>
                 </ZStack>
                 <VStack pt={"12px"}>
                   <Heading maxW={"full"} overflow={"hidden"} noOfLines={1}>
@@ -51,6 +64,7 @@ export default function ProfileScreen() {
                 </VStack>
               </HStack>
             </VStack>
+            <Button onPress={() => addExp(1000)}>Add Exp</Button>
           </VStack>
         </ProfileLayout>
       )}

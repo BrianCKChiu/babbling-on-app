@@ -127,7 +127,6 @@ function RootLayoutNav() {
           }}
         />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
       </Stack>
     </NativeBaseProvider>
   );
