@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
 import {
   View,
   Heading,
@@ -12,12 +12,11 @@ import {
 import { useState } from "react";
 import { auth } from "../../components/firebase";
 import { useRouter } from "expo-router";
-import { validateEmail } from "../../components/auth";
 import React from "react";
 import { Link } from "expo-router";
-import { isValidPassword } from "../../components/auth/validatePassword";
 import { AuthLayout } from "../../components/layout/authLayout";
 import { authInputStyle } from "../../styles/authInputStyle";
+import { validateSignIn } from "../../components/utils/validateSignIn";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -28,41 +27,10 @@ export default function Page() {
 
   function handleSignIn() {
     setIsLoggingIn(true);
-
-    if (email === "") {
+    const results = validateSignIn(email, password);
+    if (!results.valid) {
       toasts.show({
-        title: "Email cannot be empty",
-        bgColor: "red.500",
-        duration: 2000,
-      });
-      setIsLoggingIn(false);
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      toasts.show({
-        title: "Invalid email",
-        bgColor: "red.500",
-        duration: 2000,
-      });
-      setIsLoggingIn(false);
-      return;
-    }
-
-    if (password === "") {
-      toasts.show({
-        title: "Password cannot be empty",
-        bgColor: "red.500",
-        duration: 2000,
-      });
-      setIsLoggingIn(false);
-      return;
-    }
-
-    if (!isValidPassword(password)) {
-      toasts.show({
-        title:
-          "Password must be at least 8 characters long and contain both letters and numbers",
+        title: results.message,
         bgColor: "red.500",
         duration: 2000,
       });
@@ -71,9 +39,12 @@ export default function Page() {
     }
 
     signInWithEmailAndPassword(auth, email.toLowerCase(), password)
-      .then(async () => {
+      .then(async (userCredential: UserCredential) => {
+        const user = userCredential.user;
         toasts.show({
-          title: "Sign in successful",
+          title: user.displayName
+            ? `Welcome back ${user.displayName}`
+            : "Login Successful",
           bgColor: "green.500",
           duration: 2000,
         });
@@ -81,8 +52,9 @@ export default function Page() {
         router.push("/(drawer)/home");
       })
       .catch((error) => {
+        console.log(error);
         toasts.show({
-          title: error.message,
+          title: "Something went wrong, please try again later!",
           bgColor: "red.500",
           duration: 2000,
         });
