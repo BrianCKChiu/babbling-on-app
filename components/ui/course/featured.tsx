@@ -23,8 +23,8 @@ export function FeaturedCourses() {
         token: token,
       },
     })
-      .then(async (res) => {
-        const json = await res.json();
+      .then(async () => {
+        // const json = await res.json();
         const testCourses = [
           { name: "Introduction To Business" },
           { name: "Food" },

@@ -3,7 +3,8 @@ import { useRouter } from "expo-router";
 import { Text, View, Pressable } from "native-base";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { useUserStore } from "../../components/stores/userStore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../components/firebase";
 
 interface Course {
   id: string;
@@ -13,14 +14,15 @@ interface Course {
 export default function LessonScreen() {
   const [otherCourses, setOtherCourses] = useState<Course[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
-
-  const { token } = useUserStore();
+  const [user] = useAuthState(auth);
   const router = useRouter();
 
   useEffect(() => {
+    if (user == null) return;
     const getCoursesURL = "http://localhost:8080/customCourses/getMyCourses";
 
     const fetchCourses = async () => {
+      const token = await user.getIdToken();
       if (!token || token === "") {
         console.log("Token is empty or undefined");
         return;
@@ -92,7 +94,7 @@ export default function LessonScreen() {
       // }, [token]); // use Effect needs []. inside it can be a dependency or variable that if it changes useEffect runs again (a condition for useEffect to run)
     };
     fetchCourses();
-  }, [token]);
+  }, [user]);
 
   const onPressHandler = () => {
     router.push("/course/allCourses/");
