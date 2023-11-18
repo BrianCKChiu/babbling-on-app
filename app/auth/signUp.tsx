@@ -18,7 +18,6 @@ import {
 } from "firebase/auth";
 import { isValidPassword } from "../../components/auth/validatePassword";
 import { useRouter } from "expo-router";
-import { useUserStore } from "../../components/stores/userStore";
 import { AuthLayout } from "../../components/layout/authLayout";
 import { authInputStyle } from "../../styles/authInputStyle";
 
@@ -30,7 +29,6 @@ export default function Page() {
   const [role, setRole] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const router = useRouter();
-  const { setDisplayName } = useUserStore();
 
   function handleSignUp() {
     setIsSigningUp(true);
@@ -115,9 +113,8 @@ export default function Page() {
           }).catch((error) => {
             console.error(error);
           });
-          setDisplayName(user.displayName ?? "");
           Toast.show({
-            title: `Welcome ${user.displayName}!`,
+            title: `Welcome to Babbling On!`,
             bgColor: "green.500",
             placement: "bottom",
           });

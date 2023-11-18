@@ -69,15 +69,18 @@ function RootLayoutNav() {
       const userDoc = await getDoc(doc(db, "users", user.uid));
       // if user isn't found create user doc
       if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", user.uid), {
+        const newUserData = {
           level: 1,
           currentExp: 0,
           levelExp: 100,
-        });
+        };
+        await setDoc(doc(db, "users", user.uid), newUserData);
+        setUserExp(newUserData.level, newUserData.currentExp);
+      } else {
+        const userData: { userLevel: number; currentExp: number } =
+          userDoc.data()?.level;
+        setUserExp(userData.userLevel, userData.currentExp);
       }
-      const userData: { userLevel: number; currentExp: number } =
-        userDoc.data()?.level;
-      setUserExp(userData.userLevel, userData.currentExp);
     }
 
     getUserLevel();
