@@ -6,7 +6,7 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 export function HomeCarousel() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [cardItems, setCardItems] = useState([
+  const [cardItems] = useState([
     {
       path: "/quiz/",
       title: "Daily Quiz",
@@ -33,7 +33,7 @@ export function HomeCarousel() {
         <Pressable
           key={index}
           w={"full"}
-          h={"250px"}
+          h={"200px"}
           borderRadius={"xl"}
           bgColor={"blue.200"}
           display={"flex"}
@@ -42,7 +42,7 @@ export function HomeCarousel() {
           onPress={() => {
             router.push({
               pathname: item.path,
-            });
+            } as never);
           }}
         >
           <Box>

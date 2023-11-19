@@ -35,9 +35,8 @@ export default function Page() {
           display={"flex"}
           justifyContent={"space-between"}
           bgColor={"white"}
-          px={"8px"}
-          py={"8px"}
-          borderRadius={"8px"}
+          p={"8px"}
+          borderRadius={"16px"}
           borderWidth={"1px"}
           borderColor={"gray.200"}
         >
@@ -63,6 +62,21 @@ export default function Page() {
     });
     return courses;
   }
+
+  function renderExpBar() {
+    console.log();
+    return (
+      <Box width={"full"} h={"7px"} bgColor={"white"} borderRadius={"4px"}>
+        <Box
+          bgColor={"amber.300"}
+          borderRadius={"4px"}
+          h={"full"}
+          w={`${(currentExp / getLevelExp(level + 1)) * 100}%`}
+          maxW={"full"}
+        />
+      </Box>
+    );
+  }
   return (
     <View>
       {!isLoading && (
@@ -70,18 +84,21 @@ export default function Page() {
           <VStack display={"flex"} space={"16px"}>
             <VStack>
               <HStack
-                borderTopRadius={"8px"}
+                borderTopRadius={"16px"}
                 display={"flex"}
                 space={"12px"}
-                px={"16px"}
-                pt={"12px"}
-                pb={"23px"}
+                p={"16px"}
                 borderColor={"gray.200"}
                 borderWidth={"1px"}
                 w={"full"}
                 bgColor={"white"}
               >
-                <ZStack position={"relative"} w={"100px"} h={"110px"}>
+                <ZStack
+                  position={"relative"}
+                  w={"100px"}
+                  h={"110px"}
+                  mb={"8px"}
+                >
                   <Box
                     bgColor={"blue.100"}
                     h={"100px"}
@@ -111,20 +128,7 @@ export default function Page() {
                   <Text>{user?.email}</Text>
                 </VStack>
               </HStack>
-              <Box
-                width={"full"}
-                h={"7px"}
-                bgColor={"white"}
-                borderWidth={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Box
-                  bgColor={"amber.300"}
-                  h={"full"}
-                  w={`${currentExp / getLevelExp(level + 1)}%`}
-                  maxW={"full"}
-                />
-              </Box>
+              {renderExpBar()}
             </VStack>
             {/* Achievements */}
             <VStack mb={"12px"}>
