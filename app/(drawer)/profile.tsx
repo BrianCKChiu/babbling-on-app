@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ProfileLayout } from "../../components/layout/profileLayout";
 import {
   View,
@@ -13,10 +13,13 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../components/firebase";
 import { useUserStore } from "../../components/stores/userStore";
+import { getLevelExp } from "../../components/user/level";
 export default function ProfileScreen() {
   const [user, isLoading] = useAuthState(auth);
-  const { addExp, level } = useUserStore();
-
+  const { addExp, level, currentExp } = useUserStore();
+  useEffect(() => {
+    console.log(currentExp / getLevelExp(level));
+  }, [currentExp, level]);
   return (
     <View>
       {!isLoading && (
@@ -33,6 +36,7 @@ export default function ProfileScreen() {
                 borderColor={"gray.200"}
                 borderWidth={"1px"}
                 w={"full"}
+                bgColor={"white"}
               >
                 <ZStack position={"relative"} w={"100px"} h={"110px"}>
                   <Box
@@ -42,8 +46,8 @@ export default function ProfileScreen() {
                     borderRadius={"8px"}
                   />
                   <Box
-                    bgColor={"gray.200"}
-                    borderColor={"black"}
+                    bgColor={"white"}
+                    borderColor={"gray.500"}
                     borderWidth={"1px"}
                     borderRadius={"8px"}
                     h={"25px"}
@@ -51,8 +55,9 @@ export default function ProfileScreen() {
                     position={"absolute"}
                     top={"85px"}
                     left={"15px"}
+                    alignItems={"center"}
                   >
-                    <Text>{level}</Text>
+                    <Text fontWeight={"semibold"}>{level}</Text>
                   </Box>
                 </ZStack>
                 <VStack pt={"12px"}>
@@ -63,8 +68,23 @@ export default function ProfileScreen() {
                   <Text>{user?.email}</Text>
                 </VStack>
               </HStack>
+              <Box
+                width={"full"}
+                h={"7px"}
+                bgColor={"white"}
+                borderWidth={"1px"}
+              >
+                <Box
+                  bgColor={"amber.300"}
+                  h={"full"}
+                  w={`${currentExp / getLevelExp(level)}%`}
+                  maxW={"full"}
+                />
+              </Box>
             </VStack>
-            <Button onPress={() => addExp(1000)}>Add Exp</Button>
+            <Button onPress={() => addExp(1000, user?.uid as string)}>
+              Add Exp
+            </Button>
           </VStack>
         </ProfileLayout>
       )}

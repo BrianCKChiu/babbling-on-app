@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../../components/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useUserStore } from "../../components/stores/userStore";
 import { Box, Heading } from "native-base";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DrawerContentComponentProps } from "@react-navigation/drawer/lib/typescript/src/types";
@@ -18,6 +22,31 @@ const drawerItemProps = {
   },
 };
 export default function TabLayout() {
+  const [user, isLoading] = useAuthState(auth);
+  const { setUserExp } = useUserStore();
+  // loads user level and creates user doc if not found
+  useEffect(() => {
+    if (isLoading) return;
+    if (user == null) return;
+
+    async function getUserLevel() {
+      if (user == null) return;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      // if user isn't found create user doc
+      if (!userDoc.exists()) {
+        const newUserData = {
+          level: 1,
+          currentExp: 0,
+        };
+        await setDoc(doc(db, "users", user.uid), newUserData);
+        setUserExp(newUserData.level, newUserData.currentExp);
+      } else {
+        setUserExp(userDoc.data()?.level, userDoc.data()?.currentExp);
+      }
+    }
+
+    getUserLevel();
+  }, [user]);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer

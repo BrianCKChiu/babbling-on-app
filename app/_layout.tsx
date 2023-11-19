@@ -4,10 +4,8 @@ import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { NativeBaseProvider } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../components/firebase";
+import { auth } from "../components/firebase";
 import React from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useUserStore } from "../components/stores/userStore";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -45,7 +43,6 @@ function RootLayoutNav() {
 
   const router = useRouter();
   const [user, isLoading] = useAuthState(auth);
-  const { setUserExp } = useUserStore();
 
   useEffect(() => {
     if (isLoading) return;
@@ -58,33 +55,6 @@ function RootLayoutNav() {
       router.replace("/auth");
     }
   }, [isLoading, pathname]);
-
-  // loads user level and creates user doc if not found
-  useEffect(() => {
-    if (isLoading) return;
-    if (user == null) return;
-
-    async function getUserLevel() {
-      if (user == null) return;
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      // if user isn't found create user doc
-      if (!userDoc.exists()) {
-        const newUserData = {
-          level: 1,
-          currentExp: 0,
-          levelExp: 100,
-        };
-        await setDoc(doc(db, "users", user.uid), newUserData);
-        setUserExp(newUserData.level, newUserData.currentExp);
-      } else {
-        const userData: { userLevel: number; currentExp: number } =
-          userDoc.data()?.level;
-        setUserExp(userData.userLevel, userData.currentExp);
-      }
-    }
-
-    getUserLevel();
-  }, [user]);
 
   return (
     <NativeBaseProvider>
