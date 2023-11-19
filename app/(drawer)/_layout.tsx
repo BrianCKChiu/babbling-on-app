@@ -13,6 +13,7 @@ import {
 } from "@react-navigation/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const drawerItemProps = {
   drawerActiveBackgroundColor: "#FFF6A7",
@@ -112,6 +113,9 @@ export default function TabLayout() {
             headerShown: false,
             ...drawerItemProps,
             title: "Profile",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="person" size={size} color={color} />
+            ),
           }}
         />
       </Drawer>

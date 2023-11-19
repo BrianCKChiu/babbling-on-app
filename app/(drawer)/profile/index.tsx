@@ -28,13 +28,14 @@ export default function Page() {
 
   function renderCourseHistory() {
     const courses: JSX.Element[] = [];
-    [1, 2, 3, 4].map(() => {
+    [1, 2, 3, 4].map((index) => {
       courses.push(
         <HStack
+          key={index}
           display={"flex"}
           justifyContent={"space-between"}
           bgColor={"white"}
-          px={"12px"}
+          px={"8px"}
           py={"8px"}
           borderRadius={"8px"}
           borderWidth={"1px"}
