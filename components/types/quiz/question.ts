@@ -69,9 +69,3 @@ export class QuestionMatching extends Question {
     return this.gestures.map((g) => g.answer);
   }
 }
-
-export type Answer = {
-  questionId: string;
-  answer: string[];
-  isCorrect: boolean;
-};

@@ -7,14 +7,14 @@ import { auth } from "../../firebase";
 export function FeaturedCourses() {
   const [courses, setCourses] = useState<{ name: string }[]>([]);
 
-  const [user] = useAuthState(auth);
+  const [user, isLoading] = useAuthState(auth);
 
   useEffect(() => {
     loadFeaturedCourses();
   }, []);
 
   async function loadFeaturedCourses() {
-    if (user == null) return;
+    if (user == null || isLoading) return;
 
     const token = await user.getIdToken();
     await HttpHandler.post({

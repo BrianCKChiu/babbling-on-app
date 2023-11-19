@@ -1,22 +1,35 @@
 import { HStack, VStack, Text, Circle, ScrollView } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Achievement } from "../../../components/types/user/achievement";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../../components/firebase";
+import { auth, db } from "../../../components/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Page() {
-  const [achievements, setAchivements] = useState<Achievement[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [user, isLoading] = useAuthState(auth);
 
-  //todo: get Firebase User Document Ref
+  // load and set user achievements in Firebase
+  const loadUserAchievements = useCallback(async () => {
+    if (user == null || isLoading) return;
+
+    // load Firebase document
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists()) return;
+    const userAchievements = userDoc.data().achievements;
+
+    // data validation from Firebase
+    if (userAchievements != null && Array.isArray(userAchievements)) {
+      setAchievements(userAchievements);
+    }
+  }, [user]);
 
   // load user achievements from Firebase
   useEffect(() => {
     if (user == null || isLoading) return;
+    loadUserAchievements();
+  }, [loadUserAchievements]);
 
-    // todo: get document data
-    //todo: save data into state
-  });
   // display user's acquired achievements
   function renderAchievements() {
     const achievementsList: JSX.Element[] = [];
@@ -43,7 +56,9 @@ export default function Page() {
                   {achievement.title}
                 </Text>
                 <Text fontSize={"12px"}>{achievement.description}</Text>
-                <Text fontSize={"12px"}>{achievement.dateAcquired ?? ""}</Text>
+                <Text fontSize={"12px"}>
+                  {achievement.dateAcquired?.getDate() ?? ""}
+                </Text>
               </VStack>
             </HStack>
           </HStack>
