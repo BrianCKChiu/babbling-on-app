@@ -1,15 +1,16 @@
-import { DefaultLayout } from "../../components/layout/defaultLayout";
-import { useRouter } from "expo-router";
-import { Text, View, Pressable } from "native-base";
 import React, { useState, useEffect } from "react";
+import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, Pressable } from "native-base";
+
+import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+// helper
 import { auth } from "../../components/firebase";
 
-interface Course {
-  id: string;
-  name: string;
-}
+// types
+import { Course } from "../../components/types/course/course";
 
 export default function LessonScreen() {
   const [otherCourses, setOtherCourses] = useState<Course[]>([]);
@@ -41,7 +42,7 @@ export default function LessonScreen() {
           return Promise.reject("Server Error");
         }
 
-        const { myCourses, otherCourses } = await response.json();
+        const { otherCourses } = await response.json();
 
         setOtherCourses(otherCourses);
         setMyCourses(otherCourses);

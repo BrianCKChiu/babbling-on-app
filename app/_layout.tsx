@@ -9,10 +9,6 @@ import React from "react";
 
 export { ErrorBoundary } from "expo-router";
 
-export const unstable_settings = {
-  initialRouteName: "(drawer)",
-};
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -44,6 +40,7 @@ function RootLayoutNav() {
   const router = useRouter();
   const [user, isLoading] = useAuthState(auth);
 
+  // check if user is logged in and redirects user to login page if user is not signed in
   useEffect(() => {
     if (isLoading) return;
     if (
