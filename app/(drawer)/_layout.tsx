@@ -1,8 +1,5 @@
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../components/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useUserStore } from "../../components/stores/userStore";
+
 import { Box, Heading } from "native-base";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DrawerContentComponentProps } from "@react-navigation/drawer/lib/typescript/src/types";
@@ -11,6 +8,14 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+
+// helpers
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../../components/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useUserStore } from "../../components/stores/userStore";
+
+// Icons
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";

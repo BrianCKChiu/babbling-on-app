@@ -1,5 +1,7 @@
-import { HStack, Heading, VStack, View } from "native-base";
 import React from "react";
+import { HStack, Heading, VStack, View } from "native-base";
+
+// layouts & components
 import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { HomeCarousel } from "../../components/ui/carousel/home";
 import { FeaturedCourses } from "../../components/ui/course/featured";

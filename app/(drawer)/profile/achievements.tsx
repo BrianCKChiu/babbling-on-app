@@ -1,9 +1,11 @@
 import { HStack, VStack, Text, Circle, ScrollView } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Page() {
+  const [achievements, setAchivements] = useState(null);
+
   function renderAchievements() {
-    const achievements: JSX.Element[] = [];
+    const achievementsList: JSX.Element[] = [];
     [1, 2, 3, 4, 1, 2, 3, 4].map((_, index) => {
       achievements.push(
         <HStack
@@ -30,7 +32,7 @@ export default function Page() {
         </HStack>
       );
     });
-    return achievements;
+    return achievementsList;
   }
   return (
     <VStack h={"97%"} w="full" pt={"100px"}>

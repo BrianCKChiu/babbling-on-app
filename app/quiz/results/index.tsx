@@ -1,9 +1,12 @@
-import { useRouter } from "expo-router";
+import React from "react";
 import { View, Text, Heading, VStack, Button } from "native-base";
+
+import { useRouter } from "expo-router";
 import { useQuizStore } from "../../../components/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+// helpers
 import { auth } from "../../../components/firebase";
-import React from "react";
 import { HttpHandler } from "../../../components/api/backend";
 
 export default function Page() {

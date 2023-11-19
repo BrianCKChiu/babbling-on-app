@@ -1,4 +1,5 @@
-import { Answer, Question } from "../quiz/question";
+import { Question } from "../types/quiz/question";
+import { Answer } from "../types/quiz/answer";
 import { create } from "zustand";
 
 interface QuizState {

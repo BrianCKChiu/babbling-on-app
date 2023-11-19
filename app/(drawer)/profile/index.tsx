@@ -12,11 +12,14 @@ import {
   ScrollView,
   Pressable,
 } from "native-base";
+
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../../components/firebase";
-import { useUserStore } from "../../../components/stores/userStore";
-import { getLevelExp } from "../../../components/user/level";
 import { Link, useNavigation } from "expo-router";
+import { useUserStore } from "../../../components/stores/userStore";
+
+// helpers
+import { getLevelExp } from "../../../components/user/level";
+import { auth } from "../../../components/firebase";
 
 export default function Page() {
   const navigation = useNavigation();

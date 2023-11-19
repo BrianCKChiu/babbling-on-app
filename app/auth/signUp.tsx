@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Heading,
   Input,
@@ -9,7 +10,10 @@ import {
   Toast,
   Box,
 } from "native-base";
-import React, { useState } from "react";
+import { AuthLayout } from "../../components/layout/authLayout";
+import { useRouter } from "expo-router";
+
+// helpers
 import { auth } from "../../components/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -17,8 +21,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { isValidPassword } from "../../components/auth/validatePassword";
-import { useRouter } from "expo-router";
-import { AuthLayout } from "../../components/layout/authLayout";
 import { authInputStyle } from "../../styles/authInputStyle";
 
 export default function Page() {

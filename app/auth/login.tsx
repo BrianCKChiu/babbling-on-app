@@ -1,4 +1,4 @@
-import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import {
   View,
   Heading,
@@ -9,14 +9,16 @@ import {
   useToast,
   Box,
 } from "native-base";
-import { useState } from "react";
-import { auth } from "../../components/firebase";
-import { useRouter } from "expo-router";
-import React from "react";
-import { Link } from "expo-router";
 import { AuthLayout } from "../../components/layout/authLayout";
+import { Link } from "expo-router";
+
+import { useRouter } from "expo-router";
+
+// helpers
+import { auth } from "../../components/firebase";
 import { authInputStyle } from "../../styles/authInputStyle";
 import { validateSignIn } from "../../components/utils/validateSignIn";
+import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Page() {
   const [email, setEmail] = useState("");
