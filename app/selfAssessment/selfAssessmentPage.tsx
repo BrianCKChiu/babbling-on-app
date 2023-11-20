@@ -18,10 +18,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import "react-native-get-random-values";
-import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
-import imageAnalyzer from "../../components/selfAssessment/imageAnalyzer";
+import SAHeaderSection from "@/ui/selfAssessment/headerSection";
+import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
+import { auth } from "@/firebase";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
