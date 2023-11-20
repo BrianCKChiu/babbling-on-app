@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Heading, VStack, View } from "native-base";
+import { Box, HStack, Heading, VStack, View, ZStack, Text } from "native-base";
 
 // layouts & components
 import { DefaultLayout } from "@/layout/defaultLayout";
@@ -16,13 +16,29 @@ export default function HomeScreen() {
           <VStack display={"flex"} space={"8px"}>
             {[1, 2, 3].map((_, index) => {
               return (
-                <HStack
+                <ZStack
                   key={index}
                   w={"full"}
                   h={"60px"}
-                  bgColor={"amber.300"}
+                  bgColor={"white"}
                   borderRadius={"8px"}
-                ></HStack>
+                >
+                  <Box
+                    h={"full"}
+                    w={`${(index + 1) * 10}%`}
+                    bgColor={"amber.200"}
+                    borderRadius={"8px"}
+                    opacity={"0.7"}
+                  />
+                  <HStack p={"8px"}>
+                    <VStack>
+                      <Heading fontSize={"18px"}>Class 1</Heading>
+                      <Text fontSize={"12px"} color={"warmGray.500"}>
+                        3 Lessons Remaining
+                      </Text>
+                    </VStack>
+                  </HStack>
+                </ZStack>
               );
             })}
           </VStack>

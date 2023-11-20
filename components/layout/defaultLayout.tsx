@@ -1,8 +1,10 @@
-import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
 import React from "react";
+import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
 import { View } from "react-native";
 import IBlock from "@/ui/IBlock";
+
 import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useRouter } from "expo-router";
@@ -67,7 +69,14 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
                 h={"48px"}
                 borderWidth={1}
                 borderColor={"gray.300"}
-              ></Box>
+                alignItems={"center"}
+              >
+                <Ionicons
+                  name="ios-person-circle-outline"
+                  size={44}
+                  color="black"
+                />
+              </Box>
             </HStack>
           </Pressable>
         </HStack>

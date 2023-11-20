@@ -13,10 +13,7 @@
     "lint": "eslint --ext .tsx --ext .ts ."
   },
   "jest": {
-    "preset": "react-native",
-    "setupFiles": [
-      "<rootDir>/jest/setup.js"
-    ]
+    "preset": "react-native"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",

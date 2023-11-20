@@ -22,6 +22,7 @@ import {
 } from "firebase/auth";
 import { isValidPassword } from "@/auth/validatePassword";
 import { authInputStyle } from "@styles/authInputStyle";
+import { HttpHandler } from "@/api/backend";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -114,6 +115,14 @@ export default function Page() {
             displayName: userName,
           }).catch((error) => {
             console.error(error);
+          });
+          HttpHandler.post({
+            endpoint: "user/signUp",
+            body: {
+              email: user.email,
+              uid: user.uid,
+              role: role,
+            },
           });
           Toast.show({
             title: `Welcome to Babbling On!`,

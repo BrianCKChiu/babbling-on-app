@@ -25,7 +25,7 @@ export default function TabAssessmentScreen() {
         onPress={() => router.push("/selfAssessment")}
       />
       <CustomButton
-        text="Practice ASL "
+        text="Practice ASL"
         buttonColor="white"
         onPress={() => router.push("/saPractice/")}
       />
