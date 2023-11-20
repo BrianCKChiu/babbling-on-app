@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
-import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
+import { auth } from "@/firebase";
+import SAHeaderSection from "@/ui/selfAssessment/headerSection";
 import { useRouter } from "expo-router";
 import { ScrollView } from "native-base";
 

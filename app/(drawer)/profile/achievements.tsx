@@ -1,8 +1,8 @@
 import { HStack, VStack, Text, Circle, ScrollView } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
-import { Achievement } from "../../../components/types/user/achievement";
+import { Achievement } from "@/types/user/achievement";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../../components/firebase";
+import { auth, db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function Page() {

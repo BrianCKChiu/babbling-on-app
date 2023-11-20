@@ -11,9 +11,9 @@ import {
 
 // helpers
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../components/firebase";
+import { auth, db } from "@/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useUserStore } from "../../components/stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 
 // Icons
 import { MaterialIcons } from "@expo/vector-icons";

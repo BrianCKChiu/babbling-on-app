@@ -2,12 +2,12 @@ import React from "react";
 import { View, Text, Heading, VStack, Button } from "native-base";
 
 import { useRouter } from "expo-router";
-import { useQuizStore } from "../../../components/stores/quizStore";
+import { useQuizStore } from "@/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // helpers
-import { auth } from "../../../components/firebase";
-import { HttpHandler } from "../../../components/api/backend";
+import { auth } from "@/firebase";
+import { HttpHandler } from "@/api/backend";
 
 export default function Page() {
   const { answers, clearQuiz, quizId } = useQuizStore();

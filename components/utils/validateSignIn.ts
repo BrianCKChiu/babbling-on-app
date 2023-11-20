@@ -1,5 +1,5 @@
-import { validateEmail } from "../auth";
-import { isValidPassword } from "../auth/validatePassword";
+import { validateEmail } from "@/auth";
+import { isValidPassword } from "@/auth/validatePassword";
 
 export function validateSignIn(
   email: string,

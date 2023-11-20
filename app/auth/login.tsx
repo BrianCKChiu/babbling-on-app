@@ -9,15 +9,16 @@ import {
   useToast,
   Box,
 } from "native-base";
-import { AuthLayout } from "../../components/layout/authLayout";
+import { authInputStyle } from "@styles/authInputStyle";
+
+import { AuthLayout } from "@/layout/authLayout";
 import { Link } from "expo-router";
 
 import { useRouter } from "expo-router";
 
 // helpers
-import { auth } from "../../components/firebase";
-import { authInputStyle } from "../../styles/authInputStyle";
-import { validateSignIn } from "../../components/utils/validateSignIn";
+import { auth } from "@/firebase";
+import { validateSignIn } from "@/utils/validateSignIn";
 import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Page() {
@@ -80,6 +81,7 @@ export default function Page() {
               Login
             </Text>
             <Input
+              testID="email"
               size="lg"
               placeholder="Email"
               value={email}
@@ -87,6 +89,7 @@ export default function Page() {
               {...authInputStyle}
             />
             <Input
+              testID="password"
               size="lg"
               placeholder="Password"
               type="password"

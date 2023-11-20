@@ -14,20 +14,16 @@ import {
 import { useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
-import { useQuizStore } from "../../components/stores/quizStore";
+import { useQuizStore } from "@/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // types
-import {
-  Question,
-  QuestionMatching,
-  QuestionMcq,
-} from "../../components/types/quiz/question";
-import { QuizDataProp } from "../../components/types/quiz/quizDataProp";
+import { Question, QuestionMatching, QuestionMcq } from "@/types/quiz/question";
+import { QuizDataProp } from "@/types/quiz/quizDataProp";
 
 // helpers
-import { auth } from "../../components/firebase";
-import { HttpHandler } from "../../components/api/backend";
+import { auth } from "@/firebase";
+import { HttpHandler } from "@/api/backend";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);

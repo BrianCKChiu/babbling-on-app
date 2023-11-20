@@ -1,16 +1,16 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { useAuthState } from "react-firebase-hooks/auth";
-// import { auth } from "../../../components/firebase";
+// import { auth } from "@/firebase";
 import { SvgUri } from "react-native-svg";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text, VStack, View, FlatList } from "native-base";
 import React, { useState, useEffect } from "react";
 import { Image } from "react-native";
-import { useUserStore } from "../../../components/stores/userStore";
-import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
-import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
-import CustomButton from "../../../components/ui/selfAssessment/customButton";
+import { useUserStore } from "@/stores/userStore";
+import SAHeaderSection from "@/ui/selfAssessment/headerSection";
+import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
+import CustomButton from "@/ui/selfAssessment/customButton";
 
 interface Course {
   id?: string;

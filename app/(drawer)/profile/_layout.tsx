@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, useNavigation } from "expo-router";
 import { Button, HStack, Heading } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { backNavBtnStyle } from "../../../styles/backNavButtonStyle";
+import { backNavBtnStyle } from "@styles/backNavButtonStyle";
 
 export default function Layout() {
   const navigation = useNavigation();

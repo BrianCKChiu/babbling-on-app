@@ -1,7 +1,7 @@
 import { Box, HStack, VStack, Heading } from "native-base";
 import React from "react";
 import { View } from "react-native";
-import IBlock from "../ui/IBlock";
+import IBlock from "@/ui/IBlock";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";

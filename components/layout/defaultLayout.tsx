@@ -1,13 +1,13 @@
 import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
 import React from "react";
 import { View } from "react-native";
-import IBlock from "../ui/IBlock";
+import IBlock from "@/ui/IBlock";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth } from "@/firebase";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
   const [user] = useAuthState(auth);

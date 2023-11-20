@@ -2,9 +2,9 @@ import React from "react";
 import { HStack, Heading, VStack, View } from "native-base";
 
 // layouts & components
-import { DefaultLayout } from "../../components/layout/defaultLayout";
-import { HomeCarousel } from "../../components/ui/carousel/home";
-import { FeaturedCourses } from "../../components/ui/course/featured";
+import { DefaultLayout } from "@/layout/defaultLayout";
+import { HomeCarousel } from "@/ui/carousel/home";
+import { FeaturedCourses } from "@/ui/course/featured";
 
 export default function HomeScreen() {
   return (

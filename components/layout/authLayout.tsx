@@ -1,7 +1,7 @@
 import { Box, VStack, ZStack, Circle } from "native-base";
 import React from "react";
 import { View } from "react-native";
-import IBlock from "../ui/IBlock";
+import IBlock from "@/ui/IBlock";
 
 export const AuthLayout = ({ children, ...props }: IBlock) => {
   return (

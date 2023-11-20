@@ -10,18 +10,18 @@ import {
   Toast,
   Box,
 } from "native-base";
-import { AuthLayout } from "../../components/layout/authLayout";
+import { AuthLayout } from "@/layout/authLayout";
 import { useRouter } from "expo-router";
 
 // helpers
-import { auth } from "../../components/firebase";
+import { auth } from "@/firebase";
 import {
   createUserWithEmailAndPassword,
   UserCredential,
   updateProfile,
 } from "firebase/auth";
-import { isValidPassword } from "../../components/auth/validatePassword";
-import { authInputStyle } from "../../styles/authInputStyle";
+import { isValidPassword } from "@/auth/validatePassword";
+import { authInputStyle } from "@styles/authInputStyle";
 
 export default function Page() {
   const [email, setEmail] = useState("");

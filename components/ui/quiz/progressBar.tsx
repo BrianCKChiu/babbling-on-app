@@ -1,5 +1,5 @@
 import { VStack, HStack, Box, Text } from "native-base";
-import { useQuizStore } from "../../stores/quizStore";
+import { useQuizStore } from "@/stores/quizStore";
 import React from "react";
 
 export function ProgressBar() {

@@ -1,8 +1,8 @@
 import { View, VStack, Heading, Text, Box, ScrollView } from "native-base";
 import React, { useEffect, useState } from "react";
-import { HttpHandler } from "../../api/backend";
+import { HttpHandler } from "@/api/backend";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase";
+import { auth } from "@/firebase";
 
 export function FeaturedCourses() {
   const [courses, setCourses] = useState<{ name: string }[]>([]);
