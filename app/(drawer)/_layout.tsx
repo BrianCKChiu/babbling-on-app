@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import { Box, Heading } from "native-base";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DrawerContentComponentProps } from "@react-navigation/drawer/lib/typescript/src/types";
@@ -7,8 +8,17 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+
+// helpers
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../../components/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useUserStore } from "../../components/stores/userStore";
+
+// Icons
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const drawerItemProps = {
   drawerActiveBackgroundColor: "#FFF6A7",
@@ -18,6 +28,31 @@ const drawerItemProps = {
   },
 };
 export default function TabLayout() {
+  const [user, isLoading] = useAuthState(auth);
+  const { setUserExp } = useUserStore();
+  // loads user level and creates user doc if not found
+  useEffect(() => {
+    if (isLoading) return;
+    if (user == null) return;
+
+    async function getUserLevel() {
+      if (user == null) return;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      // if user isn't found create user doc
+      if (!userDoc.exists()) {
+        const newUserData = {
+          level: 1,
+          currentExp: 0,
+        };
+        await setDoc(doc(db, "users", user.uid), newUserData);
+        setUserExp(newUserData.level, newUserData.currentExp);
+      } else {
+        setUserExp(userDoc.data()?.level, userDoc.data()?.currentExp);
+      }
+    }
+
+    getUserLevel();
+  }, [user]);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
@@ -53,17 +88,7 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Drawer.Screen
-          name="profile" // temporary change to quiz page
-          options={{
-            headerShown: false,
-            ...drawerItemProps,
-            title: "Quizzes",
-            drawerIcon: ({ color, size }) => (
-              <MaterialIcons name="assessment" size={size} color={color} />
-            ),
-          }}
-        />
+
         <Drawer.Screen
           name="assessment"
           {...drawerItemProps}
@@ -84,6 +109,17 @@ export default function TabLayout() {
             title: "Settings",
             drawerIcon: ({ color, size }) => (
               <MaterialIcons name="settings" size={size} color={color} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="profile" // temporary change to quiz page
+          options={{
+            headerShown: false,
+            ...drawerItemProps,
+            title: "Profile",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="person" size={size} color={color} />
             ),
           }}
         />

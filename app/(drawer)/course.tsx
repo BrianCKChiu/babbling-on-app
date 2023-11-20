@@ -1,28 +1,29 @@
-import { DefaultLayout } from "../../components/layout/defaultLayout";
-import { useRouter } from "expo-router";
-import { Text, View, Pressable } from "native-base";
 import React, { useState, useEffect } from "react";
+import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { useUserStore } from "../../components/stores/userStore";
+import { Text, View, Pressable } from "native-base";
 
-// CUSTOM COURSES HOMEPAGE
+import { useRouter } from "expo-router";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-interface Course {
-  id: string;
-  name: string;
-}
+// helper
+import { auth } from "../../components/firebase";
+
+// types
+import { Course } from "../../components/types/course/course";
 
 export default function LessonScreen() {
   const [otherCourses, setOtherCourses] = useState<Course[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
-
-  const { token } = useUserStore();
+  const [user] = useAuthState(auth);
   const router = useRouter();
 
   useEffect(() => {
+    if (user == null) return;
     const getCoursesURL = "http://localhost:8080/customCourses/getMyCourses";
 
     const fetchCourses = async () => {
+      const token = await user.getIdToken();
       if (!token || token === "") {
         console.log("Token is empty or undefined");
         return;
@@ -41,7 +42,7 @@ export default function LessonScreen() {
           return Promise.reject("Server Error");
         }
 
-        const { myCourses, otherCourses } = await response.json();
+        const { otherCourses } = await response.json();
 
         setOtherCourses(otherCourses);
         setMyCourses(otherCourses);
@@ -50,7 +51,7 @@ export default function LessonScreen() {
       }
     };
     fetchCourses();
-  }, [token]);
+  }, [user]);
 
   const onPressHandler = () => {
     router.push("/course/allCourses/");

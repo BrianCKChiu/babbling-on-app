@@ -1,5 +1,3 @@
-import { User } from "firebase/auth";
-
 const isDev = true;
 
 export const API_URL = isDev ? "http://localhost:8080/" : "";
@@ -9,7 +7,7 @@ export class HttpHandler {
     body,
   }: {
     endpoint: string;
-    body: any;
+    body: unknown;
   }): Promise<Response> {
     return fetch(API_URL + endpoint, {
       method: "POST",
@@ -21,7 +19,6 @@ export class HttpHandler {
   }
 }
 export function checkUserIsInDB(token: string) {
-  console.log(token);
   return fetch(`${API_URL}user/`, {
     method: "POST",
     body: JSON.stringify({ token: token }), // HERE

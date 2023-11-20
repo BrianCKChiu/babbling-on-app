@@ -1,8 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  connectStorageEmulator,
+} from "firebase/storage";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,4 +33,10 @@ const storage = getStorage();
 export async function getFile(path: string): Promise<string> {
   const mediaRef = ref(storage, `gs://babbling-on-2023.appspot.com/${path}`);
   return await getDownloadURL(mediaRef);
+}
+
+export function useFirebaseEmulator() {
+  connectAuthEmulator(auth, "127.0.0.1:9099");
+  connectFirestoreEmulator(db, "127.0.0.1", 8088);
+  connectStorageEmulator(storage, "127.0.0.1", 9199);
 }

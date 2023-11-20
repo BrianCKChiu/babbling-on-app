@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -11,27 +12,22 @@ import {
   View,
 } from "native-base";
 import { useEffect, useState } from "react";
+
 import { useRouter } from "expo-router";
 import { useQuizStore } from "../../components/stores/quizStore";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+// types
 import {
   Question,
   QuestionMatching,
   QuestionMcq,
-} from "../../components/quiz/question";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
-import React from "react";
-import { HttpHandler } from "../../components/api/backend";
+} from "../../components/types/quiz/question";
+import { QuizDataProp } from "../../components/types/quiz/quizDataProp";
 
-type QuizDataProp = {
-  id: string;
-  topic: string;
-  title: string;
-  numOfQuestion: number;
-  estTime: number;
-  exp: number;
-  description: { [key: string]: string };
-};
+// helpers
+import { auth } from "../../components/firebase";
+import { HttpHandler } from "../../components/api/backend";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);

@@ -3,12 +3,15 @@ import React from "react";
 import { View } from "react-native";
 import IBlock from "../ui/IBlock";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useUserStore } from "../stores/userStore";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
-  const { displayName } = useUserStore();
+  const [user] = useAuthState(auth);
+  const router = useRouter();
   const navigation = useNavigation();
 
   return (
@@ -31,7 +34,14 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
               />
             </Heading>
           </Box>
-          <Pressable {...props}>
+          <Pressable
+            {...props}
+            onPress={() => {
+              router.push({
+                pathname: "(drawer)/profile",
+              } as never);
+            }}
+          >
             <HStack display={"flex"} alignItems={"center"}>
               <Box
                 maxW={"150px"}
@@ -48,7 +58,7 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
                 borderWidth={1}
                 borderColor={"gray.300"}
               >
-                <Text>{displayName}</Text>
+                <Text>{user?.displayName ?? ""}</Text>
               </Box>
               <Box
                 bgColor={"white"}

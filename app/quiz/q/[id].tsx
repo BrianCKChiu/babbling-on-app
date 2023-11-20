@@ -1,17 +1,23 @@
-import { JSX, useEffect, useState } from "react";
-import { McqQuestionComponent } from "../../../components/ui/quiz/question/mcqQuestion";
+import React, { JSX, useEffect, useState } from "react";
 import { Center, Spinner, VStack, useToast, Text } from "native-base";
+
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useQuizStore } from "../../../components/stores/quizStore";
+
+// types
 import {
-  Answer,
   Question,
   QuestionMatching,
   QuestionMcq,
-} from "../../../components/quiz/question";
-import { useQuizStore } from "../../../components/stores/quizStore";
-import { getFile } from "../../../components/firebase";
-import React from "react";
+} from "../../../components/types/quiz/question";
+import { Answer } from "../../../components/types/quiz/answer";
+
+// components
 import { MatchingQuestionComponent } from "../../../components/ui/quiz/question/matchingQuestion";
+import { McqQuestionComponent } from "../../../components/ui/quiz/question/mcqQuestion";
+
+// helpers
+import { getFile } from "../../../components/firebase";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
