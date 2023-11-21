@@ -5,10 +5,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
+  // Button,
   SafeAreaView,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
+// import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -20,8 +20,8 @@ import {
 import "react-native-get-random-values";
 import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
 import imageAnalyzer from "../../components/selfAssessment/imageAnalyzer";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth } from "../../components/firebase";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function selfAssessmentPage() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const lengthInt = parseInt(length as string, 10);
-  const [user] = useAuthState(auth);
+  // const [user] = useAuthState(auth);
 
   const questionString = `Question ${currentQuestion}/${length}`;
 

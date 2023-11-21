@@ -21,6 +21,7 @@ async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[
     
     console.log(`Recognised Alphabet: ${responseData.prediction}`)
     return [true, responseData.prediction === currentLetter];
+    // eslint-disable-next-line
   } catch (error: any) {
     console.error('Error:', error.message);
     return [false, false];

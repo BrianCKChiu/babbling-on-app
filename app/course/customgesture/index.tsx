@@ -1,28 +1,29 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { StyleSheet, TouchableOpacity } from "react-native";
+// import { useAuthState } from "react-firebase-hooks/auth";
 // import { auth } from "../../../components/firebase";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text, VStack, View, FlatList } from "native-base";
+import { useLocalSearchParams } from "expo-router";
+// import { Text, VStack, View, FlatList } from "native-base";
+import { View } from "native-base";
+
 import React, { useState, useEffect } from "react";
-import { Image } from "react-native";
-import { useUserStore } from "../../../components/stores/userStore";
-import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
+// import { Image } from "react-native";
+// import { useUserStore } from "../../../components/stores/userStore";
+// import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
 import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
-import CustomButton from "../../../components/ui/selfAssessment/customButton";
 
-interface Course {
-  id?: string;
-  name: string;
-  description: string;
-}
+// interface Course {
+//   id?: string;
+//   name: string;
+//   description: string;
+// }
 
-interface Lesson {
-  id?: string;
-  name: string;
-  description: string;
-}
+// interface Lesson {
+//   id?: string;
+//   name: string;
+//   description: string;
+// }
 
 interface Gesture {
   id?: string;
@@ -31,7 +32,7 @@ interface Gesture {
 
 export default function Page() {
   const [gestureData, setGestureData] = useState<Gesture>();
-  const router = useRouter();
+  // const router = useRouter();
 
   // Get courseId param
   const { gestureId } = useLocalSearchParams();
@@ -67,14 +68,7 @@ export default function Page() {
   return (
     <View>
       {/* <SAHeaderSection text= {gestureData?.phrase} /> */}
-      <DescriptionSection bodyText={gestureData?.phrase} />
-      {/* <CustomButton text="Start" buttonColor="white"  onPress={() => router.push({
-          pathname: "/customgesture", 
-          params: {
-            courseId: gestureData?.id || ''
-          }
-      }
-    )}/> */}
+      <DescriptionSection bodyText={gestureData?.phrase || ''} />
     </View>
   );
 }

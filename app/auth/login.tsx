@@ -51,7 +51,7 @@ export default function Page() {
           duration: 2000,
         });
 
-        router.push("/(drawer)/home");
+        router.push("/course");
       })
       .catch((error) => {
         console.log(error);

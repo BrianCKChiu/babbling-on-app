@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View, Pressable } from "native-base";
+import { Text, View, Pressable, Button } from "native-base";
 
 import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -12,11 +12,118 @@ import { auth } from "../../components/firebase";
 // types
 import { Course } from "../../components/types/course/course";
 
-export default function LessonScreen() {
+// explore
+const ExploreCourses = () => {
+  const [exploreCourses, setExploreCourses] = useState<Course[]>([]);
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [user] = useAuthState(auth); 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user == null) return;
+    const getCoursesURL = "http://localhost:8080/customCourses/getCourses";
+
+    const fetchCourses = async () => {
+      const token = await user.getIdToken();
+      if (!token || token === "") {
+        console.log("Token is empty or undefined");
+        return;
+      }
+      try {
+        const response = await fetch(getCoursesURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        if (!response.ok) {
+          console.log("SERVER ERROR");
+          return Promise.reject("Server Error");
+        }
+
+        const { exploreCourses, featuredCourses } = await response.json();
+
+        setExploreCourses(exploreCourses);
+        setFeaturedCourses(featuredCourses);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCourses();
+  }, [user]);
+
+  // const onPressHandler = () => {
+  //   router.push("/course/allCourses/");
+  // };
+  return (
+    <DefaultLayout>
+
+      {/* Horizontal flex box for the courses taken */}
+      <View style={styles.horizontalFlexCourses}>
+        {exploreCourses.map((exploreCourse) => (
+          <View style={styles.courseItemHorizontal} key={exploreCourse.id}>
+            <Text>{exploreCourse.name || "No name"}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View>
+        {/* Vertical Flex Box */}
+        <View style={styles.verticalFlex}>
+          {featuredCourses.map((featuredCourse) => (
+            <View style={styles.verticalItem} key={featuredCourse.id}>
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: "/course/customcourse",
+                    params: {
+                      courseId: featuredCourse.id,
+                    },
+                  })
+                }
+              >
+                <Text>{featuredCourse.name || "No name"}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </View>
+
+        {/* Vertical Flex Box for featured courses */}
+        <View>
+          <View style={styles.verticalFlex}>
+            {featuredCourses.map((featuredCourse) => (
+              <View style={styles.verticalItem} key={featuredCourse.id}>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push({
+                      pathname: "/course/customcourse",
+                      params: {
+                        courseId: featuredCourse.id,
+                      },
+                    })
+                  }
+                >
+                  <Text>{featuredCourse.name || "No name"}</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </View>
+
+    </DefaultLayout>
+  );
+}
+
+// custom courses 
+const CustomCourses = () => {
   const [otherCourses, setOtherCourses] = useState<Course[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
-  const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth); 
   const router = useRouter();
+
 
   useEffect(() => {
     if (user == null) return;
@@ -42,10 +149,10 @@ export default function LessonScreen() {
           return Promise.reject("Server Error");
         }
 
-        const { otherCourses } = await response.json();
+        const { myCourses, otherCourses } = await response.json();
 
         setOtherCourses(otherCourses);
-        setMyCourses(otherCourses);
+        setMyCourses(myCourses);
       } catch (error) {
         console.error(error);
       }
@@ -106,6 +213,34 @@ export default function LessonScreen() {
         </View>
       </View>
     </DefaultLayout>
+  );
+}
+
+export default function LessonScreen() {
+
+  const [showCustom, setShowCustom] = useState(false);
+
+  // const [user] = useAuthState(auth); 
+  // const router = useRouter();
+
+  return (
+    <DefaultLayout>
+      {showCustom ? (
+        <ExploreCourses />
+      ) : (
+        <CustomCourses />
+      )}
+
+      <Button
+        onPress={() => setShowCustom(true)}>
+        <Text>Show Custom</Text>
+        </Button>
+
+      <Button 
+        onPress={() => setShowCustom(false)}>
+        <Text>Show Explore</Text>
+        </Button>
+    </DefaultLayout> 
   );
 }
 

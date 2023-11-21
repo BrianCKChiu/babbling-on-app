@@ -1,22 +1,24 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { StyleSheet, TouchableOpacity } from "react-native";
+// import { useAuthState } from "react-firebase-hooks/auth";
 // import { auth } from "../../../components/firebase";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text, VStack, View, FlatList } from "native-base";
+// import { Text, VStack, View, FlatList } from "native-base";
+import { View } from "native-base";
+
 import React, { useState, useEffect } from "react";
-import { Image } from "react-native";
-import { useUserStore } from "../../../components/stores/userStore";
+// import { Image } from "react-native";
+// import { useUserStore } from "../../../components/stores/userStore";
 import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
 import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
 import CustomButton from "../../../components/ui/selfAssessment/customButton";
 
-interface Course {
-  id?: string;
-  name: string;
-  description: string;
-}
+// interface Course {
+//   id?: string;
+//   name: string;
+//   description: string;
+// }
 
 interface Lesson {
   id?: string;
@@ -67,8 +69,8 @@ export default function Page() {
   // useEffect
   return (
     <View>
-      <SAHeaderSection text={lessonData?.name} />
-      <DescriptionSection bodyText={lessonData?.description} />
+      <SAHeaderSection text={lessonData?.name || ''} />
+      <DescriptionSection bodyText={lessonData?.description || ''} />
 
       <CustomButton
         text="Start"

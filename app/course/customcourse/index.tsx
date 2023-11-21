@@ -1,13 +1,14 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { StyleSheet, TouchableOpacity } from "react-native";
+// import { useAuthState } from "react-firebase-hooks/auth"; <- authenticate the user 
 // import { auth } from "../../../components/firebase";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg"; <- for fixing icon issue
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text, VStack, View, FlatList } from "native-base";
+// import { Text, VStack, View, FlatList } from "native-base";
+import { View } from "native-base";
 import React, { useState, useEffect } from "react";
-import { Image } from "react-native";
-import { useUserStore } from "../../../components/stores/userStore";
+// import { Image } from "react-native";
+// import { useUserStore } from "../../../components/stores/userStore";
 import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
 import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
 import CustomButton from "../../../components/ui/selfAssessment/customButton";

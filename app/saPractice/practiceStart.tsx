@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DescriptionSection from "../../components/ui/selfAssessment/descriptionSection";
-import { HStack, Button, ScrollView } from "native-base";
+import { HStack, ScrollView } from "native-base";
 import NextPageButton from "../../components/ui/selfAssessment/nextPageButton";
 
 export default function practiceStart() {
