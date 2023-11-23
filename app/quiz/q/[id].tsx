@@ -59,6 +59,7 @@ export default function Page() {
     if (result == null) return;
     addAnswer(result);
     toast.show({
+      placement: "top",
       description: result.isCorrect ? "Correct" : "Incorrect",
       duration: 900,
       bgColor: result.isCorrect ? "green.500" : "red.500",
