@@ -10,6 +10,7 @@ import {
   Spinner,
   Center,
   View,
+  Image,
 } from "native-base";
 import { useEffect, useState } from "react";
 
@@ -18,12 +19,19 @@ import { useQuizStore } from "@/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // types
-import { Question, QuestionMatching, QuestionMcq } from "@/types/quiz/question";
+import {
+  Question,
+  QuestionMatching,
+  QuestionMcq,
+  QuestionProp,
+} from "@/types/quiz/question";
 import { QuizDataProp } from "@/types/quiz/quizDataProp";
 
 // helpers
 import { auth } from "@/firebase";
 import { HttpHandler } from "@/api/backend";
+
+import dailyAslImg from "@assets/images/daily-quiz.jpg";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +60,7 @@ export default function Page() {
   }, []);
 
   async function getQuizDetails() {
-    const token = await user?.getIdToken(); // HERE IS WHERE YOU GET A TOKEN
+    const token = await user?.getIdToken();
     try {
       const response = await HttpHandler.post({
         endpoint: "quiz/details",
@@ -76,52 +84,54 @@ export default function Page() {
 
   async function startQuiz() {
     // todo: sent request to server to generate quiz
-    const token = await user?.getIdToken();
+    try {
+      const token = await user?.getIdToken();
 
-    const quizData = await HttpHandler.post({
-      endpoint: "quiz/create",
-      body: {
-        token: token,
-        topic: "1",
-        options: null,
-      },
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        return json;
+      const quizData = await HttpHandler.post({
+        endpoint: "quiz/create",
+        body: {
+          token: token,
+          topic: "1",
+          options: null,
+        },
       })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    const questions: Array<Question> = quizData.questions.map(
-      (question: QuestionMcq | QuestionMatching) => {
-        if (question.getType() === "mcq") {
-          question = question as QuestionMcq;
-          return new QuestionMcq({
-            id: question.getId(),
-            mediaRef: question.getMediaRef(),
-            choices: question.getChoices(),
-            answer: question.getAnswer(),
-          });
-        } else if (question.getType() === "matching") {
-          question = question as QuestionMatching;
-          return new QuestionMatching({
-            id: question.getId(),
-            gestures: question.getGestures() as [
-              { answer: string; mediaRef: string }
-            ],
-          });
+        .then(async (res) => {
+          const json = await res.json();
+          return json;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      console.log(quizData.questions[0]);
+      const questions: Array<Question> = quizData.questions.map(
+        (question: QuestionProp) => {
+          if (question.type === "mcq") {
+            return new QuestionMcq({
+              id: question.id,
+              mediaRef: question.mediaRef!,
+              choices: question.choices!,
+              answer: question.answer!,
+            });
+          } else if (question.type === "matching") {
+            return new QuestionMatching({
+              id: question.id,
+              gestures: question.gestures as [
+                { answer: string; mediaRef: string }
+              ],
+            });
+          }
         }
-      }
-    );
-    setQuestions(questions);
-    setQuizId(quizData.id);
-    // set data to quiz router
-    router.replace({
-      pathname: "/quiz/q/[id]",
-      params: { id: questions[0].getId() }, // replace with question id
-    });
+      );
+      setQuestions(questions);
+      setQuizId(quizData.id);
+      // set data to quiz router
+      router.replace({
+        pathname: "/quiz/q/[id]",
+        params: { id: questions[0].getId() }, // replace with question id
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   function formatDescription() {
@@ -151,12 +161,14 @@ export default function Page() {
             showsVerticalScrollIndicator={false}
             bounces={false}
           >
-            <Box
-              w={"full"}
+            <Image
+              source={dailyAslImg}
               height={300}
-              backgroundColor="violet.600"
+              w={"full"}
               borderRadius={"lg"}
+              alt=""
             />
+
             <VStack
               space="md"
               justifyContent="space-between"
@@ -188,8 +200,7 @@ export default function Page() {
             w={"100%"}
             h={90}
             borderTopWidth={1}
-            borderTopColor="gray.300"
-            shadow={0.3}
+            borderTopColor="gray.600"
             paddingX={10}
             pt="4"
           >
@@ -197,12 +208,15 @@ export default function Page() {
               variant="solid"
               size={"lg"}
               w={"full"}
-              backgroundColor="violet.500"
+              borderRadius={"8px"}
+              backgroundColor="#FFED4B"
               onPress={() => {
                 startQuiz();
               }}
             >
-              <Text color="white">Start Quiz!</Text>
+              <Text color="black" fontWeight={"semibold"}>
+                Start Quiz!
+              </Text>
             </Button>
           </Box>
         </VStack>

@@ -63,11 +63,7 @@ function RootLayoutNav() {
           options={{
             title: "",
             headerTransparent: true,
-            headerShown:
-              pathname.match(/^\/quiz\/q\/.+/) ||
-              pathname.match(/^\/quiz\/results\/*/)
-                ? false
-                : true,
+            headerShown: false,
           }}
         />
         <Stack.Screen
