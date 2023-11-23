@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
@@ -6,12 +6,19 @@ import SAHeaderSection from "@/ui/selfAssessment/headerSection";
 import { useRouter } from "expo-router";
 import { ScrollView } from "native-base";
 
+interface SelfAssessment {
+  id: number;
+  name: string;
+  score: number;
+}
+
+
 export default function PerformanceTracking() {
   const router = useRouter();
   const [user] = useAuthState(auth);
   const [averageScore, setAverageScore] = useState<string | null>(null);
   const [highestScore, setHighestScore] = useState<string | null>(null);
-  const [selfAssessments, setSelfAssessments] = useState<any[]>([]);
+  const [selfAssessments, setSelfAssessments] = useState<SelfAssessment[]>([]);
 
   const fetchData = async () => {
     try {

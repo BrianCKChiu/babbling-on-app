@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
 import { HStack } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";

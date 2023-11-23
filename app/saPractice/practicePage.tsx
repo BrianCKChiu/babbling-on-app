@@ -5,14 +5,11 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
   SafeAreaView,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
-import CustomButton from "@/ui/selfAssessment/customButton";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
-import firebase from "firebase/app";
 import {
   getStorage,
   ref,
@@ -20,7 +17,6 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import "react-native-get-random-values";
-import { Center, Image } from "native-base";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
 

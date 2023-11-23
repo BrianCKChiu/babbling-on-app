@@ -1,15 +1,15 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import { HStack, VStack, Button, ScrollView } from "native-base";
+import { HStack, ScrollView } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
 
 export default function practiceAlphabetStart() {
   const router = useRouter();
-  const { option } = useLocalSearchParams();
+  //const { option } = useLocalSearchParams();
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const [selectedLetter, setSelectedLetter] = useState(alphabet[0]);
   const [user] = useAuthState(auth);

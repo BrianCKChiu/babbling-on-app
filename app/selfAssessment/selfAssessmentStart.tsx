@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import { HStack, Button } from "native-base";
+import { HStack } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";

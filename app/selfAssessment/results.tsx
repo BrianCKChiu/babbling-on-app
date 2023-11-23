@@ -1,9 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import { HStack } from "native-base";
-import NextPageButton from "@/ui/selfAssessment/nextPageButton";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 import CustomButton from "@/ui/selfAssessment/customButton";
 
 export default function results() {
