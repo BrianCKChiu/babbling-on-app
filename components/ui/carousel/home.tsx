@@ -1,7 +1,10 @@
 import { useRouter } from "expo-router";
-import { Box, Pressable, View, Text } from "native-base";
+import { Box, Pressable, View, Text, ZStack, Image } from "native-base";
 import React, { useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
+import dailyAslImg from "@assets/images/daily-quiz.jpg";
+import weeklyAslImg from "@assets/images/weekly-quiz.jpg";
+import { ImageSourcePropType } from "react-native";
 
 export function HomeCarousel() {
   const router = useRouter();
@@ -10,14 +13,12 @@ export function HomeCarousel() {
     {
       path: "/quiz/",
       title: "Daily Quiz",
+      image: dailyAslImg,
     },
     {
       path: "/quiz/",
       title: "Weekly Quiz",
-    },
-    {
-      path: "/lessons",
-      title: "Start Learning",
+      image: weeklyAslImg,
     },
   ]);
 
@@ -25,7 +26,7 @@ export function HomeCarousel() {
     item,
     index,
   }: {
-    item: { path: string; title: string };
+    item: { path: string; title: string; image: ImageSourcePropType };
     index: number;
   }) {
     return (
@@ -37,19 +38,32 @@ export function HomeCarousel() {
           borderRadius={"xl"}
           bgColor={"blue.200"}
           display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
           onPress={() => {
             router.push({
               pathname: item.path,
             } as never);
           }}
         >
-          <Box>
-            <Text fontSize="2xl" fontWeight="bold">
-              {item.title}
-            </Text>
-          </Box>
+          <ZStack>
+            <Image
+              source={item.image}
+              w={"full"}
+              h={"200px"}
+              borderRadius={"xl"}
+              alt="image_placeholder"
+            />
+            <Box
+              m={"16px"}
+              bgColor={"white"}
+              px={"8px"}
+              borderRadius={"8px"}
+              shadow={"xl"}
+            >
+              <Text fontSize="2xl" fontWeight="bold">
+                {item.title}
+              </Text>
+            </Box>
+          </ZStack>
         </Pressable>
       </View>
     );
