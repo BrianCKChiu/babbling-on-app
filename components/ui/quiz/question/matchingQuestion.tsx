@@ -4,7 +4,6 @@ import {
   Heading,
   HStack,
   Select,
-  CheckIcon,
   Button,
   Text,
   Image,
@@ -29,19 +28,13 @@ export function MatchingQuestionComponent({
     }
   }, [choices]);
   return (
-    <VStack alignContent="space-between" h={"full"} display="flex">
-      <Box
-        h={200}
-        px={10}
-        pt={"20%"}
-        bgColor="violet.600"
-        borderBottomRadius={12}
-      >
+    <VStack alignContent="space-between" h={"full"} display="flex" mx={"32px"}>
+      <Box h={200} pt={"20%"} borderBottomRadius={12}>
         <Heading bold={true} size="lg" mb={6} mt={10}>
           Match the Gestures
         </Heading>
       </Box>
-      <VStack mt={"20px"} mx={"40px"} space={6} flex={1}>
+      <VStack mt={"20px"} space={6} flex={1}>
         {choices.map((choice, index) => (
           <HStack alignItems={"center"} space={4} key={index}>
             <Image
@@ -66,17 +59,17 @@ export function MatchingQuestionComponent({
           </HStack>
         ))}
       </VStack>
-      <VStack mx={"45px"}>
+      <VStack>
         <ProgressBar />
         <Box w="full" h={110} pt={5}>
           <Button
             isDisabled={selectedAnswer.includes("")}
-            backgroundColor="violet.600"
+            backgroundColor={"#FFED4B"}
             h={"50px"}
             onPress={() => submitAnswer(selectedAnswer)}
-            _disabled={{ backgroundColor: "violet.500" }}
+            _disabled={{ backgroundColor: "#FFED4B" }}
           >
-            <Text color="white">Next Question</Text>
+            <Text color="black">Next Question</Text>
           </Button>
         </Box>
       </VStack>
@@ -102,8 +95,7 @@ function DropdownAnswer({
       accessibilityLabel="Select Answer"
       placeholder="Select Answer"
       _selectedItem={{
-        bg: "violet.500",
-        endIcon: <CheckIcon size="5" />,
+        bg: "#FFED4B",
       }}
       mt={1}
       onValueChange={(itemValue) => {

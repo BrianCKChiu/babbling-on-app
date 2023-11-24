@@ -14,8 +14,8 @@ export function ProgressBar() {
         {currentQuestionIndex + 1}/{questions.length}
       </Text>
       <HStack w={"full"} h={"2px"}>
-        <Box bgColor="violet.500" w={`${getPercentage()}%`} />
-        <Box bgColor="gray.200" w={`${100 - getPercentage()}%`} />
+        <Box bgColor={"#F5DC00"} w={`${getPercentage()}%`} />
+        <Box bgColor={"gray.200"} w={`${100 - getPercentage()}%`} />
       </HStack>
     </VStack>
   );
