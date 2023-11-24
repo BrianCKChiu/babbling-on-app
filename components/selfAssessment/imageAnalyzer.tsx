@@ -37,7 +37,7 @@ async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[
       return [false, false];
     }
 
-    const response = await fetch('http://localhost:8080/ai/analyze-image', { 
+    const response = await fetch('http://localhost:8080/image/detect', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,6 +51,7 @@ async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[
 
     const responseData = await response.json();
 
+    // Extracting the "class" value from the first prediction
     const predictedAlphabet = responseData.predictions.length > 0 ? responseData.predictions[0].class : '';
 
     console.log(`Recognised Alphabet: ${predictedAlphabet}`);
@@ -63,4 +64,3 @@ async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[
 }
 
 export default imageAnalyzer;
-
