@@ -38,7 +38,7 @@ export function FeaturedCourses() {
   function renderCourses() {
     const elements: JSX.Element[] = [];
     courses.map((course, index) => {
-      elements.push(<CourseItem item={course} index={index} />);
+      elements.push(<CourseItem item={course} index={index} key={index} />);
     });
     return elements;
   }

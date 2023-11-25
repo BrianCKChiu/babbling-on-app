@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
-import SAHeaderSection from "@/ui/selfAssessment/headerSection";
 import { useRouter } from "expo-router";
-import { ScrollView } from "native-base";
+import { Center, ScrollView } from "native-base";
 
 interface SelfAssessment {
+  dateTaken: string | number | Date;
+  isPractice: boolean;
   id: number;
   name: string;
   score: number;
@@ -62,7 +63,9 @@ export default function PerformanceTracking() {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <SAHeaderSection text="Your Progress" fontSize={32}></SAHeaderSection>
+        <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="-5%" left="20%" />
+        <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="3%" left="-30%"/>
+        <Text style={styles.headerText}>Your Progress</Text>
         <Text style={styles.bodyText}>Highest Score: {highestScore}</Text>
         <Text style={styles.bodyText}>Average Score: {averageScore}</Text>
         <Text style={styles.bodyText}>List of Assessments:</Text>
@@ -105,15 +108,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
+  headerText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginLeft: "5%",
+    marginTop: "40%",
+    marginRight: "40%",
+    zIndex: 1,
+    marginBottom: "20%",
+  },
   bodyText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginLeft: "10%",
-    marginTop: "7%",
+    marginTop: "5%",
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
   scrollView: {
@@ -137,15 +149,13 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 7,
+    borderRadius: 8,
     padding: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     margin: "10%",
     alignSelf: "flex-end",
     alignItems: "center",
-    marginTop: "auto",
-    backgroundColor: "#FFE874",
+    marginTop: "5%",
+    backgroundColor: "#FFED4B",
   },
 });
