@@ -230,7 +230,7 @@ export default function selfAssessmentPage() {
             style={[
               styles.performGestureButton,
               {
-                backgroundColor: !isButtonClickable ? "#F7F9A9" : "#B0B0B0",
+                backgroundColor: !isButtonClickable ? "#FFED4B" : "#B0B0B0",
               },
             ]}
             onPress={() => setIsCameraVisible(true)}
@@ -254,7 +254,7 @@ export default function selfAssessmentPage() {
             style={[
               styles.nextButton,
               {
-                backgroundColor: isButtonClickable ? "#F7F9A9" : "#B0B0B0",
+                backgroundColor: isButtonClickable ? "#FFED4B" : "#B0B0B0",
               },
             ]}
           >
@@ -280,20 +280,17 @@ const styles = StyleSheet.create({
     marginBottom: "20%",
   },
   performGestureButton: {
-    width: "auto",
-    borderRadius: 7,
+    width: "78%",
+    borderRadius: 8,
     alignItems: "center",
-    padding: 30,
-    paddingVertical: 20,
+    paddingVertical: "4%",
     margin: "10%",
     marginBottom: "10%",
     marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
   camera: {
@@ -320,7 +317,7 @@ const styles = StyleSheet.create({
   },
   messageBox: {
     width: "80%",
-    borderRadius: 7,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -334,11 +331,9 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 7,
+    borderRadius: 8,
     padding: 30,
-    paddingVertical: 20,
+    paddingVertical: "5%",
     margin: "10%",
     alignSelf: "flex-end",
     alignItems: "center",
