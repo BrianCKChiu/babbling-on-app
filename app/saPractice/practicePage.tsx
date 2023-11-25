@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -19,6 +18,8 @@ import {
 import "react-native-get-random-values";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
+import { HStack } from "native-base";
+import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 
 export default function practicePage() {
   const router = useRouter();
@@ -168,13 +169,9 @@ export default function practicePage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
-          <TouchableOpacity
-            style={styles.backbutton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color="black" />
-            <Text style={styles.buttonText}>End Practice</Text>
-          </TouchableOpacity>
+          <HStack style={styles.nextButton}>
+        <NextPageButton text="End Practice" onPress={() => router.back()} />
+      </HStack>
         </View>
       )}
     </SafeAreaView>
@@ -195,7 +192,7 @@ const styles = StyleSheet.create({
   },
   backbutton: {
     width: "50%",
-    borderRadius: 7,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
@@ -208,22 +205,24 @@ const styles = StyleSheet.create({
     borderColor: "#D8D8D8",
     backgroundColor: "#F7F9A9",
   },
+  nextButton: {
+    alignItems: "flex-end",
+    marginLeft: "5%",
+    alignSelf: "baseline",
+  },
   performGestureButton: {
-    width: "auto",
-    borderRadius: 7,
+    width: "78%",
+    borderRadius: 8,
     alignItems: "center",
-    padding: 30,
-    paddingVertical: 20,
+    paddingVertical: "4%",
     margin: "10%",
     marginBottom: "10%",
     marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
-    backgroundColor: "#F7F9A9",
+    backgroundColor: "#FFED4B",
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
   },
   camera: {
@@ -250,7 +249,7 @@ const styles = StyleSheet.create({
   },
   messageBox: {
     width: "80%",
-    borderRadius: 7,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,

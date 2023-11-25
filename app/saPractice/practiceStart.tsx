@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import { HStack, ScrollView } from "native-base";
+import { Center, HStack, ScrollView } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 
 export default function practiceStart() {
@@ -19,6 +19,8 @@ export default function practiceStart() {
 
   return (
     <View style={styles.container}>
+      <Center width={200} height={200} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="20%" right="60%" />
+      <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="20%" right="-40%"/>
       <Text style={styles.headerText}>Practice ASL </Text>
       <DescriptionSection
         bodyText="Step into Practice ASL, your personalized playground for exploring and 
@@ -53,7 +55,7 @@ export default function practiceStart() {
         ))}
       </ScrollView>
       <HStack style={styles.nextButton}>
-        <NextPageButton
+        <NextPageButton 
           text="Start Practice"
           onPress={() =>
             router.push({
@@ -72,17 +74,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "#FFE874",
+    backgroundColor: "white",
   },
   headerText: {
     fontSize: 32,
     fontWeight: "bold",
-    marginLeft: "7%",
+    marginLeft: "5%",
     marginTop: "30%",
-  },
-  nextButton: {
-    alignItems: "flex-end",
-    marginLeft: "auto",
   },
   scrollView: {
     maxHeight: 120,
@@ -109,6 +107,10 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: "#E0E0E0",
+  },
+  nextButton: {
+    alignItems: "center",
+    marginLeft: "5%",
   },
   buttonText: {
     fontWeight: "bold",
