@@ -4,7 +4,6 @@ import {
   Heading,
   HStack,
   Select,
-  CheckIcon,
   Button,
   Text,
   Image,

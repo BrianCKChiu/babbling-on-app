@@ -20,6 +20,7 @@ import { useUserStore } from "@/stores/userStore";
 // helpers
 import { getLevelExp } from "@/user/level";
 import { auth } from "@/firebase";
+import { ExperienceBar } from "@/ui/user/experienceBar";
 
 export default function Page() {
   const navigation = useNavigation();
@@ -66,20 +67,6 @@ export default function Page() {
     return courses;
   }
 
-  function renderExpBar() {
-    console.log();
-    return (
-      <Box width={"full"} h={"7px"} bgColor={"white"} borderRadius={"4px"}>
-        <Box
-          bgColor={"amber.300"}
-          borderRadius={"4px"}
-          h={"full"}
-          w={`${(currentExp / getLevelExp(level + 1)) * 100}%`}
-          maxW={"full"}
-        />
-      </Box>
-    );
-  }
   return (
     <View>
       {!isLoading && (
@@ -131,7 +118,8 @@ export default function Page() {
                   <Text>{user?.email}</Text>
                 </VStack>
               </HStack>
-              {renderExpBar()}
+
+              <ExperienceBar />
             </VStack>
             {/* Achievements */}
             <VStack mb={"12px"}>
