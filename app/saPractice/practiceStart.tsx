@@ -85,19 +85,19 @@ const styles = StyleSheet.create({
   scrollView: {
     maxHeight: 120,
     width: "80%",
-    marginLeft: "10%",
+    marginHorizontal: "10%",
   },
   scrollContent: {
     justifyContent: "space-between",
     alignItems: "center",
   },
   button: {
-    width: "100%",
-    margin: 5,
+    width: "90%",
+    marginVertical: 5,
     padding: 20,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",

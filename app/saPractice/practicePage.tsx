@@ -18,7 +18,7 @@ import {
 import "react-native-get-random-values";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
-import { HStack } from "native-base";
+import { HStack, Spinner } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 
 export default function practicePage() {
@@ -34,6 +34,7 @@ export default function practicePage() {
     text: string;
     color: string;
   }>({ text: "", color: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +44,7 @@ export default function practicePage() {
   }, []);
 
   const showMessage = (wasCorrect: boolean) => {
+    setIsLoading(false); // Stop loading when the message is ready to be shown
     if (wasCorrect) {
       setMessageContent({
         text: "YOU WERE CORRECT!",
@@ -68,25 +70,26 @@ export default function practicePage() {
       const options = { quality: 0.5, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
 
+      setIsLoading(true); // Start loading after picture is taken
+      setIsCameraVisible(false); // Close the camera
+
       try {
         const downloadURL = await uploadImageToFirebase(photo.uri);
-        //Analyzing the code using AI:
+        // Analyzing the code using AI:
         const [success, isPredictionCorrect] = await imageAnalyzer(
           downloadURL,
           letter as string
         );
 
-        if (success && isPredictionCorrect) {
-          showMessage(true); //if gesture is correct
-        } else if (success && !isPredictionCorrect) {
-          showMessage(false); //if gesture is incorrect
+        if (success) {
+          showMessage(isPredictionCorrect); // Show message based on prediction
         } else {
           console.log("Error analyzing image");
         }
       } catch (error) {
         console.error("Error:", error);
+        setIsLoading(false); // Stop loading in case of an error
       }
-      setIsCameraVisible(false);
     }
   };
 
@@ -153,12 +156,18 @@ export default function practicePage() {
           <Text style={styles.headerText}>
             This is the gesture for {letter}
           </Text>
-          <TouchableOpacity
-            style={styles.performGestureButton}
-            onPress={() => setIsCameraVisible(true)}
-          >
-            <Text style={styles.buttonText}>Perform Gesture</Text>
-          </TouchableOpacity>
+          {isLoading ? (
+            <View style={styles.spinnerContainer}>
+              <Spinner size="lg" />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.performGestureButton}
+              onPress={() => setIsCameraVisible(true)}
+            >
+              <Text style={styles.buttonText}>Perform Gesture</Text>
+            </TouchableOpacity>
+          )}
           {isMessageVisible && (
             <View
               style={[
@@ -170,8 +179,8 @@ export default function practicePage() {
             </View>
           )}
           <HStack style={styles.nextButton}>
-        <NextPageButton text="End Practice" onPress={() => router.back()} />
-      </HStack>
+            <NextPageButton text="End Practice" onPress={() => router.back()} />
+          </HStack>
         </View>
       )}
     </SafeAreaView>
@@ -209,6 +218,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginLeft: "5%",
     alignSelf: "baseline",
+  },
+  spinnerContainer: {
+    width: "78%",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: "4%",
+    margin: "10%",
   },
   performGestureButton: {
     width: "78%",
