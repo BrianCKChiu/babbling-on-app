@@ -5,10 +5,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
   SafeAreaView,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -18,10 +16,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import "react-native-get-random-values";
-import SAHeaderSection from "@/ui/selfAssessment/headerSection";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase";
+import { Center, Spinner } from "native-base";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
@@ -40,7 +36,7 @@ export default function selfAssessmentPage() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const lengthInt = parseInt(length as string, 10);
-  const [user] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(false);
 
   const questionString = `Question ${currentQuestion}/${length}`;
 
@@ -128,34 +124,36 @@ export default function selfAssessmentPage() {
     );
   };
 
-  const takeAndUploadPicture = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
-      const photo = await cameraRef.current.takePictureAsync(options);
+ const takeAndUploadPicture = async () => {
+  if (cameraRef.current) {
+    const options = { quality: 0.5, base64: true };
+    const photo = await cameraRef.current.takePictureAsync(options);
 
-      try {
-        const downloadURL = await uploadImageToFirebase(photo.uri);
-        //Analyzing the code using AI:
-        const [success, isPredictionCorrect] = await imageAnalyzer(
-          downloadURL,
-          currentLetter
-        );
+    setIsLoading(true);  // Start loading after picture is taken
+    setIsCameraVisible(false);  // Close the camera
 
-        if (success && isPredictionCorrect) {
-          showMessage(true); //if gesture is correct
-          updateScore(); //updating score
-        } else if (success && !isPredictionCorrect) {
-          showMessage(false); //if gesture is incorrect
-        } else {
-          console.log("Error analyzing image");
+    try {
+      const downloadURL = await uploadImageToFirebase(photo.uri);
+      // Analyzing the code using AI:
+      const [success, isPredictionCorrect] = await imageAnalyzer(downloadURL, currentLetter);
+
+      if (success) {
+        showMessage(isPredictionCorrect); // Show message based on prediction
+        if (isPredictionCorrect) {
+          updateScore(); // Updating score if gesture is correct
         }
-      } catch (error) {
-        console.error("Error:", error);
+      } else {
+        console.log("Error analyzing image");
       }
-      enableButton();
-      setIsCameraVisible(false);
+    } catch (error) {
+      console.error("Error:", error);
     }
-  };
+    
+    setIsLoading(false);  // Stop loading after processing is done
+    enableButton();
+  }
+};
+
 
   const uploadImageToFirebase = async (uri: string): Promise<string> => {
     const response = await fetch(uri);
@@ -221,25 +219,31 @@ export default function selfAssessmentPage() {
         </SafeAreaView>
       ) : (
         <View style={styles.container}>
-          <SAHeaderSection
-            text={questionString}
-            fontSize={24}
-          ></SAHeaderSection>
+          <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="10%" left="-5%" />
+          <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="30%" left="55%"/>
           <Text style={styles.bodyText}>
-            Perform the gesture for: {currentLetter}
+          {questionString + '\n\nPerform the gesture for: ' + currentLetter}
           </Text>
-          <TouchableOpacity
-            style={[
-              styles.performGestureButton,
-              {
-                backgroundColor: !isButtonClickable ? "#F7F9A9" : "#B0B0B0",
-              },
-            ]}
-            onPress={() => setIsCameraVisible(true)}
-            disabled={isButtonClickable}
-          >
-            <Text style={styles.buttonText}>Perform Gesture</Text>
-          </TouchableOpacity>
+  
+          {isLoading ? (
+            <View style={styles.spinnerContainer}>
+              <Spinner size="lg" />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.performGestureButton,
+                {
+                  backgroundColor: !isButtonClickable ? "#FFED4B" : "#B0B0B0",
+                },
+              ]}
+              onPress={() => setIsCameraVisible(true)}
+              disabled={isButtonClickable}
+            >
+              <Text style={styles.buttonText}>Perform Gesture</Text>
+            </TouchableOpacity>
+          )}
+  
           {isMessageVisible && (
             <View
               style={[
@@ -250,13 +254,14 @@ export default function selfAssessmentPage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
+  
           <TouchableOpacity
             onPress={handleNextClick}
             disabled={!isButtonClickable}
             style={[
               styles.nextButton,
               {
-                backgroundColor: isButtonClickable ? "#F7F9A9" : "#B0B0B0",
+                backgroundColor: isButtonClickable ? "#FFED4B" : "#B0B0B0",
               },
             ]}
           >
@@ -266,6 +271,7 @@ export default function selfAssessmentPage() {
       )}
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -278,24 +284,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginLeft: "10%",
-    marginTop: "15%",
+    marginTop: "60%",
     marginBottom: "20%",
   },
   performGestureButton: {
-    width: "auto",
-    borderRadius: 7,
+    width: "80%",
+    borderRadius: 8,
     alignItems: "center",
-    padding: 30,
-    paddingVertical: 20,
+    paddingVertical: "5%",
     margin: "10%",
     marginBottom: "10%",
-    marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
+    marginTop: "35%",
+    justifyContent: 'center', 
+    flexDirection: 'row',
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
   camera: {
@@ -322,7 +327,7 @@ const styles = StyleSheet.create({
   },
   messageBox: {
     width: "80%",
-    borderRadius: 7,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -336,14 +341,20 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 7,
+    borderRadius: 8,
     padding: 30,
-    paddingVertical: 20,
+    paddingVertical: "5%",
     margin: "10%",
     alignSelf: "flex-end",
     alignItems: "center",
     marginTop: "auto",
+  },
+  spinnerContainer: {
+    width: "78%",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: "4%",
+    margin: "10%",
   },
 });

@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import { HStack, Button } from "native-base";
+import { Center, HStack } from "native-base";
 import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
@@ -67,6 +67,8 @@ export default function selfAssessmentStart() {
 
   return (
     <View style={styles.container}>
+      <Center width={225} height={225} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="-5%" left="-10%" />
+      <Center width={200} height={200} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="20%" left="45%"/>
       <View style={styles.headerSection}>
         <Text style={styles.headerText}>Self Assessment</Text>
         <Text style={styles.headerText}>with AI</Text>
@@ -116,12 +118,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "#FFE874",
+    backgroundColor: "white",
   },
   headerText: {
     fontSize: 32,
     fontWeight: "bold",
-    marginLeft: "7%",
+    marginLeft: "5%",
     marginTop: "2%",
   },
   headerSection: {
@@ -137,13 +139,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   radiocontainer: {
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     padding: "10%",
     paddingTop: "3%",
     paddingBottom: "5%",
   },
   button: {
-    margin: 0.5,
+    margin: "2%",
     padding: 20,
     borderWidth: 1,
     width: "auto",
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   nextButton: {
-    alignItems: "flex-end",
-    marginLeft: "auto",
+    alignItems: "center",
+    marginLeft: "5%",
   },
 });

@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Button, Text, View } from "native-base";
+//import { useRouter } from "expo-router";
+import { Text, View } from "native-base";
 import React from "react";
 
 export default function TabTwoScreen() {
-  const router = useRouter();
+  //Commented because it could be used in the future but eslint o(╥﹏╥)o 
+  //const router = useRouter();
 
   return (
     <View>

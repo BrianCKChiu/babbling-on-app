@@ -1,16 +1,10 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { useAuthState } from "react-firebase-hooks/auth";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // import { auth } from "@/firebase";
-import { SvgUri } from "react-native-svg";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text, VStack, View, FlatList } from "native-base";
+import { View } from "native-base";
 import React, { useState, useEffect } from "react";
-import { Image } from "react-native";
-import { useUserStore } from "@/stores/userStore";
-import SAHeaderSection from "@/ui/selfAssessment/headerSection";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
-import CustomButton from "@/ui/selfAssessment/customButton";
 
 interface Course {
   id?: string;
@@ -67,7 +61,7 @@ export default function Page() {
   return (
     <View>
       {/* <SAHeaderSection text= {gestureData?.phrase} /> */}
-      <DescriptionSection bodyText={gestureData?.phrase} />
+      <DescriptionSection bodyText={gestureData!.phrase} />
       {/* <CustomButton text="Start" buttonColor="white"  onPress={() => router.push({
           pathname: "/customgesture", 
           params: {

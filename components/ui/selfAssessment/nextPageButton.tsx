@@ -1,6 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 interface NextPageButtonProps {
   text: string;
@@ -14,29 +13,27 @@ const NextPageButton: React.FC<NextPageButtonProps> = ({ text, onPress }) => {
       onPress={onPress}
     >
       <Text style={styles.buttonText}>{text}</Text>
-      <Ionicons name="arrow-forward" size={24} color="black"/>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    width: '60%',
-    borderRadius: 7,
+    width: "80%",
+    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'space-between', 
+    justifyContent: 'center', 
     flexDirection: 'row',
-    padding: 20,
+    padding: "10%",
+    paddingVertical: "5%",
     margin: '7%',
     marginBottom: '10%',
     marginTop: '10%',
-    borderWidth: 1,
-    borderColor: '#D8D8D8',
-    backgroundColor: 'white',
+    backgroundColor: '#FFED4B',
   },
   buttonText: {
     color: 'black',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold'
   },
 });
