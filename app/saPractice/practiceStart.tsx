@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   selectedButton: {
-    backgroundColor: "#F7F9A9",
+    backgroundColor: "#FFED4B",
   },
   disabledButton: {
     backgroundColor: "#E0E0E0",
