@@ -18,6 +18,7 @@ import {
 import "react-native-get-random-values";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
 import { Center, Spinner } from "native-base";
+import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
@@ -38,6 +39,8 @@ export default function selfAssessmentPage() {
   const lengthInt = parseInt(length as string, 10);
   const [isLoading, setIsLoading] = useState(false);
 
+
+
   const questionString = `Question ${currentQuestion}/${length}`;
 
   const getRandomLetter = () => {
@@ -53,7 +56,7 @@ export default function selfAssessmentPage() {
       setHasPermission(status === "granted");
     })();
   }, []);
-
+  
   const updateScore = () => {
     const ex = (score * lengthInt + 1) / lengthInt;
     setScore(parseFloat(ex.toFixed(2)));
@@ -219,12 +222,17 @@ export default function selfAssessmentPage() {
         </SafeAreaView>
       ) : (
         <View style={styles.container}>
-          <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="10%" left="-5%" />
-          <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="30%" left="55%"/>
-          <Text style={styles.bodyText}>
+          <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="8%" left="-5%" />
+          <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="25%" left="55%"/>
+          <Text style={[styles.headerText, { marginTop: !isMessageVisible ? "60%" : "25%", }]}>
           {questionString + '\n\nPerform the gesture for: ' + currentLetter}
           </Text>
-  
+          {isMessageVisible && (
+            <Text style={styles.bodyText}>Correct gesture:</Text>
+          )}
+          {isMessageVisible && (
+          <DisplayImage path={`aslAlphabets/${currentLetter}_test.jpg`} />
+          )}
           {isLoading ? (
             <View style={styles.spinnerContainer}>
               <Spinner size="lg" />
@@ -235,6 +243,7 @@ export default function selfAssessmentPage() {
                 styles.performGestureButton,
                 {
                   backgroundColor: !isButtonClickable ? "#FFED4B" : "#B0B0B0",
+                  marginTop: !isMessageVisible ? "35%" : "10%",
                 },
               ]}
               onPress={() => setIsCameraVisible(true)}
@@ -243,7 +252,6 @@ export default function selfAssessmentPage() {
               <Text style={styles.buttonText}>Perform Gesture</Text>
             </TouchableOpacity>
           )}
-  
           {isMessageVisible && (
             <View
               style={[
@@ -280,12 +288,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
-  bodyText: {
+  headerText: {
     fontSize: 24,
     fontWeight: "bold",
     marginLeft: "10%",
-    marginTop: "60%",
-    marginBottom: "20%",
+    marginBottom: "10%",
+  },
+  bodyText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: "10%",
+    marginBottom: "5%",
   },
   performGestureButton: {
     width: "80%",
@@ -293,8 +306,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: "5%",
     margin: "10%",
-    marginBottom: "10%",
-    marginTop: "35%",
+    marginBottom: "5%",
     justifyContent: 'center', 
     flexDirection: 'row',
   },
