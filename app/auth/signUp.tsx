@@ -189,7 +189,7 @@ export default function Page() {
       reload(user)
         .then(() => {
           if (user.emailVerified) {
-            router.push("/home");
+            router.replace("/(drawer)/home");
           } else {
             Toast.show({
               title: "Please verify your email before finishing sign up.",

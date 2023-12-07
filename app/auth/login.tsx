@@ -53,7 +53,7 @@ export default function Page() {
             bgColor: "green.500",
             duration: 2000,
           });
-          router.push("/(drawer)/home");
+          router.replace("/(drawer)/home");
         } else {
           // Email is not verified, so we send a verification email
           sendEmailVerification(user).then(() => {
@@ -68,7 +68,7 @@ export default function Page() {
       .catch((error) => {
         console.log(error);
         toasts.show({
-          title: "Something went wrong, please try again later!",
+          title: "Invalid Credentials, please try again!",
           bgColor: "red.500",
           duration: 2000,
         });
