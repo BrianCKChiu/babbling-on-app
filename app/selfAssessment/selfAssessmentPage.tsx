@@ -44,7 +44,7 @@ export default function selfAssessmentPage() {
   const questionString = `Question ${currentQuestion}/${length}`;
 
   const getRandomLetter = () => {
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXY";
     const randomIndex = Math.floor(Math.random() * alphabet.length);
     return alphabet[randomIndex];
   };
