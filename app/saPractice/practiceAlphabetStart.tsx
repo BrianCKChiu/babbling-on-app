@@ -10,7 +10,7 @@ import { auth } from "@/firebase";
 export default function practiceAlphabetStart() {
   const router = useRouter();
   //const { option } = useLocalSearchParams();
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXY".split("");
   const [selectedLetter, setSelectedLetter] = useState(alphabet[0]);
   const [user] = useAuthState(auth);
 
