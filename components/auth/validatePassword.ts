@@ -1,14 +1,14 @@
-export const isValidPassword = (pass: string) => {
-  const hasNumber = /\d/;
-  const hasLetter = /[a-zA-Z]/;
-  return pass.length >= 8 && hasNumber.test(pass) && hasLetter.test(pass);
-};
+// export const isValidPassword = (pass: string) => {
+//   const hasNumber = /\d/;
+//   const hasLetter = /[a-zA-Z]/;
+//   return pass.length >= 8 && hasNumber.test(pass) && hasLetter.test(pass);
+// };
 
 // version 2 to add after development:
-// export const isValidPassword = (pass: string) => {
-//   const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
-//   return passwordRegex.test(pass);
-// };
+export const isValidPassword = (pass: string) => {
+  const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
+  return passwordRegex.test(pass);
+};
 
 
 //Conditions of version 2:

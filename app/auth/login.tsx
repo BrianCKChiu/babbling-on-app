@@ -98,6 +98,7 @@ export default function Page() {
               size="lg"
               placeholder="Email"
               value={email}
+              autoCapitalize="none"
               onChangeText={(text) => setEmail(text)}
               {...authInputStyle}
             />

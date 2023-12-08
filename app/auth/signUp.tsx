@@ -60,6 +60,16 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
+
+    if (email === "") {
+      Toast.show({
+        title: "Email cannot be empty",
+        bgColor: "red.500",
+        placement: "bottom",
+      });
+      setIsSigningUp(false);
+      return;
+    }
   
     if (password === "") {
       Toast.show({
@@ -103,7 +113,8 @@ export default function Page() {
   
     if (!isValidPassword(password)) {
       Toast.show({
-        title: "Password must be at least 8 characters long & contain at least one uppercase letter and number",
+        title: "Password Requirements:",
+        description: "Must contain at least 8 characters, including 1 number, 1 letter, and 1 special character. No spaces allowed.",
         bgColor: "red.500",
         placement: "bottom",
       });
@@ -232,6 +243,7 @@ export default function Page() {
             placeholder="Username"
             value={userName}
             type="text"
+            autoCapitalize="none"
             onChangeText={(text) => setUserName(text)}
             {...authInputStyle}
           />
@@ -240,6 +252,7 @@ export default function Page() {
             placeholder="Email"
             value={email}
             type="text"
+            autoCapitalize="none"
             onChangeText={(text) => setEmail(text)}
             {...authInputStyle}
           />
