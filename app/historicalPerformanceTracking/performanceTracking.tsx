@@ -8,7 +8,7 @@ import { Center, ScrollView } from "native-base";
 interface SelfAssessment {
   dateTaken: string | number | Date;
   isPractice: boolean;
-  id: number;
+  assessmentId: number;
   name: string;
   score: number;
 }
@@ -30,7 +30,7 @@ export default function PerformanceTracking() {
         throw new Error("Server Error");
       }
       const dataAvgSc = await responseAvgSc.json();
-      setAverageScore((dataAvgSc.averageScore * 100).toFixed(2));
+      setAverageScore((dataAvgSc.averageScore).toFixed(2));
 
       const responseHighSc = await fetch(
         `http://localhost:8080/selfAssessment/highest-score/${user?.uid}`
@@ -39,7 +39,7 @@ export default function PerformanceTracking() {
         throw new Error("Server Error");
       }
       const dataHighSc = await responseHighSc.json();
-      setHighestScore((dataHighSc.highestScore * 100).toFixed(2));
+      setHighestScore((dataHighSc.highestScore).toFixed(2));
 
       const responseAssessments = await fetch(
         `http://localhost:8080/selfAssessment/assessments/all/${user?.uid}`
@@ -69,15 +69,29 @@ export default function PerformanceTracking() {
         <Text style={styles.bodyText}>Highest Score: {highestScore}</Text>
         <Text style={styles.bodyText}>Average Score: {averageScore}</Text>
         <Text style={styles.bodyText}>List of Assessments:</Text>
+        {selfAssessments.length === 0 ? (
+        <Text style={[styles.bodyText, {color:"red"}]}>
+          You have no self assessments performed. Perform a self assessment and come back again!
+        </Text>
+    ) : (
         <ScrollView style={styles.scrollView}>
           {selfAssessments.map((assessment, index) => (
-            <View
-              key={index}
-              style={[
-                styles.assessmentContainer,
-                index % 2 === 1 && styles.coloredAssessmentContainer,
-              ]}
-            >
+            <TouchableOpacity
+            key={index}
+            disabled={assessment.isPractice}
+            onPress={() => router.push({
+              pathname: "/historicalPerformanceTracking/assessmentDetails",
+              params: {
+                  assessmentId: String(assessment.assessmentId),
+                  dateTaken: assessment.dateTaken.toString(),
+                  score: String(assessment.score),
+              },
+          })}          
+            style={[
+              styles.assessmentContainer,
+              index % 2 === 1 && styles.coloredAssessmentContainer,
+            ]}
+          >
               <Text style={styles.assessmentText}>
                 Date Taken:{" "}
                 {new Date(assessment.dateTaken).toLocaleDateString()}
@@ -88,9 +102,9 @@ export default function PerformanceTracking() {
               <Text style={styles.assessmentText}>
                 Practice: {assessment.isPractice ? "Yes" : "No"}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
-        </ScrollView>
+        </ScrollView>)}
         <TouchableOpacity
           onPress={() => router.push("/(drawer)/home")}
           style={[styles.nextButton]}
