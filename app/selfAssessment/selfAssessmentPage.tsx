@@ -85,7 +85,7 @@ export default function selfAssessmentPage() {
         {
           method: "PUT",
           body: JSON.stringify({
-            score: score,
+            score: Math.round(score*100),
           }),
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export default function selfAssessmentPage() {
 
       router.push({
         pathname: "/selfAssessment/results",
-        params: { length: length, score: score },
+        params: { length: length, score: Math.round(score*100), assessmentId: assessmentId, },
       });
     }
   };

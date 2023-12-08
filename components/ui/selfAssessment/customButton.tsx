@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold'
   },
 });
