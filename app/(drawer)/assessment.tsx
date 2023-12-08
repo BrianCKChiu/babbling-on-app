@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { Center, View } from "native-base";
-import { StyleSheet, Text } from "react-native";
+import { Dimensions, StyleSheet, Text } from "react-native";
 import React from "react";
 import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
 import CustomButton from "@/ui/selfAssessment/customButton";
@@ -11,10 +11,10 @@ export default function TabAssessmentScreen() {
 
   return (
     <DefaultLayout>
-    <View w={"full"}>
+    <View w={"full"} height={"90%"}>
       <Center width={200} height={200} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="30%" left="65%" />
       <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="5%" left="-10%"/>
-      <Text style={styles.headerText}>ASL Self Assessment</Text>
+      <Text style={styles.headerText}>ASL Self{"\n"}Assessment</Text>
       <DescriptionSection
         bodyText="Welcome to your personal hub for mastering ASL Alphabets! 
         Dive into a tailored experience where you can challenge your skills with 
@@ -42,6 +42,8 @@ export default function TabAssessmentScreen() {
   );
 }
 
+const { height, width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -50,9 +52,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   headerText: {
-    fontSize: 32,
+    fontSize: width * 0.08,
     fontWeight: "bold",
     marginLeft: "5%",
-    marginTop: "30%",
+    marginTop: height * 0.06,
   },
 });

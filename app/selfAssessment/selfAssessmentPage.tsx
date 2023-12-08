@@ -239,7 +239,7 @@ export default function selfAssessmentPage() {
           <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="8%" left="-5%" />
           <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="25%" left="55%"/>
           <Text style={[styles.headerText, { marginTop: !isMessageVisible ? "60%" : "22%", }]}>
-          {questionString + '\n\nPerform the gesture for: ' + currentLetter}
+          {questionString + "\n\nPerform the gesture for: " + currentLetter}
           </Text>
           {isMessageVisible && (
             <Text style={styles.bodyText}>Correct gesture:</Text>
@@ -310,7 +310,7 @@ export default function selfAssessmentPage() {
   
 }
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -338,8 +338,8 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.02,
     marginHorizontal: "10%",
     marginBottom: height * 0.02,
-    justifyContent: 'center', 
-    flexDirection: 'row',
+    justifyContent: "center", 
+    flexDirection: "row",
   },
   buttonText: {
     color: "black",
@@ -400,14 +400,14 @@ const styles = StyleSheet.create({
     marginHorizontal: "10%",
   },
   capturedImageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: height * 0.01,
   },
   yourAttemptText: {
     fontSize: width * 0.045,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 10,
   },
   smallImage: {

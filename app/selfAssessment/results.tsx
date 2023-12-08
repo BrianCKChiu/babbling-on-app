@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import CustomButton from "@/ui/selfAssessment/customButton";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Center } from "native-base";
 
 export default function results() {
@@ -19,11 +18,12 @@ export default function results() {
       <Text style={styles.questionText}>
         You got {scoreInt * lengthInt}/{lengthInt} correct
       </Text>
-      <CustomButton
-        text="Exit Assessment"
-        onPress={() => router.push("/(drawer)/assessment")}
-        buttonColor={"#FFED4B"}
-      ></CustomButton>
+      <TouchableOpacity
+      style={styles.button}
+      onPress={() => router.push("/(drawer)/assessment")}
+    >
+      <Text style={styles.buttonText}>Exit Assessment</Text>
+    </TouchableOpacity>
     </View>
   );
 }
@@ -47,5 +47,24 @@ const styles = StyleSheet.create({
     paddingLeft: "7%",
     marginTop: "10%",
     marginBottom: "5%",
+  },
+  button: {
+    width: "90%",
+    height: "7%",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center", 
+    margin:"5%",
+    marginBottom:0,
+    marginTop: "5%",
+    borderWidth:1,
+    borderColor:"#D8D8D8",
+    backgroundColor: "#FFED4B",
+    alignSelf: "flex-end",
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold"
   },
 });
