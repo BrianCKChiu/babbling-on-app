@@ -129,7 +129,7 @@ export default function Page() {
             bgColor: "green.500",
             placement: "bottom",
           });
-          router.push("/home");
+          router.replace("/home");
           setIsSigningUp(false);
         } catch (e) {
           console.error(e);

@@ -52,7 +52,7 @@ export default function Page() {
           duration: 2000,
         });
 
-        router.push("/(drawer)/home");
+        router.replace("/(drawer)/home");
       })
       .catch((error) => {
         console.log(error);
