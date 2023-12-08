@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  Modal,
   Image,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
@@ -21,6 +20,7 @@ import "react-native-get-random-values";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
 import { Spinner } from "native-base";
+import ImageModal from "@/ui/selfAssessment/imageModal";
 
 export default function practicePage() {
   const router = useRouter();
@@ -201,24 +201,12 @@ export default function practicePage() {
       </View>
     )}
 
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isModalVisible}
-      onRequestClose={() => setIsModalVisible(false)}
-    >
-      <View style={styles.modalView}>
-          {capturedImageUri && (
-            <Image source={{ uri: capturedImageUri }} style={styles.modalImage} />
-          )}
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(!isModalVisible)}
-              style={styles.nextButton}
-            >
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-      </Modal>
+        <ImageModal
+          isVisible={isModalVisible}
+          imageUri={capturedImageUri as string}
+          onClose={() => setIsModalVisible(false)}
+        />
+
           <TouchableOpacity
             onPress={() => router.back()}
             style={[
@@ -331,18 +319,5 @@ const styles = StyleSheet.create({
     width: 50, 
     height: 50, 
     marginBottom: "15%",
-  },
-  modalView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-    backgroundColor: 'white',
-  },
-  modalImage: {
-    width: '90%', 
-    height: '70%', 
-    resizeMode: 'contain',
-    marginTop: "20%",
   },
 });

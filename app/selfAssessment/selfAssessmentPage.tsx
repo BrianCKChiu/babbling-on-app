@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Image,
+  Dimensions,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
@@ -19,6 +21,7 @@ import "react-native-get-random-values";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
 import { Center, Spinner } from "native-base";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
+import ImageModal from "@/ui/selfAssessment/imageModal";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
@@ -39,6 +42,8 @@ export default function selfAssessmentPage() {
   const [score, setScore] = useState<number>(0);
   const lengthInt = parseInt(length as string, 10);
   const [isLoading, setIsLoading] = useState(false);
+  const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
 
 
@@ -69,6 +74,7 @@ export default function selfAssessmentPage() {
       enableButton();
       setIsMessageVisible(false);
       setCurrentLetter(getRandomLetter());
+      setCapturedImageUri(null);
     } else {
       console.log(assessmentId);
       fetch(
@@ -139,6 +145,7 @@ export default function selfAssessmentPage() {
     const options = { quality: 0.5, base64: true };
     const photo = await cameraRef.current.takePictureAsync(options);
 
+    setCapturedImageUri(photo.uri);
     setIsLoading(true);  // Start loading after picture is taken
     setIsCameraVisible(false);  // Close the camera
 
@@ -231,7 +238,7 @@ export default function selfAssessmentPage() {
         <View style={styles.container}>
           <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="8%" left="-5%" />
           <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="25%" left="55%"/>
-          <Text style={[styles.headerText, { marginTop: !isMessageVisible ? "60%" : "25%", }]}>
+          <Text style={[styles.headerText, { marginTop: !isMessageVisible ? "60%" : "22%", }]}>
           {questionString + '\n\nPerform the gesture for: ' + currentLetter}
           </Text>
           {isMessageVisible && (
@@ -269,6 +276,20 @@ export default function selfAssessmentPage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
+          {capturedImageUri && (
+        <View style={styles.capturedImageContainer}>
+        <Text style={styles.yourAttemptText}>Your attempt:</Text>
+        <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Image source={{ uri: capturedImageUri }} style={styles.smallImage} />
+        </TouchableOpacity>
+      </View>
+    )}
+
+        <ImageModal
+          isVisible={isModalVisible}
+          imageUri={capturedImageUri as string}
+          onClose={() => setIsModalVisible(false)}
+        />
   
           <TouchableOpacity
             onPress={handleNextClick}
@@ -289,6 +310,8 @@ export default function selfAssessmentPage() {
   
 }
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -296,30 +319,31 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   headerText: {
-    fontSize: 24,
+    fontSize: width * 0.06,
     fontWeight: "bold",
-    marginLeft: "10%",
-    marginBottom: "10%",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
+    lineHeight: width * 0.065,
   },
   bodyText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: "bold",
-    marginLeft: "10%",
-    marginBottom: "5%",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.01,
   },
   performGestureButton: {
     width: "80%",
     borderRadius: 8,
     alignItems: "center",
-    paddingVertical: "5%",
-    margin: "10%",
-    marginBottom: "5%",
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
     justifyContent: 'center', 
     flexDirection: 'row',
   },
   buttonText: {
     color: "black",
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: "bold",
   },
   camera: {
@@ -329,7 +353,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
-    margin: 5,
+    margin: width * 0.01,
     justifyContent: "space-between",
   },
   button: {
@@ -341,7 +365,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   text: {
-    fontSize: 18,
+    fontSize: width * 0.045,
     color: "white",
   },
   messageBox: {
@@ -350,30 +374,45 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    margin: "10%",
-    marginBottom: "10%",
-    marginTop: "0%",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
   },
   messageText: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "bold",
   },
   nextButton: {
     width: "80%",
     borderRadius: 8,
-    padding: 30,
-    paddingVertical: "5%",
-    margin: "10%",
-    alignSelf: "flex-end",
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+    alignSelf: "center",
     alignItems: "center",
     marginTop: "auto",
+    marginBottom: "10%"
   },
   spinnerContainer: {
     width: "78%",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: "4%",
-    margin: "10%",
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+  },
+  capturedImageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: height * 0.01,
+  },
+  yourAttemptText: {
+    fontSize: width * 0.045,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  smallImage: {
+    width: 50, 
+    height: 50, 
   },
 });
+
