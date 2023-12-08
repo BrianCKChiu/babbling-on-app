@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Image,
 } from "react-native";
+import { Toast } from "native-base";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -33,6 +34,7 @@ export default function practicePage() {
   const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMessageVisible, setIsMessageVisible] = React.useState(false);
+  const [isPredictionCorrect, setIsPredictionCorrect] = useState(true);
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
     color: string;
@@ -58,12 +60,13 @@ export default function practicePage() {
         recognizedLetter,
       });
     } else {
-      messageText = `Incorrect! :( You performed: ${recognizedLetter}`;
+      messageText = `Incorrect! You performed: ${recognizedLetter}`;
       setMessageContent({
         text: messageText,
         color: "#F9B3A8",
         recognizedLetter,
       });
+      setIsPredictionCorrect(false);
     }
     setIsMessageVisible(true);
   };
@@ -71,6 +74,41 @@ export default function practicePage() {
   const performGesture = () => {
     setIsCameraVisible(true);
     setIsMessageVisible(false); 
+    setIsPredictionCorrect(true);
+  };
+
+  const handleWrongPrediction = async () => {
+    Toast.show({
+      title: "Image Saved",
+      description: "The image has been saved to retrain the AI.",
+      bgColor: "red.500",
+      placement: "bottom",
+    });
+  
+    if (capturedImageUri) {
+      const uniqueID = uuidv4();
+      const fileName = `${letter}_${uniqueID}`;
+  
+      const storageRef = ref(storage, `reTrain/${fileName}.jpeg`);
+      const response = await fetch(capturedImageUri);
+      const blob = await response.blob();
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Error during upload:", error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("Image available at:", downloadURL);
+        }
+      );
+    }
   };
   
 
@@ -198,7 +236,12 @@ export default function practicePage() {
         <TouchableOpacity onPress={() => setIsModalVisible(true)}>
           <Image source={{ uri: capturedImageUri }} style={styles.smallImage} />
         </TouchableOpacity>
-      </View>
+        {!isPredictionCorrect && (
+        <TouchableOpacity onPress={handleWrongPrediction}>
+          <Text style={[styles.yourAttemptText,{color: "red"}]}>Wrong Prediction?</Text>
+          </TouchableOpacity>
+          )}
+          </View>
     )}
 
         <ImageModal
@@ -314,6 +357,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 10,
+    marginLeft: 5,
   },
   smallImage: {
     width: 50, 
