@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Modal,
+  Image,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
@@ -28,6 +30,8 @@ export default function practicePage() {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const cameraRef = useRef<Camera | null>(null);
   const storage = getStorage();
+  const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMessageVisible, setIsMessageVisible] = React.useState(false);
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
@@ -80,7 +84,8 @@ export default function practicePage() {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
-
+      
+      setCapturedImageUri(photo.uri);
       setIsLoading(true); // Start loading after picture is taken
       setIsCameraVisible(false); // Close the camera
 
@@ -187,6 +192,33 @@ export default function practicePage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
+          {capturedImageUri && (
+        <View style={styles.capturedImageContainer}>
+        <Text style={styles.yourAttemptText}>Your attempt:</Text>
+        <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Image source={{ uri: capturedImageUri }} style={styles.smallImage} />
+        </TouchableOpacity>
+      </View>
+    )}
+
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isModalVisible}
+      onRequestClose={() => setIsModalVisible(false)}
+    >
+      <View style={styles.modalView}>
+          {capturedImageUri && (
+            <Image source={{ uri: capturedImageUri }} style={styles.modalImage} />
+          )}
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(!isModalVisible)}
+              style={styles.nextButton}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+      </Modal>
           <TouchableOpacity
             onPress={() => router.back()}
             style={[
@@ -217,21 +249,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
     fontWeight: "bold",
-  },
-  backbutton: {
-    width: "50%",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    padding: 20,
-    paddingLeft: 10,
-    margin: "7%",
-    marginBottom: "10%",
-    marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
-    backgroundColor: "#F7F9A9",
   },
   nextButton: {
     width: "80%",
@@ -292,11 +309,40 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     margin: "10%",
-    marginBottom: "10%",
+    marginBottom: "3%",
     marginTop: "0%",
   },
   messageText: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  capturedImageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  yourAttemptText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  smallImage: {
+    width: 50, 
+    height: 50, 
+    marginBottom: "15%",
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'white',
+  },
+  modalImage: {
+    width: '90%', 
+    height: '70%', 
+    resizeMode: 'contain',
+    marginTop: "20%",
   },
 });
