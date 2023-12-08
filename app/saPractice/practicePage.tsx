@@ -18,8 +18,7 @@ import {
 import "react-native-get-random-values";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
-import { HStack, Spinner } from "native-base";
-import NextPageButton from "@/ui/selfAssessment/nextPageButton";
+import { Spinner } from "native-base";
 
 export default function practicePage() {
   const router = useRouter();
@@ -33,7 +32,9 @@ export default function practicePage() {
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
     color: string;
+    recognizedLetter?: string;
   }>({ text: "", color: "" });
+  
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -43,21 +44,31 @@ export default function practicePage() {
     })();
   }, []);
 
-  const showMessage = (wasCorrect: boolean) => {
-    setIsLoading(false); // Stop loading when the message is ready to be shown
+  const showMessage = (wasCorrect: boolean, recognizedLetter: string) => {
+    let messageText = "";
     if (wasCorrect) {
+      messageText = `Correct! You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE CORRECT!",
+        text: messageText,
         color: "#A9F8AC",
+        recognizedLetter,
       });
     } else {
+      messageText = `Incorrect! :( You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE WRONG :(",
+        text: messageText,
         color: "#F9B3A8",
+        recognizedLetter,
       });
     }
     setIsMessageVisible(true);
   };
+  
+  const performGesture = () => {
+    setIsCameraVisible(true);
+    setIsMessageVisible(false); 
+  };
+  
 
   const toggleCameraType = () => {
     setType((current) =>
@@ -76,20 +87,18 @@ export default function practicePage() {
       try {
         const downloadURL = await uploadImageToFirebase(photo.uri);
         // Analyzing the code using AI:
-        const [success, isPredictionCorrect] = await imageAnalyzer(
-          downloadURL,
-          letter as string
-        );
+        const [success, isPredictionCorrect, recognizedLetter] = await imageAnalyzer(downloadURL, letter as string);
+
 
         if (success) {
-          showMessage(isPredictionCorrect); // Show message based on prediction
+          showMessage(isPredictionCorrect, recognizedLetter); // Show message based on prediction
         } else {
           console.log("Error analyzing image");
         }
       } catch (error) {
         console.error("Error:", error);
-        setIsLoading(false); // Stop loading in case of an error
       }
+      setIsLoading(false);
     }
   };
 
@@ -163,7 +172,7 @@ export default function practicePage() {
           ) : (
             <TouchableOpacity
               style={styles.performGestureButton}
-              onPress={() => setIsCameraVisible(true)}
+              onPress={performGesture}
             >
               <Text style={styles.buttonText}>Perform Gesture</Text>
             </TouchableOpacity>
@@ -178,9 +187,14 @@ export default function practicePage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
-          <HStack style={styles.nextButton}>
-            <NextPageButton text="End Practice" onPress={() => router.back()} />
-          </HStack>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={[
+              styles.nextButton,
+            ]}
+          >
+            <Text style={styles.buttonText}>End Practice</Text>
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -199,6 +213,11 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     marginTop: "10%",
   },
+  buttonText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   backbutton: {
     width: "50%",
     borderRadius: 8,
@@ -215,9 +234,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#F7F9A9",
   },
   nextButton: {
-    alignItems: "flex-end",
-    marginLeft: "5%",
-    alignSelf: "baseline",
+    width: "80%",
+    borderRadius: 8,
+    padding: 30,
+    paddingVertical: "5%",
+    margin: "10%",
+    alignSelf: "flex-end",
+    alignItems: "center",
+    marginTop: "auto",
+    backgroundColor: "#FFED4B",
   },
   spinnerContainer: {
     width: "78%",
@@ -228,19 +253,15 @@ const styles = StyleSheet.create({
     margin: "10%",
   },
   performGestureButton: {
-    width: "78%",
+    width: "80%",
     borderRadius: 8,
     alignItems: "center",
-    paddingVertical: "4%",
+    paddingVertical: "5%",
     margin: "10%",
-    marginBottom: "10%",
-    marginTop: "10%",
+    marginBottom: "5%",
+    justifyContent: 'center', 
+    flexDirection: 'row',
     backgroundColor: "#FFED4B",
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   camera: {
     flex: 1,

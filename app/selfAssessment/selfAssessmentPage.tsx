@@ -32,6 +32,7 @@ export default function selfAssessmentPage() {
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
     color: string;
+    recognizedLetter?: string;
   }>({ text: "", color: "" });
   const [isButtonClickable, setIsButtonClickable] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
@@ -106,20 +107,26 @@ export default function selfAssessmentPage() {
     setIsButtonClickable((prevIsButtonClickable) => !prevIsButtonClickable);
   };
 
-  const showMessage = (wasCorrect: boolean) => {
+  const showMessage = (wasCorrect: boolean, recognizedLetter: string) => {
+    let messageText = "";
     if (wasCorrect) {
+      messageText = `Correct! You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE CORRECT!",
+        text: messageText,
         color: "#A9F8AC",
+        recognizedLetter,
       });
     } else {
+      messageText = `Incorrect! :( You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE WRONG :(",
+        text: messageText,
         color: "#F9B3A8",
+        recognizedLetter,
       });
     }
     setIsMessageVisible(true);
   };
+  
 
   const toggleCameraType = () => {
     setType((current) =>
@@ -138,10 +145,10 @@ export default function selfAssessmentPage() {
     try {
       const downloadURL = await uploadImageToFirebase(photo.uri);
       // Analyzing the code using AI:
-      const [success, isPredictionCorrect] = await imageAnalyzer(downloadURL, currentLetter);
+      const [success, isPredictionCorrect, recognizedLetter] = await imageAnalyzer(downloadURL, currentLetter);
 
       if (success) {
-        showMessage(isPredictionCorrect); // Show message based on prediction
+        showMessage(isPredictionCorrect, recognizedLetter);// Show message based on prediction
         if (isPredictionCorrect) {
           updateScore(); // Updating score if gesture is correct
         }
