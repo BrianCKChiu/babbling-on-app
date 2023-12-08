@@ -12,12 +12,12 @@ export function HomeCarousel() {
   const { width: screenWidth } = Dimensions.get('window');
   const [cardItems] = useState([
     {
-      path: "/quiz/",
+      path: "/quiz?quizId=eJE9f2tfYe7PJjO3YPrK",
       title: "Daily Quiz",
       image: dailyAslImg,
     },
     {
-      path: "/quiz/",
+      path: "/quiz?quizId=kQBr1URkzfcqIxitWWE5",
       title: "Weekly Quiz",
       image: weeklyAslImg,
     },

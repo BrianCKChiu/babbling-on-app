@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuizStore } from "@/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -39,6 +39,7 @@ export default function Page() {
   const router = useRouter();
   const { setQuestions, setQuizId } = useQuizStore();
   const [user] = useAuthState(auth);
+  const { quizId } = useLocalSearchParams<{ quizId: string }>();
 
   useEffect(() => {
     // this will fetch quiz data from server
@@ -60,13 +61,14 @@ export default function Page() {
   }, []);
 
   async function getQuizDetails() {
+    console.log(quizId);
     const token = await user?.getIdToken();
     try {
       const response = await HttpHandler.post({
         endpoint: "quiz/details",
         body: {
           token: token,
-          quizId: "eJE9f2tfYe7PJjO3YPrK",
+          quizId: quizId,
         },
       });
 
@@ -140,7 +142,9 @@ export default function Page() {
     for (const key in quizData.description) {
       elements.push(
         <Text key={key}>
-          {key !== "intro" && <Text fontWeight={"semibold"}>{key}: </Text>}
+          {key.toLowerCase() !== "intro" && (
+            <Text fontWeight={"semibold"}>{key}: </Text>
+          )}
           <Text>
             {quizData.description[key]} {`\n`}
           </Text>
@@ -178,20 +182,28 @@ export default function Page() {
               <Heading size="xl" mt={3}>
                 {quizData?.title}
               </Heading>
-              <HStack w={"full"} justifyContent="space-between">
-                <QuizDetailTile
-                  label={quizData?.numOfQuestion.toString() ?? "0"}
-                  heading="Questions"
-                />
-                <QuizDetailTile
-                  label={quizData?.estTime.toString() ?? "0"}
-                  heading="Minutes"
-                />
-                <QuizDetailTile
-                  label={quizData?.exp.toString() ?? "0"}
-                  heading="EXP"
-                />
-              </HStack>
+              <VStack w={"full"} justifyContent="space-between">
+                <HStack mb={"12px"}>
+                  <QuizDetailTile
+                    label={quizData?.options.quizLength.toString() ?? "Short"}
+                    heading="Length"
+                  />
+                  <QuizDetailTile
+                    label={quizData?.options.quizType.toString() ?? "Hybrid"}
+                    heading="Question"
+                  />
+                </HStack>
+                <HStack>
+                  <QuizDetailTile
+                    label={quizData?.estTime.toString() ?? "0"}
+                    heading="Minutes"
+                  />
+                  <QuizDetailTile
+                    label={quizData?.exp.toString() ?? "0"}
+                    heading="EXP"
+                  />
+                </HStack>
+              </VStack>
               <VStack>{formatDescription()}</VStack>
             </VStack>
           </ScrollView>
@@ -237,17 +249,21 @@ function QuizDetailTile({
   heading: string;
 }) {
   return (
-    <Center
-      borderWidth={1}
-      borderColor={"gray.300"}
-      w={"25%"}
-      h={20}
+    <HStack
+      w={"50%"}
+      h={"52px"}
+      textAlign={"left"}
+      p={"8px"}
       borderRadius={"md"}
+      borderWidth={"1px"}
+      borderColor={"gray.400"}
+      alignItems={"center"}
+      mx={"4px"}
     >
-      <VStack alignItems="center" alignContent="center">
-        <Text>{heading}</Text>
-        <Text>{label}</Text>
-      </VStack>
-    </Center>
+      <Text fontSize={"16px"} fontWeight={"semibold"} mr={"4px"}>
+        {heading}:{" "}
+      </Text>
+      <Text fontSize={"16px"}>{label}</Text>
+    </HStack>
   );
 }
