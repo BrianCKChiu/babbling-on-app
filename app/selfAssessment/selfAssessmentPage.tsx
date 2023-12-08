@@ -44,6 +44,8 @@ export default function selfAssessmentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [questionImageUrl, setquestionImageUrl] = useState<string | null>(null);
 
 
 
@@ -68,7 +70,8 @@ export default function selfAssessmentPage() {
     setScore(parseFloat(ex.toFixed(2)));
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
+    await createQuestionRecord(isCorrect, questionImageUrl as string);
     if (currentQuestion < lengthInt) {
       setCurrentQuestion(currentQuestion + 1);
       enableButton();
@@ -109,6 +112,33 @@ export default function selfAssessmentPage() {
     }
   };
 
+  const createQuestionRecord = async (result: boolean, imageUrl: string) => {
+    try {
+      const response = await fetch(`http://localhost:8080/saQuestion/add`, {
+        method: "POST",
+        body: JSON.stringify({
+          assessmentId: assessmentId,
+          text: currentLetter,
+          isCorrect: isCorrect,
+          imageUrl: imageUrl.split('/').pop(), 
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create question record");
+      }
+  
+      const data = await response.json();
+      console.log("Question Created:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+
   const enableButton = () => {
     setIsButtonClickable((prevIsButtonClickable) => !prevIsButtonClickable);
   };
@@ -116,6 +146,7 @@ export default function selfAssessmentPage() {
   const showMessage = (wasCorrect: boolean, recognizedLetter: string) => {
     let messageText = "";
     if (wasCorrect) {
+      setIsCorrect(true);
       messageText = `Correct! You performed: ${recognizedLetter}`;
       setMessageContent({
         text: messageText,
@@ -123,6 +154,7 @@ export default function selfAssessmentPage() {
         recognizedLetter,
       });
     } else {
+      setIsCorrect(false);
       messageText = `Incorrect! :( You performed: ${recognizedLetter}`;
       setMessageContent({
         text: messageText,
@@ -177,10 +209,12 @@ export default function selfAssessmentPage() {
     const blob = await response.blob();
     const uniqueID = uuidv4();
 
+
     const metadata = {
       contentType: "image/jpeg",
     };
 
+    setquestionImageUrl(`${uniqueID}.jpeg`)
     const storageRef = ref(storage, `saImages/${uniqueID}.jpeg`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
