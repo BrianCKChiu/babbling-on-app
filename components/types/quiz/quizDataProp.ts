@@ -2,7 +2,10 @@ export type QuizDataProp = {
   id: string;
   topic: string;
   title: string;
-  numOfQuestion: number;
+  options: {
+    quizLength: string;
+    quizType: string;
+  };
   estTime: number;
   exp: number;
   description: { [key: string]: string };
