@@ -16,6 +16,12 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="assessmentDetails"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
 
   );

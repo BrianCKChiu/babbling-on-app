@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import IBlock from "@/ui/IBlock";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -17,7 +17,7 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
   const navigation = useNavigation();
 
   return (
-    <View {...props}>
+    <View style={styles.container} {...props}>
       <VStack h={"full"} w="full" pt={"40px"} px={"16px"}>
         <HStack
           display={"flex"}
@@ -85,3 +85,10 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white", 
+    flex: 1,
+  },
+});

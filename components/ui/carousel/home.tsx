@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import dailyAslImg from "@assets/images/daily-quiz.jpg";
 import weeklyAslImg from "@assets/images/weekly-quiz.jpg";
-import { ImageSourcePropType } from "react-native";
+import { ImageSourcePropType, Dimensions } from "react-native";
 
 export function HomeCarousel() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
+  const { width: screenWidth } = Dimensions.get('window');
   const [cardItems] = useState([
     {
       path: "/quiz?quizId=eJE9f2tfYe7PJjO3YPrK",
@@ -74,8 +75,8 @@ export function HomeCarousel() {
         layout={"default"}
         data={cardItems}
         renderItem={cardItem}
-        sliderWidth={400}
-        itemWidth={400}
+        sliderWidth={screenWidth* 0.925}
+        itemWidth={screenWidth * 0.9}
         windowSize={1}
         onSnapToItem={(index) => setActiveIndex(index)}
       />

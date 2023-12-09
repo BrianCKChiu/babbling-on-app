@@ -31,10 +31,10 @@
 
 //VERSION 2:
 // Function returns a tuple: (success, result)
-async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[boolean, boolean]> {
+async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[boolean, boolean, string]> {
   try {
     if (!imageURL) {
-      return [false, false];
+      return [false, false, ''];
     }
 
     const response = await fetch('http://localhost:8080/image/detect', { 
@@ -54,12 +54,12 @@ async function imageAnalyzer(imageURL: string, currentLetter: string): Promise<[
     // Extracting the "class" value from the first prediction
     const predictedAlphabet = responseData.predictions.length > 0 ? responseData.predictions[0].class : '';
 
-    console.log(`Recognised Alphabet: ${predictedAlphabet}`);
-    return [true, predictedAlphabet === currentLetter];
+    console.log(`Recognized Alphabet: ${predictedAlphabet}`);
+    return [true, predictedAlphabet === currentLetter, predictedAlphabet];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Error:', error.message);
-    return [false, false];
+    return [false, false, ''];
   }
 }
 

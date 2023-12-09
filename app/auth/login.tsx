@@ -19,7 +19,7 @@ import { useRouter } from "expo-router";
 // helpers
 import { auth } from "@/firebase";
 import { validateSignIn } from "@/utils/validateSignIn";
-import { UserCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { UserCredential, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -40,27 +40,40 @@ export default function Page() {
       setIsLoggingIn(false);
       return;
     }
-
+  
     signInWithEmailAndPassword(auth, email.toLowerCase(), password)
       .then(async (userCredential: UserCredential) => {
         const user = userCredential.user;
-        toasts.show({
-          title: user.displayName
-            ? `Welcome back ${user.displayName}`
-            : "Login Successful",
-          bgColor: "green.500",
-          duration: 2000,
-        });
-
-        router.replace("/(drawer)/home");
+        if (user.emailVerified) {
+          // Email is alredy verified, user can proceed to home page
+          toasts.show({
+            title: user.displayName
+              ? `Welcome back ${user.displayName}`
+              : "Login Successful",
+            bgColor: "green.500",
+            duration: 2000,
+          });
+          router.replace("/(drawer)/home");
+        } else {
+          // Email is not verified, so we send a verification email
+          sendEmailVerification(user).then(() => {
+            toasts.show({
+              title: "Your email is not verified. Check your inbox for a verification link.",
+              bgColor: "blue.500",
+              duration: 2000,
+            });
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
         toasts.show({
-          title: "Something went wrong, please try again later!",
+          title: "Invalid Credentials, please try again!",
           bgColor: "red.500",
           duration: 2000,
         });
+      })
+      .finally(() => {
         setIsLoggingIn(false);
       });
   }
@@ -85,6 +98,7 @@ export default function Page() {
               size="lg"
               placeholder="Email"
               value={email}
+              autoCapitalize="none"
               onChangeText={(text) => setEmail(text)}
               {...authInputStyle}
             />

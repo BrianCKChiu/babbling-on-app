@@ -6,7 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from "react-native";
+import { Toast } from "native-base";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -18,8 +20,8 @@ import {
 import "react-native-get-random-values";
 import { DisplayImage } from "@/ui/selfAssessment/displayImage";
 import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
-import { HStack, Spinner } from "native-base";
-import NextPageButton from "@/ui/selfAssessment/nextPageButton";
+import { Spinner } from "native-base";
+import ImageModal from "@/ui/selfAssessment/imageModal";
 
 export default function practicePage() {
   const router = useRouter();
@@ -29,11 +31,16 @@ export default function practicePage() {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const cameraRef = useRef<Camera | null>(null);
   const storage = getStorage();
+  const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMessageVisible, setIsMessageVisible] = React.useState(false);
+  const [isPredictionCorrect, setIsPredictionCorrect] = useState(true);
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
     color: string;
+    recognizedLetter?: string;
   }>({ text: "", color: "" });
+  
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -43,21 +50,67 @@ export default function practicePage() {
     })();
   }, []);
 
-  const showMessage = (wasCorrect: boolean) => {
-    setIsLoading(false); // Stop loading when the message is ready to be shown
+  const showMessage = (wasCorrect: boolean, recognizedLetter: string) => {
+    let messageText = "";
     if (wasCorrect) {
+      messageText = `Correct! You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE CORRECT!",
+        text: messageText,
         color: "#A9F8AC",
+        recognizedLetter,
       });
     } else {
+      messageText = `Incorrect! You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE WRONG :(",
+        text: messageText,
         color: "#F9B3A8",
+        recognizedLetter,
       });
+      setIsPredictionCorrect(false);
     }
     setIsMessageVisible(true);
   };
+  
+  const performGesture = () => {
+    setIsCameraVisible(true);
+    setIsMessageVisible(false); 
+    setIsPredictionCorrect(true);
+  };
+
+  const handleWrongPrediction = async () => {
+    Toast.show({
+      title: "Image Saved",
+      description: "The image has been saved to retrain the AI.",
+      bgColor: "red.500",
+      placement: "bottom",
+    });
+  
+    if (capturedImageUri) {
+      const uniqueID = uuidv4();
+      const fileName = `${letter}_${uniqueID}`;
+  
+      const storageRef = ref(storage, `reTrain/${fileName}.jpeg`);
+      const response = await fetch(capturedImageUri);
+      const blob = await response.blob();
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Error during upload:", error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("Image available at:", downloadURL);
+        }
+      );
+    }
+  };
+  
 
   const toggleCameraType = () => {
     setType((current) =>
@@ -69,27 +122,26 @@ export default function practicePage() {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
-
+      
+      setCapturedImageUri(photo.uri);
       setIsLoading(true); // Start loading after picture is taken
       setIsCameraVisible(false); // Close the camera
 
       try {
         const downloadURL = await uploadImageToFirebase(photo.uri);
         // Analyzing the code using AI:
-        const [success, isPredictionCorrect] = await imageAnalyzer(
-          downloadURL,
-          letter as string
-        );
+        const [success, isPredictionCorrect, recognizedLetter] = await imageAnalyzer(downloadURL, letter as string);
+
 
         if (success) {
-          showMessage(isPredictionCorrect); // Show message based on prediction
+          showMessage(isPredictionCorrect, recognizedLetter); // Show message based on prediction
         } else {
           console.log("Error analyzing image");
         }
       } catch (error) {
         console.error("Error:", error);
-        setIsLoading(false); // Stop loading in case of an error
       }
+      setIsLoading(false);
     }
   };
 
@@ -163,7 +215,7 @@ export default function practicePage() {
           ) : (
             <TouchableOpacity
               style={styles.performGestureButton}
-              onPress={() => setIsCameraVisible(true)}
+              onPress={performGesture}
             >
               <Text style={styles.buttonText}>Perform Gesture</Text>
             </TouchableOpacity>
@@ -178,9 +230,34 @@ export default function practicePage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
-          <HStack style={styles.nextButton}>
-            <NextPageButton text="End Practice" onPress={() => router.back()} />
-          </HStack>
+          {capturedImageUri && (
+        <View style={styles.capturedImageContainer}>
+        <Text style={styles.yourAttemptText}>Your attempt:</Text>
+        <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Image source={{ uri: capturedImageUri }} style={styles.smallImage} />
+        </TouchableOpacity>
+        {!isPredictionCorrect && (
+        <TouchableOpacity onPress={handleWrongPrediction}>
+          <Text style={[styles.yourAttemptText,{color: "red"}]}>Wrong Prediction?</Text>
+          </TouchableOpacity>
+          )}
+          </View>
+    )}
+
+        <ImageModal
+          isVisible={isModalVisible}
+          imageUri={capturedImageUri as string}
+          onClose={() => setIsModalVisible(false)}
+        />
+
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={[
+              styles.nextButton,
+            ]}
+          >
+            <Text style={styles.buttonText}>End Practice</Text>
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -199,25 +276,21 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     marginTop: "10%",
   },
-  backbutton: {
-    width: "50%",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    padding: 20,
-    paddingLeft: 10,
-    margin: "7%",
-    marginBottom: "10%",
-    marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
-    backgroundColor: "#F7F9A9",
+  buttonText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   nextButton: {
-    alignItems: "flex-end",
-    marginLeft: "5%",
-    alignSelf: "baseline",
+    width: "80%",
+    borderRadius: 8,
+    padding: 30,
+    paddingVertical: "5%",
+    margin: "10%",
+    alignSelf: "flex-end",
+    alignItems: "center",
+    marginTop: "auto",
+    backgroundColor: "#FFED4B",
   },
   spinnerContainer: {
     width: "78%",
@@ -228,19 +301,15 @@ const styles = StyleSheet.create({
     margin: "10%",
   },
   performGestureButton: {
-    width: "78%",
+    width: "80%",
     borderRadius: 8,
     alignItems: "center",
-    paddingVertical: "4%",
+    paddingVertical: "5%",
     margin: "10%",
-    marginBottom: "10%",
-    marginTop: "10%",
+    marginBottom: "5%",
+    justifyContent: 'center', 
+    flexDirection: 'row',
     backgroundColor: "#FFED4B",
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   camera: {
     flex: 1,
@@ -271,11 +340,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     margin: "10%",
-    marginBottom: "10%",
+    marginBottom: "3%",
     marginTop: "0%",
   },
   messageText: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  capturedImageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  yourAttemptText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+    marginLeft: 5,
+  },
+  smallImage: {
+    width: 50, 
+    height: 50, 
+    marginBottom: "15%",
   },
 });

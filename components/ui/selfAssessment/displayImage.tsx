@@ -24,6 +24,7 @@ export const DisplayImage = ({ path }: { path: string }) => {
       {imageUrl ? (
         <Center>
           <Image
+          style={{borderColor: "black", borderWidth: 3}}
             source={{
               uri: imageUrl,
             }}
@@ -46,7 +47,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   imagePlaceholder: {
-    backgroundColor: "#eee",
     alignItems: "center",
     justifyContent: "center",
   },
