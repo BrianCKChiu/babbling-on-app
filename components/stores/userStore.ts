@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { getLevelExp } from "../user/level";
+import { getLevelExp } from "@/user/level";
 import { Toast } from "native-base";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "@/firebase";
 
 interface UserState {
   level: number;

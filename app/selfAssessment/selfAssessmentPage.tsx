@@ -5,10 +5,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  // Button,
   SafeAreaView,
+  Image,
+  Dimensions,
 } from "react-native";
-// import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Camera, CameraType } from "expo-camera";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -18,10 +18,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import "react-native-get-random-values";
-import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
-import imageAnalyzer from "../../components/selfAssessment/imageAnalyzer";
-// import { useAuthState } from "react-firebase-hooks/auth";
-// import { auth } from "../../components/firebase";
+import imageAnalyzer from "@/selfAssessment/imageAnalyzer";
+import { Center, Spinner } from "native-base";
+import { DisplayImage } from "@/ui/selfAssessment/displayImage";
+import ImageModal from "@/ui/selfAssessment/imageModal";
 
 export default function selfAssessmentPage() {
   const router = useRouter();
@@ -35,17 +35,24 @@ export default function selfAssessmentPage() {
   const [messageContent, setMessageContent] = React.useState<{
     text: string;
     color: string;
+    recognizedLetter?: string;
   }>({ text: "", color: "" });
   const [isButtonClickable, setIsButtonClickable] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const lengthInt = parseInt(length as string, 10);
-  // const [user] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(false);
+  const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [questionImageUrl, setquestionImageUrl] = useState<string | null>(null);
+
+
 
   const questionString = `Question ${currentQuestion}/${length}`;
 
   const getRandomLetter = () => {
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXY";
     const randomIndex = Math.floor(Math.random() * alphabet.length);
     return alphabet[randomIndex];
   };
@@ -57,18 +64,20 @@ export default function selfAssessmentPage() {
       setHasPermission(status === "granted");
     })();
   }, []);
-
+  
   const updateScore = () => {
     const ex = (score * lengthInt + 1) / lengthInt;
     setScore(parseFloat(ex.toFixed(2)));
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
+    await createQuestionRecord(isCorrect, questionImageUrl as string);
     if (currentQuestion < lengthInt) {
       setCurrentQuestion(currentQuestion + 1);
       enableButton();
       setIsMessageVisible(false);
       setCurrentLetter(getRandomLetter());
+      setCapturedImageUri(null);
     } else {
       console.log(assessmentId);
       fetch(
@@ -76,7 +85,7 @@ export default function selfAssessmentPage() {
         {
           method: "PUT",
           body: JSON.stringify({
-            score: score,
+            score: Math.round(score*100),
           }),
           headers: {
             "Content-Type": "application/json",
@@ -98,29 +107,64 @@ export default function selfAssessmentPage() {
 
       router.push({
         pathname: "/selfAssessment/results",
-        params: { length: length, score: score },
+        params: { length: length, score: Math.round(score*100), assessmentId: assessmentId, },
       });
     }
   };
+
+  const createQuestionRecord = async (result: boolean, imageUrl: string) => {
+    try {
+      const response = await fetch(`http://localhost:8080/saQuestion/add`, {
+        method: "POST",
+        body: JSON.stringify({
+          assessmentId: assessmentId,
+          text: currentLetter,
+          isCorrect: isCorrect,
+          imageUrl: imageUrl.split('/').pop(), 
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create question record");
+      }
+  
+      const data = await response.json();
+      console.log("Question Created:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
 
   const enableButton = () => {
     setIsButtonClickable((prevIsButtonClickable) => !prevIsButtonClickable);
   };
 
-  const showMessage = (wasCorrect: boolean) => {
+  const showMessage = (wasCorrect: boolean, recognizedLetter: string) => {
+    let messageText = "";
     if (wasCorrect) {
+      setIsCorrect(true);
+      messageText = `Correct! You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE CORRECT!",
+        text: messageText,
         color: "#A9F8AC",
+        recognizedLetter,
       });
     } else {
+      setIsCorrect(false);
+      messageText = `Incorrect! :( You performed: ${recognizedLetter}`;
       setMessageContent({
-        text: "YOU WERE WRONG :(",
+        text: messageText,
         color: "#F9B3A8",
+        recognizedLetter,
       });
     }
     setIsMessageVisible(true);
   };
+  
 
   const toggleCameraType = () => {
     setType((current) =>
@@ -128,44 +172,49 @@ export default function selfAssessmentPage() {
     );
   };
 
-  const takeAndUploadPicture = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
-      const photo = await cameraRef.current.takePictureAsync(options);
+ const takeAndUploadPicture = async () => {
+  if (cameraRef.current) {
+    const options = { quality: 0.5, base64: true };
+    const photo = await cameraRef.current.takePictureAsync(options);
 
-      try {
-        const downloadURL = await uploadImageToFirebase(photo.uri);
-        //Analyzing the code using AI:
-        const [success, isPredictionCorrect] = await imageAnalyzer(
-          downloadURL,
-          currentLetter
-        );
+    setCapturedImageUri(photo.uri);
+    setIsLoading(true);  // Start loading after picture is taken
+    setIsCameraVisible(false);  // Close the camera
 
-        if (success && isPredictionCorrect) {
-          showMessage(true); //if gesture is correct
-          updateScore(); //updating score
-        } else if (success && !isPredictionCorrect) {
-          showMessage(false); //if gesture is incorrect
-        } else {
-          console.log("Error analyzing image");
+    try {
+      const downloadURL = await uploadImageToFirebase(photo.uri);
+      // Analyzing the code using AI:
+      const [success, isPredictionCorrect, recognizedLetter] = await imageAnalyzer(downloadURL, currentLetter);
+
+      if (success) {
+        showMessage(isPredictionCorrect, recognizedLetter);// Show message based on prediction
+        if (isPredictionCorrect) {
+          updateScore(); // Updating score if gesture is correct
         }
-      } catch (error) {
-        console.error("Error:", error);
+      } else {
+        console.log("Error analyzing image");
       }
-      enableButton();
-      setIsCameraVisible(false);
+    } catch (error) {
+      console.error("Error:", error);
     }
-  };
+    
+    setIsLoading(false);  // Stop loading after processing is done
+    enableButton();
+  }
+};
+
 
   const uploadImageToFirebase = async (uri: string): Promise<string> => {
     const response = await fetch(uri);
     const blob = await response.blob();
     const uniqueID = uuidv4();
 
+
     const metadata = {
       contentType: "image/jpeg",
     };
 
+    setquestionImageUrl(`${uniqueID}.jpeg`)
     const storageRef = ref(storage, `saImages/${uniqueID}.jpeg`);
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
@@ -221,25 +270,36 @@ export default function selfAssessmentPage() {
         </SafeAreaView>
       ) : (
         <View style={styles.container}>
-          <SAHeaderSection
-            text={questionString}
-            fontSize={24}
-          ></SAHeaderSection>
-          <Text style={styles.bodyText}>
-            Perform the gesture for: {currentLetter}
+          <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="8%" left="-5%" />
+          <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="25%" left="55%"/>
+          <Text style={[styles.headerText, { marginTop: !isMessageVisible ? "60%" : "22%", }]}>
+          {questionString + "\n\nPerform the gesture for: " + currentLetter}
           </Text>
-          <TouchableOpacity
-            style={[
-              styles.performGestureButton,
-              {
-                backgroundColor: !isButtonClickable ? "#F7F9A9" : "#B0B0B0",
-              },
-            ]}
-            onPress={() => setIsCameraVisible(true)}
-            disabled={isButtonClickable}
-          >
-            <Text style={styles.buttonText}>Perform Gesture</Text>
-          </TouchableOpacity>
+          {isMessageVisible && (
+            <Text style={styles.bodyText}>Correct gesture:</Text>
+          )}
+          {isMessageVisible && (
+          <DisplayImage path={`aslAlphabets/${currentLetter}_test.jpg`} />
+          )}
+          {isLoading ? (
+            <View style={styles.spinnerContainer}>
+              <Spinner size="lg" />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.performGestureButton,
+                {
+                  backgroundColor: !isButtonClickable ? "#FFED4B" : "#B0B0B0",
+                  marginTop: !isMessageVisible ? "35%" : "10%",
+                },
+              ]}
+              onPress={() => setIsCameraVisible(true)}
+              disabled={isButtonClickable}
+            >
+              <Text style={styles.buttonText}>Perform Gesture</Text>
+            </TouchableOpacity>
+          )}
           {isMessageVisible && (
             <View
               style={[
@@ -250,13 +310,28 @@ export default function selfAssessmentPage() {
               <Text style={styles.messageText}>{messageContent.text}</Text>
             </View>
           )}
+          {capturedImageUri && (
+        <View style={styles.capturedImageContainer}>
+        <Text style={styles.yourAttemptText}>Your attempt:</Text>
+        <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Image source={{ uri: capturedImageUri }} style={styles.smallImage} />
+        </TouchableOpacity>
+      </View>
+    )}
+
+        <ImageModal
+          isVisible={isModalVisible}
+          imageUri={capturedImageUri as string}
+          onClose={() => setIsModalVisible(false)}
+        />
+  
           <TouchableOpacity
             onPress={handleNextClick}
             disabled={!isButtonClickable}
             style={[
               styles.nextButton,
               {
-                backgroundColor: isButtonClickable ? "#F7F9A9" : "#B0B0B0",
+                backgroundColor: isButtonClickable ? "#FFED4B" : "#B0B0B0",
               },
             ]}
           >
@@ -266,7 +341,10 @@ export default function selfAssessmentPage() {
       )}
     </View>
   );
+  
 }
+
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -274,28 +352,32 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
-  bodyText: {
-    fontSize: 24,
+  headerText: {
+    fontSize: width * 0.06,
     fontWeight: "bold",
-    marginLeft: "10%",
-    marginTop: "15%",
-    marginBottom: "20%",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
+    lineHeight: width * 0.065,
+  },
+  bodyText: {
+    fontSize: width * 0.05,
+    fontWeight: "bold",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.01,
   },
   performGestureButton: {
-    width: "auto",
-    borderRadius: 7,
+    width: "80%",
+    borderRadius: 8,
     alignItems: "center",
-    padding: 30,
-    paddingVertical: 20,
-    margin: "10%",
-    marginBottom: "10%",
-    marginTop: "10%",
-    borderWidth: 1,
-    borderColor: "#D8D8D8",
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
+    justifyContent: "center", 
+    flexDirection: "row",
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: width * 0.05,
     fontWeight: "bold",
   },
   camera: {
@@ -305,7 +387,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
-    margin: 5,
+    margin: width * 0.01,
     justifyContent: "space-between",
   },
   button: {
@@ -317,33 +399,54 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   text: {
-    fontSize: 18,
+    fontSize: width * 0.045,
     color: "white",
   },
   messageBox: {
     width: "80%",
-    borderRadius: 7,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    margin: "10%",
-    marginBottom: "10%",
-    marginTop: "0%",
+    marginHorizontal: "10%",
+    marginBottom: height * 0.02,
   },
   messageText: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "bold",
   },
   nextButton: {
     width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 7,
-    padding: 30,
-    paddingVertical: 20,
-    margin: "10%",
-    alignSelf: "flex-end",
+    borderRadius: 8,
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+    alignSelf: "center",
     alignItems: "center",
     marginTop: "auto",
+    marginBottom: "10%"
+  },
+  spinnerContainer: {
+    width: "78%",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: height * 0.02,
+    marginHorizontal: "10%",
+  },
+  capturedImageContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: height * 0.01,
+  },
+  yourAttemptText: {
+    fontSize: width * 0.045,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  smallImage: {
+    width: 50, 
+    height: 50, 
   },
 });
+

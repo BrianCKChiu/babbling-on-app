@@ -1,8 +1,8 @@
 import { View, VStack, Heading, Text, Box, ScrollView } from "native-base";
 import React, { useEffect, useState } from "react";
-import { HttpHandler } from "../../api/backend";
+import { HttpHandler } from "@/api/backend";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase";
+import { auth } from "@/firebase";
 
 export function FeaturedCourses() {
   const [courses, setCourses] = useState<{ name: string }[]>([]);
@@ -38,7 +38,7 @@ export function FeaturedCourses() {
   function renderCourses() {
     const elements: JSX.Element[] = [];
     courses.map((course, index) => {
-      elements.push(<CourseItem item={course} index={index} />);
+      elements.push(<CourseItem item={course} index={index} key={index} />);
     });
     return elements;
   }

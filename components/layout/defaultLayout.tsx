@@ -1,13 +1,15 @@
-import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
 import React from "react";
-import { View } from "react-native";
-import IBlock from "../ui/IBlock";
+import { Box, HStack, VStack, Text, Heading, Pressable } from "native-base";
+import { View, StyleSheet } from "react-native";
+import IBlock from "@/ui/IBlock";
+
 import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth } from "@/firebase";
 
 export const DefaultLayout = ({ children, ...props }: IBlock) => {
   const [user] = useAuthState(auth);
@@ -15,7 +17,7 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
   const navigation = useNavigation();
 
   return (
-    <View {...props}>
+    <View style={styles.container} {...props}>
       <VStack h={"full"} w="full" pt={"40px"} px={"16px"}>
         <HStack
           display={"flex"}
@@ -67,7 +69,14 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
                 h={"48px"}
                 borderWidth={1}
                 borderColor={"gray.300"}
-              ></Box>
+                alignItems={"center"}
+              >
+                <Ionicons
+                  name="ios-person-circle-outline"
+                  size={44}
+                  color="black"
+                />
+              </Box>
             </HStack>
           </Pressable>
         </HStack>
@@ -76,3 +85,10 @@ export const DefaultLayout = ({ children, ...props }: IBlock) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white", 
+    flex: 1,
+  },
+});

@@ -1,28 +1,37 @@
 import React, { JSX, useEffect, useState } from "react";
-import { Center, Spinner, VStack, useToast, Text } from "native-base";
+import {
+  Center,
+  Spinner,
+  VStack,
+  useToast,
+  Text,
+  Box,
+  Heading,
+} from "native-base";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useQuizStore } from "../../../components/stores/quizStore";
+import { useQuizStore } from "@/stores/quizStore";
 
 // types
-import {
-  Question,
-  QuestionMatching,
-  QuestionMcq,
-} from "../../../components/types/quiz/question";
-import { Answer } from "../../../components/types/quiz/answer";
+import { Question, QuestionMatching, QuestionMcq } from "@/types/quiz/question";
+import { Answer } from "@/types/quiz/answer";
 
 // components
-import { MatchingQuestionComponent } from "../../../components/ui/quiz/question/matchingQuestion";
-import { McqQuestionComponent } from "../../../components/ui/quiz/question/mcqQuestion";
+import { MatchingQuestionComponent } from "@/ui/quiz/question/matchingQuestion";
+import { McqQuestionComponent } from "@/ui/quiz/question/mcqQuestion";
 
 // helpers
-import { getFile } from "../../../components/firebase";
+import { auth, getFile } from "@/firebase";
+import { ExperienceBar } from "@/ui/user/experienceBar";
+import { useUserStore } from "@/stores/userStore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const toast = useToast();
+  const { addExp } = useUserStore();
+  const [user] = useAuthState(auth);
   const {
     setCurrentQuestionIndex,
     currentQuestionIndex,
@@ -37,6 +46,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   function handleAnswer(userAnswer: string | string[]) {
+    if (user == null) return;
     const question = questions[currentQuestionIndex];
 
     let result: Answer | null = null;
@@ -62,14 +72,38 @@ export default function Page() {
 
     if (result == null) return;
     addAnswer(result);
+    addExp(result.isCorrect ? 500 : 100, user.uid);
+
     toast.show({
-      description: result.isCorrect ? "Correct" : "Incorrect",
-      duration: 900,
-      bgColor: result.isCorrect ? "green.500" : "red.500",
-      width: "300px",
-      height: "80px",
-      alignItems: "center",
-      justifyContent: "center",
+      render: () => {
+        return (
+          <Box
+            w={"400px"}
+            h={"100px"}
+            pt={"16px"}
+            m={"0px"}
+            borderRadius={"8px"}
+            alignItems={"center"}
+            justifyItems={"end"}
+            bgColor={result!.isCorrect ? "green.500" : "red.500"}
+          >
+            <Box my={"8px"}>
+              {result?.isCorrect ? (
+                <Heading fontSize={"20px"}>Correct!</Heading>
+              ) : (
+                <Heading fontSize={"20px"}>Incorrect!</Heading>
+              )}
+            </Box>
+            <Text fontSize={"14px"} my={"8px"}>
+              + {result!.isCorrect ? 500 : 100} EXP
+            </Text>
+            <ExperienceBar />
+          </Box>
+        );
+      },
+      paddingBottom: "0",
+      placement: "top",
+      duration: 2000,
     });
     setTimeout(() => {
       if (currentQuestionIndex === questions.length - 1) {
@@ -83,7 +117,7 @@ export default function Page() {
           params: { id: questions[currentQuestionIndex + 1].getId() }, // replace with question id
         });
       }
-    }, 1000);
+    }, 3000);
   }
 
   async function getMediaLink(ref: string): Promise<string> {

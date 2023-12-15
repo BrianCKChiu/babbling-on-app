@@ -1,23 +1,25 @@
 import { useRouter } from "expo-router";
-import { Box, Pressable, View, Text } from "native-base";
+import { Box, Pressable, View, Text, ZStack, Image } from "native-base";
 import React, { useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
+import dailyAslImg from "@assets/images/daily-quiz.jpg";
+import weeklyAslImg from "@assets/images/weekly-quiz.jpg";
+import { ImageSourcePropType, Dimensions } from "react-native";
 
 export function HomeCarousel() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
+  const { width: screenWidth } = Dimensions.get('window');
   const [cardItems] = useState([
     {
-      path: "/quiz/",
+      path: "/quiz?quizId=eJE9f2tfYe7PJjO3YPrK",
       title: "Daily Quiz",
+      image: dailyAslImg,
     },
     {
-      path: "/quiz/",
+      path: "/quiz?quizId=kQBr1URkzfcqIxitWWE5",
       title: "Weekly Quiz",
-    },
-    {
-      path: "/lessons",
-      title: "Start Learning",
+      image: weeklyAslImg,
     },
   ]);
 
@@ -25,7 +27,7 @@ export function HomeCarousel() {
     item,
     index,
   }: {
-    item: { path: string; title: string };
+    item: { path: string; title: string; image: ImageSourcePropType };
     index: number;
   }) {
     return (
@@ -37,19 +39,32 @@ export function HomeCarousel() {
           borderRadius={"xl"}
           bgColor={"blue.200"}
           display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
           onPress={() => {
             router.push({
               pathname: item.path,
             } as never);
           }}
         >
-          <Box>
-            <Text fontSize="2xl" fontWeight="bold">
-              {item.title}
-            </Text>
-          </Box>
+          <ZStack>
+            <Image
+              source={item.image}
+              w={"full"}
+              h={"200px"}
+              borderRadius={"xl"}
+              alt="image_placeholder"
+            />
+            <Box
+              m={"16px"}
+              bgColor={"white"}
+              px={"8px"}
+              borderRadius={"8px"}
+              shadow={"xl"}
+            >
+              <Text fontSize="2xl" fontWeight="bold">
+                {item.title}
+              </Text>
+            </Box>
+          </ZStack>
         </Pressable>
       </View>
     );
@@ -60,8 +75,8 @@ export function HomeCarousel() {
         layout={"default"}
         data={cardItems}
         renderItem={cardItem}
-        sliderWidth={400}
-        itemWidth={400}
+        sliderWidth={screenWidth* 0.925}
+        itemWidth={screenWidth * 0.9}
         windowSize={1}
         onSnapToItem={(index) => setActiveIndex(index)}
       />

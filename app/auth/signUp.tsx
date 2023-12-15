@@ -10,18 +10,21 @@ import {
   Toast,
   Box,
 } from "native-base";
-import { AuthLayout } from "../../components/layout/authLayout";
+import { AuthLayout } from "@/layout/authLayout";
 import { useRouter } from "expo-router";
 
 // helpers
-import { auth } from "../../components/firebase";
+import { auth } from "@/firebase";
 import {
   createUserWithEmailAndPassword,
   UserCredential,
   updateProfile,
+  sendEmailVerification,
+  reload,
 } from "firebase/auth";
-import { isValidPassword } from "../../components/auth/validatePassword";
-import { authInputStyle } from "../../styles/authInputStyle";
+import { isValidPassword } from "@/auth/validatePassword";
+import { authInputStyle } from "@styles/authInputStyle";
+import { HttpHandler } from "@/api/backend";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -30,13 +33,27 @@ export default function Page() {
   const [verifyPassword, setVerifyPassword] = useState("");
   const [role, setRole] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
+  const [verificationEmailSent, setVerificationEmailSent] = useState(false);
+
   const router = useRouter();
 
   function handleSignUp() {
     setIsSigningUp(true);
+  
+    // Validation checks
     if (userName === "") {
       Toast.show({
         title: "Username cannot be empty",
+        bgColor: "red.500",
+        placement: "bottom",
+      });
+      setIsSigningUp(false);
+      return;
+    }
+  
+    if (email === "") {
+      Toast.show({
+        title: "Email cannot be empty",
         bgColor: "red.500",
         placement: "bottom",
       });
@@ -53,7 +70,7 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
-
+  
     if (password === "") {
       Toast.show({
         title: "Password cannot be empty",
@@ -63,7 +80,7 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
-
+  
     if (verifyPassword === "") {
       Toast.show({
         title: "Please verify password",
@@ -73,7 +90,7 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
-
+  
     if (password !== verifyPassword) {
       Toast.show({
         title: "Passwords do not match",
@@ -83,7 +100,7 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
-
+  
     if (role === "") {
       Toast.show({
         title: "Please select a role",
@@ -93,41 +110,53 @@ export default function Page() {
       setIsSigningUp(false);
       return;
     }
-
+  
     if (!isValidPassword(password)) {
       Toast.show({
-        title:
-          "Password must be at least 8 characters long & contain at least one uppercase letter and number",
+        title: "Password Requirements:",
+        description: "Must contain at least 8 characters, including 1 number, 1 letter, and 1 special character. No spaces allowed.",
         bgColor: "red.500",
         placement: "bottom",
       });
       setIsSigningUp(false);
       return;
     }
-
-    // this function is from firebase and it's used to create the user in Firebase
+  
     createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential: UserCredential) => { 
-        // Signed in
+    .then(async (userCredential: UserCredential) => {
         const user = userCredential.user;
-        try {
-          await updateProfile(user, {
-            displayName: userName,
-          }).catch((error) => {
-            console.error(error);
+  
+        await updateProfile(user, {
+          displayName: userName,
+        }).catch((error) => {
+          console.error("Error updating profile", error);
+        });
+  
+        // Send verification email
+        sendEmailVerification(user)
+          .then(() => {
+            Toast.show({
+              title: "A verification email has been sent. Please check your inbox.",
+              bgColor: "green.500",
+              placement: "bottom",
+            });
+            setVerificationEmailSent(true); 
+          })
+          .catch((error) => {
+            console.error("Error sending email verification", error);
           });
-          Toast.show({
-            title: `Welcome to Babbling On!`,
-            bgColor: "green.500",
-            placement: "bottom",
-          });
-          router.push("/home");
-          setIsSigningUp(false);
-        } catch (e) {
-          console.error(e);
-        }
 
-        // add user to Prisma
+        HttpHandler.post({
+          endpoint: "user/signUp",
+          body: {
+            email: user.email,
+            uid: user.uid,
+            role: role,
+          },
+        });
+  
+        // Does not auto-login. instead it waits for email verification
+        setIsSigningUp(false);
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
@@ -136,12 +165,63 @@ export default function Page() {
             bgColor: "red.500",
             placement: "bottom",
           });
-          setIsSigningUp(false);
+        } else {
+          Toast.show({
+            title: error.message,
+            bgColor: "red.500",
+            placement: "bottom",
+          });
         }
+        setIsSigningUp(false);
       });
-
-    setIsSigningUp(false);
   }
+
+  function resendVerificationEmail() {
+    const user = auth.currentUser; //Get current user
+    if (user) {
+      sendEmailVerification(user)
+        .then(() => {
+          Toast.show({
+            title: "Verification email resent. Please check your inbox.",
+            bgColor: "green.500",
+            placement: "bottom",
+          });
+        })
+        .catch((error) => {
+          console.error("Error resending email verification", error);
+        });
+    }
+  }
+
+  function finishSignUp() {
+    const user = auth.currentUser;
+    if (user) {
+      // Refreshing the current user session.
+      reload(user)
+        .then(() => {
+          if (user.emailVerified) {
+            router.replace("/(drawer)/home");
+          } else {
+            Toast.show({
+              title: "Please verify your email before finishing sign up.",
+              bgColor: "red.500",
+              placement: "bottom",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error reloading user", error);
+          Toast.show({
+            title: "An error occurred. Please try again.",
+            bgColor: "red.500",
+            placement: "bottom",
+          });
+        });
+    }
+  }
+  
+  
+  
   return (
     <AuthLayout>
       <View>
@@ -163,6 +243,7 @@ export default function Page() {
             placeholder="Username"
             value={userName}
             type="text"
+            autoCapitalize="none"
             onChangeText={(text) => setUserName(text)}
             {...authInputStyle}
           />
@@ -171,6 +252,7 @@ export default function Page() {
             placeholder="Email"
             value={email}
             type="text"
+            autoCapitalize="none"
             onChangeText={(text) => setEmail(text)}
             {...authInputStyle}
           />
@@ -205,19 +287,47 @@ export default function Page() {
             <Select.Item label="Professor / Teacher" value="teacher" />
           </Select>
 
+          {!verificationEmailSent && (
+        <Button
+          w="full"
+          h={"55px"}
+          mb={2}
+          bgColor={"#FFED4B"}
+          isDisabled={isSigningUp}
+          onPress={handleSignUp}
+        >
+          <Text color={"black"} fontWeight={"semibold"}>
+            {isSigningUp ? "Signing Up..." : "Sign Up"}
+          </Text>
+        </Button>
+      )}
+
+      {verificationEmailSent && (
+        <>
           <Button
             w="full"
             h={"55px"}
             mb={2}
             bgColor={"#FFED4B"}
-            isDisabled={isSigningUp}
-            onPress={handleSignUp}
+            onPress={finishSignUp}
           >
             <Text color={"black"} fontWeight={"semibold"}>
-              {isSigningUp ? "Signing Up" : "Sign Up"}
+              Finish Signing Up
             </Text>
           </Button>
-        </VStack>
+          <Button
+            w="full"
+            h={"55px"}
+            bgColor={"#FFED4B"}
+            onPress={resendVerificationEmail}
+          >
+            <Text color={"black"} fontWeight={"semibold"}>
+              Resend Verification Link
+            </Text>
+          </Button>
+        </>
+      )}
+    </VStack>
       </View>
     </AuthLayout>
   );

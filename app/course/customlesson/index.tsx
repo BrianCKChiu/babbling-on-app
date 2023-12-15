@@ -22,7 +22,7 @@ interface Lesson {
 interface Gesture {
   id?: string;
   phrase: string;
-  gestureMedia: any;
+  gestureMedia: string[];
 }
 
 //@ts-ignore
@@ -105,6 +105,8 @@ export default function Page() {
       // should still get the appropriate lesson data... 
       console.log("lessonData: ", lessonData);
       console.log("gestureData: ", gestureData);
+
+      console.log("gesture Media: ", gestureData?.gestureMedia);
     }
     getFn();
   }, [])
@@ -115,7 +117,10 @@ export default function Page() {
       <SAHeaderSection text={lessonData?.name || ''} />
       <DescriptionSection bodyText={lessonData?.description || ''} />
       <Text>{gestureData?.phrase}</Text>
-      {gestureData && <DisplayImage path={`images/${gestureData?.gestureMedia[0]}`} />}
+      {/* {gestureData && <DisplayImage path={`images/${gestureData?.gestureMedia[0]}`} />} */}
+      
+      {/* @ts-ignore */}
+      <DisplayImage path={`${gestureData?.gestureMedia[0].mediaRef}`} />
       
        {/* map through the gesture array to render the gesture data  */}
       {lessonData?.gestures.map((gesture) => {

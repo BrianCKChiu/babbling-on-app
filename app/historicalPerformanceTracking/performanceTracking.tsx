@@ -1,21 +1,17 @@
-// import React, { useRef, useState, useEffect } from "react";
 import React, { useState, useEffect } from "react";
-
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
-import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
+import { auth } from "@/firebase";
 import { useRouter } from "expo-router";
-import { ScrollView } from "native-base";
-import { SelfAssessment } from "../../components/types/selfAssessment/selfAssessment"; 
+import { Center, ScrollView } from "native-base";
 
-
-// score        Int
-// dateTaken    DateTime
-// assessmentId String   @id @default(uuid())
-// userId       String
-// isPractice   Boolean
-// user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+interface SelfAssessment {
+  dateTaken: string | number | Date;
+  isPractice: boolean;
+  assessmentId: number;
+  name: string;
+  score: number;
+}
 
 
 export default function PerformanceTracking() {
@@ -23,7 +19,7 @@ export default function PerformanceTracking() {
   const [user] = useAuthState(auth);
   const [averageScore, setAverageScore] = useState<string | null>(null);
   const [highestScore, setHighestScore] = useState<string | null>(null);
-  const [selfAssessments, setSelfAssessments] = useState<SelfAssessment[]>([]); // the type inside the arrow brackets is the type you will use in the usestate
+  const [selfAssessments, setSelfAssessments] = useState<SelfAssessment[]>([]);
 
   const fetchData = async () => {
     try {
@@ -34,7 +30,7 @@ export default function PerformanceTracking() {
         throw new Error("Server Error");
       }
       const dataAvgSc = await responseAvgSc.json();
-      setAverageScore((dataAvgSc.averageScore * 100).toFixed(2));
+      setAverageScore((dataAvgSc.averageScore).toFixed(2));
 
       const responseHighSc = await fetch(
         `http://localhost:8080/selfAssessment/highest-score/${user?.uid}`
@@ -43,7 +39,7 @@ export default function PerformanceTracking() {
         throw new Error("Server Error");
       }
       const dataHighSc = await responseHighSc.json();
-      setHighestScore((dataHighSc.highestScore * 100).toFixed(2));
+      setHighestScore((dataHighSc.highestScore).toFixed(2));
 
       const responseAssessments = await fetch(
         `http://localhost:8080/selfAssessment/assessments/all/${user?.uid}`
@@ -67,19 +63,35 @@ export default function PerformanceTracking() {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <SAHeaderSection text="Your Progress" fontSize={32}></SAHeaderSection>
+        <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="-5%" left="20%" />
+        <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="3%" left="-30%"/>
+        <Text style={styles.headerText}>Your Progress</Text>
         <Text style={styles.bodyText}>Highest Score: {highestScore}</Text>
         <Text style={styles.bodyText}>Average Score: {averageScore}</Text>
         <Text style={styles.bodyText}>List of Assessments:</Text>
+        {selfAssessments.length === 0 ? (
+        <Text style={[styles.bodyText, {color:"red"}]}>
+          You have no self assessments performed. Perform a self assessment and come back again!
+        </Text>
+    ) : (
         <ScrollView style={styles.scrollView}>
           {selfAssessments.map((assessment, index) => (
-            <View
-              key={index}
-              style={[
-                styles.assessmentContainer,
-                index % 2 === 1 && styles.coloredAssessmentContainer,
-              ]}
-            >
+            <TouchableOpacity
+            key={index}
+            disabled={assessment.isPractice}
+            onPress={() => router.push({
+              pathname: "/historicalPerformanceTracking/assessmentDetails",
+              params: {
+                  assessmentId: String(assessment.assessmentId),
+                  dateTaken: assessment.dateTaken.toString(),
+                  score: String(assessment.score),
+              },
+          })}          
+            style={[
+              styles.assessmentContainer,
+              index % 2 === 1 && styles.coloredAssessmentContainer,
+            ]}
+          >
               <Text style={styles.assessmentText}>
                 Date Taken:{" "}
                 {new Date(assessment.dateTaken).toLocaleDateString()}
@@ -90,9 +102,9 @@ export default function PerformanceTracking() {
               <Text style={styles.assessmentText}>
                 Practice: {assessment.isPractice ? "Yes" : "No"}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
-        </ScrollView>
+        </ScrollView>)}
         <TouchableOpacity
           onPress={() => router.push("/(drawer)/home")}
           style={[styles.nextButton]}
@@ -110,15 +122,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
+  headerText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginLeft: "5%",
+    marginTop: "40%",
+    marginRight: "40%",
+    zIndex: 1,
+    marginBottom: "20%",
+  },
   bodyText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginLeft: "10%",
-    marginTop: "7%",
+    marginTop: "5%",
   },
   buttonText: {
     color: "black",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
   scrollView: {
@@ -142,15 +163,13 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 7,
+    borderRadius: 8,
     padding: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     margin: "10%",
     alignSelf: "flex-end",
     alignItems: "center",
-    marginTop: "auto",
-    backgroundColor: "#FFE874",
+    marginTop: "5%",
+    backgroundColor: "#FFED4B",
   },
 });

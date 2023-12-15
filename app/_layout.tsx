@@ -4,7 +4,7 @@ import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { NativeBaseProvider } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../components/firebase";
+import { auth } from "@/firebase";
 import React from "react";
 
 export { ErrorBoundary } from "expo-router";
@@ -63,11 +63,7 @@ function RootLayoutNav() {
           options={{
             title: "",
             headerTransparent: true,
-            headerShown:
-              pathname.match(/^\/quiz\/q\/.+/) ||
-              pathname.match(/^\/quiz\/results\/*/)
-                ? false
-                : true,
+            headerShown: false,
           }}
         />
         <Stack.Screen

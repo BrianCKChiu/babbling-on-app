@@ -1,5 +1,14 @@
 type QuestionType = "mcq" | "matching";
 
+export type QuestionProp = {
+  id: string;
+  type: QuestionType;
+  mediaRef?: string;
+  answer?: string;
+  choices?: Array<string>;
+  gestures?: [{ answer: string; mediaRef: string }];
+};
+
 export abstract class Question {
   private id: string;
   private type: QuestionType | undefined;

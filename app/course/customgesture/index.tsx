@@ -1,13 +1,8 @@
-// import { StyleSheet, TouchableOpacity } from "react-native";
-// import { useAuthState } from "react-firebase-hooks/auth";
-// import { auth } from "../../../components/firebase";
-// import { SvgUri } from "react-native-svg";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// import { auth } from "@/firebase";
 
-import { useLocalSearchParams } from "expo-router";
-// import { Text, VStack, View, FlatList } from "native-base";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { View } from "native-base";
-// import { Image } from "react-native";
-
 import React, { useState, useEffect } from "react";
 // import { useUserStore } from "../../../components/stores/userStore";
 // import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";

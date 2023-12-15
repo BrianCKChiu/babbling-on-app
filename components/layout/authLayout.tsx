@@ -1,7 +1,7 @@
 import { Box, VStack, ZStack, Circle } from "native-base";
 import React from "react";
 import { View } from "react-native";
-import IBlock from "../ui/IBlock";
+import IBlock from "@/ui/IBlock";
 
 export const AuthLayout = ({ children, ...props }: IBlock) => {
   return (
@@ -11,8 +11,8 @@ export const AuthLayout = ({ children, ...props }: IBlock) => {
           w={"360px"}
           h={"360px"}
           position={"absolute"}
-          top={"-83px"}
-          left={"178px"}
+          top={"-10%"}
+          left={"40%"}
           bgColor={"#FFE500"}
           opacity={0.4}
         />
@@ -20,8 +20,8 @@ export const AuthLayout = ({ children, ...props }: IBlock) => {
           w={"360px"}
           h={"360px"}
           position={"absolute"}
-          top={"50px"}
-          left={"-50px"}
+          top={"6%"}
+          left={"-14%"}
           bgColor={"#FFE500"}
           opacity={0.4}
         />

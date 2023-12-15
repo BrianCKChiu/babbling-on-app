@@ -1,13 +1,21 @@
 import React from "react";
-import { View, Text, Heading, VStack, Button } from "native-base";
+import {
+  View,
+  Text,
+  Heading,
+  VStack,
+  Button,
+  ZStack,
+  Circle,
+} from "native-base";
 
 import { useRouter } from "expo-router";
-import { useQuizStore } from "../../../components/stores/quizStore";
+import { useQuizStore } from "@/stores/quizStore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // helpers
-import { auth } from "../../../components/firebase";
-import { HttpHandler } from "../../../components/api/backend";
+import { auth } from "@/firebase";
+import { HttpHandler } from "@/api/backend";
 
 export default function Page() {
   const { answers, clearQuiz, quizId } = useQuizStore();
@@ -32,23 +40,58 @@ export default function Page() {
 
   return (
     <View>
+      <ZStack>
+        <Circle
+          position={"relative"}
+          w={"360"}
+          h={"360"}
+          bgColor={"#FFE500"}
+          opacity={"0.4"}
+          left={"178px"}
+          top={"-83px"}
+        />
+      </ZStack>
       <VStack
-        mx="40px"
-        alignItems={"center"}
-        pt={"80px"}
-        pb="40px"
+        mx={"40px"}
+        pt={"130px"}
+        pb={"40px"}
         h={"full"}
         justifyContent={"space-between"}
         display={"flex"}
       >
-        <VStack alignItems={"center"}>
-          <Heading>Quiz Results</Heading>
-          <Text fontSize={"lg"} pt={"15px"}>
-            {answers.filter((a) => a.isCorrect).length} / {answers.length}
-          </Text>
+        <VStack>
+          <Heading fontSize={"28px"} ml={"20px"}>
+            Results
+          </Heading>
+
+          <VStack
+            alignItems={"center"}
+            mt={"40px"}
+            display={"flex"}
+            space={"8px"}
+          >
+            <Text fontWeight={"bold"} fontSize={"16px"}>
+              Summary
+            </Text>
+            <Text fontSize={"28px"} fontWeight={"bold"}>
+              {answers.filter((a) => a.isCorrect).length} / {answers.length}
+            </Text>
+            <Text fontWeight={"semibold"} pt={"8px"}>
+              +200 Exp
+            </Text>
+          </VStack>
         </VStack>
-        <Button w="full" onPress={async () => await handleExit()}>
-          Exit Quiz
+
+        <Button
+          w={"full"}
+          h={"50px"}
+          bgColor={"#FFED4B"}
+          borderRadius={"8px"}
+          onPress={async () => await handleExit()}
+        >
+          <Text color={"black"} fontWeight={"bold"}>
+            Exit Quiz
+          </Text>
         </Button>
       </VStack>
     </View>

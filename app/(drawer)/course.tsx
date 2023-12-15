@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DefaultLayout } from "../../components/layout/defaultLayout";
+import { DefaultLayout } from "@/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View, Box } from "native-base";
 
@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // helper
-import { auth } from "../../components/firebase";
+import { auth } from "@/firebase";
 
 // types
 import { Course } from "../../components/types/course/course";
@@ -19,6 +19,8 @@ const ExploreCourses = () => {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
   const [user] = useAuthState(auth); 
   const router = useRouter();
+
+  console.log("inside explore courses constructor");
 
   useEffect(() => {
     if (user == null) return;
@@ -159,6 +161,8 @@ const CustomCourses = () => {
   const [myCourses, setMyCourses] = useState<Course[]>([]);
   const [user] = useAuthState(auth); 
   const router = useRouter();
+
+  console.log("inside custom courses constructor");
 
   // const otherCoursesElements = renderCustomCourses();
   // const myCoursesElements = renderCourseHistory();

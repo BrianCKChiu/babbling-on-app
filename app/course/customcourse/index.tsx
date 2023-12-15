@@ -1,5 +1,4 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-// import { Text, VStack, View, FlatList } from "native-base";
 import { View } from "native-base";
 import React, { useState, useEffect } from "react";
 // import { Image } from "react-native";
@@ -86,9 +85,9 @@ export default function Page() {
   // useEffect
   console.log("Course Data log before Return:", courseData);
   return (
-        <View>
-          <SAHeaderSection text={courseData?.name || ''} />
-          <DescriptionSection bodyText={courseData?.description || ''} />
+    <View>
+      <SAHeaderSection text={courseData?.name || ""} />
+      <DescriptionSection bodyText={courseData?.description || ""} />
 
 
           {courseData?.lessons.map((lesson) => {
@@ -114,14 +113,13 @@ export default function Page() {
             pathname: "/course/customlesson",
             params: {
               lessonId: courseData?.lessons[0]?.id || "",
-              },
-            })
-          }
-        />
-        </View>
-      );
-
-    }
+            },
+          })
+        }
+      />
+    </View>
+  );
+}
 
 // create a table that joins the two entities
 

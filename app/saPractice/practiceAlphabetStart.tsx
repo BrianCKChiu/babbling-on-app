@@ -1,18 +1,16 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import DescriptionSection from "../../components/ui/selfAssessment/descriptionSection";
-// import { HStack, VStack, Button, ScrollView } from "native-base";
-import { HStack, ScrollView } from "native-base";
-
-import NextPageButton from "../../components/ui/selfAssessment/nextPageButton";
+import DescriptionSection from "@/ui/selfAssessment/descriptionSection";
+import { Center, HStack, ScrollView } from "native-base";
+import NextPageButton from "@/ui/selfAssessment/nextPageButton";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../components/firebase";
+import { auth } from "@/firebase";
 
 export default function practiceAlphabetStart() {
   const router = useRouter();
-  // const { option } = useLocalSearchParams();
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  //const { option } = useLocalSearchParams();
+  const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXY".split("");
   const [selectedLetter, setSelectedLetter] = useState(alphabet[0]);
   const [user] = useAuthState(auth);
 
@@ -52,6 +50,8 @@ export default function practiceAlphabetStart() {
 
   return (
     <View style={styles.container}>
+      <Center width={304.76} height={300} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="10%" left="-5%" />
+      <Center width={250} height={250} bg="rgba(255, 230, 0, 0.4)" rounded="full" position="absolute" top="30%" left="55%"/>
       <View style={styles.headerSection}>
         <Text style={styles.headerText}>Practice ASL</Text>
         <Text style={styles.headerText}>Alphabets</Text>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "#FFE874",
+    backgroundColor: "white",
   },
   headerSection: {
     marginTop: "30%",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignItems: "flex-end",
-    marginLeft: "auto",
+    marginLeft: "5%",
   },
   questionText: {
     fontWeight: "bold",
@@ -123,8 +123,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     maxHeight: 120,
-    width: "80%",
-    marginLeft: "10%",
+    width: "76%",
+    marginLeft: "12%",
+    marginTop: "3%",
   },
   scrollContent: {
     justifyContent: "space-between",
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   selectedButton: {
-    backgroundColor: "#F7F9A9",
+    backgroundColor: "#FFED4B",
   },
   buttonText: {
     fontWeight: "bold",

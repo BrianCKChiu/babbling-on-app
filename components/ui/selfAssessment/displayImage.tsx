@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { getFile } from '../../firebase';
-import { Center, Image, Spinner } from 'native-base';
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { getFile } from "@/firebase";
+import { Center, Image, Spinner } from "native-base";
 
 export const DisplayImage = ({ path }: { path: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -23,13 +23,18 @@ export const DisplayImage = ({ path }: { path: string }) => {
     <View style={styles.imageContainer}>
       {imageUrl ? (
         <Center>
-        <Image source={{
-        uri: imageUrl
-        }} alt="Gesture" size="2xl" />
-    </Center>
+          <Image
+          style={{borderColor: "black", borderWidth: 3}}
+            source={{
+              uri: imageUrl,
+            }}
+            alt="Gesture"
+            size="2xl"
+          />
+        </Center>
       ) : (
         <View style={[styles.imagePlaceholder]}>
-            <Spinner color="cyan.500" />
+          <Spinner color="cyan.500" />
         </View>
       )}
     </View>
@@ -38,12 +43,11 @@ export const DisplayImage = ({ path }: { path: string }) => {
 
 const styles = StyleSheet.create({
   imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   imagePlaceholder: {
-    backgroundColor: '#eee',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
