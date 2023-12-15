@@ -31,8 +31,8 @@ export default function Page() {
 
   function renderCourseHistory() {
     const courses: JSX.Element[] = [];
-    [1, 2, 3, 4].map((index) => {
-      courses.push(
+    [1, 2, 3, 4].map((index) => { // otherCourses FeaturedCourses
+      courses.push( 
         <HStack
           key={index}
           display={"flex"}
@@ -179,7 +179,7 @@ export default function Page() {
                 </Text>
               </HStack>
             </Pressable>
-            {/* Course History */}
+            {/* Course History hereee */}
             <VStack>
               <HStack
                 display={"flex"}

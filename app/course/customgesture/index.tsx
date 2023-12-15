@@ -6,12 +6,13 @@
 import { useLocalSearchParams } from "expo-router";
 // import { Text, VStack, View, FlatList } from "native-base";
 import { View } from "native-base";
+import { Image } from "react-native";
 
 import React, { useState, useEffect } from "react";
-// import { Image } from "react-native";
 // import { useUserStore } from "../../../components/stores/userStore";
 // import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
 import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
+import { DisplayImage } from "../../../components/ui/selfAssessment/displayImage";
 
 // interface Course {
 //   id?: string;
@@ -28,7 +29,16 @@ import DescriptionSection from "../../../components/ui/selfAssessment/descriptio
 interface Gesture {
   id?: string;
   phrase: string;
+  mediaRef: any; // temporary any, will not be able to work in deployment
 }
+
+// export function GestureComponent({
+//   mediaRef,
+// } : {
+//   mediaRef: string;
+// }) {
+
+// }
 
 export default function Page() {
   const [gestureData, setGestureData] = useState<Gesture>();
@@ -58,6 +68,7 @@ export default function Page() {
         // set the courseData state variable to the fetched datafkdnjkdng
         console.log("Log before setGestureData:", data);
         setGestureData(data);
+        console.log("Log after setGestureData:", gestureData);
       })
       .catch((err) => {
         console.log(err);
@@ -68,6 +79,7 @@ export default function Page() {
   return (
     <View>
       {/* <SAHeaderSection text= {gestureData?.phrase} /> */}
+      {/* <DisplayImage path={`images/${}`} /> */}
       <DescriptionSection bodyText={gestureData?.phrase || ''} />
     </View>
   );

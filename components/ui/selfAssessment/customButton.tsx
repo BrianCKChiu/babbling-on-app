@@ -1,16 +1,22 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 interface CustomButtonProps {
   text: string;
   buttonColor: string;
   onPress: () => void;
+  style? : StyleProp<ViewStyle>;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ text, buttonColor, onPress }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ text, buttonColor, onPress, style }) => {
   return (
-    <TouchableOpacity
-      style={[styles.button, { backgroundColor: buttonColor }]}
+    <TouchableOpacity 
+      // style? - checks if the user passed in a "style" prop.
+      // style: - uses the styling in the style prop passed to this function.
+      // if no style was passed, then [styles...] will be used by default.
+
+      // if style 
+      style={style? style:[styles.button, { backgroundColor: buttonColor }]}
       onPress={onPress}
     >
       <Text style={styles.buttonText}>{text}</Text>

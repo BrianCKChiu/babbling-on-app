@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DefaultLayout } from "../../components/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View, Pressable, Button } from "native-base";
+import { Text, View, Box } from "native-base";
 
 import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -11,6 +11,7 @@ import { auth } from "../../components/firebase";
 
 // types
 import { Course } from "../../components/types/course/course";
+import { CourseItem } from "../../components/ui/course/courseItem";
 
 // explore
 const ExploreCourses = () => {
@@ -21,7 +22,7 @@ const ExploreCourses = () => {
 
   useEffect(() => {
     if (user == null) return;
-    const getCoursesURL = "http://localhost:8080/customCourses/getCourses";
+    const getCoursesURL = "http://localhost:8080/customCourses/exploreCoursesRoute";
 
     const fetchCourses = async () => {
       const token = await user.getIdToken();
@@ -29,6 +30,7 @@ const ExploreCourses = () => {
         console.log("Token is empty or undefined");
         return;
       }
+      console.log(token);
       try {
         const response = await fetch(getCoursesURL, {
           method: "POST",
@@ -47,73 +49,107 @@ const ExploreCourses = () => {
 
         setExploreCourses(exploreCourses);
         setFeaturedCourses(featuredCourses);
+
+        console.log(exploreCourses);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchCourses();
+    fetchCourses(); // calling it 
   }, [user]);
 
+  console.log("featured courses before render featured courses: ", featuredCourses);
+
+  function renderFeaturedCourses() {
+    console.log("featured courses before map: ", featuredCourses);
+
+    // const courses: JSX.Element[] = [];
+    return featuredCourses.map((course: Course, index) => {
+      // courses.push(
+        return <CourseItem key={index} course={course}></CourseItem>
+      // );
+    });
+    // return courses;
+  }
+
+  console.log("explore courses before render explore courses: ", featuredCourses);
+
+  function renderExploreCourses() {
+    console.log("explore courses before map: ", exploreCourses);
+
+    // const courses: JSX.Element[] = [];
+    return exploreCourses.map((course: Course, index) => {
+      // courses.push(
+        return <CourseItem key={index} course={course}></CourseItem>        
+      // );
+    });
+    // return courses;
+  }
+
+  // check the explore courses after the update
+  useEffect(() => {
+    console.log("exploreCourses after update: ", exploreCourses);
+  }, [exploreCourses]);
+  
   // const onPressHandler = () => {
   //   router.push("/course/allCourses/");
   // };
   return (
-    <DefaultLayout>
+    <>
+      {/* Button for see more courses */}
+      {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity
+        style={{
+          width: Dimensions.get('window').width - 20,
+          padding: 15,
+          backgroundColor: 'yellow',
+          borderRadius: 10,
+          alignItems: 'center',
+        }}
+      >
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>See More</Text>
+          </TouchableOpacity>
+      </View> */}
 
-      {/* Horizontal flex box for the courses taken */}
-      <View style={styles.horizontalFlexCourses}>
-        {exploreCourses.map((exploreCourse) => (
-          <View style={styles.courseItemHorizontal} key={exploreCourse.id}>
-            <Text>{exploreCourse.name || "No name"}</Text>
-          </View>
-        ))}
-      </View>
+        <Text
+          fontWeight="semibold"
+          fontSize={20}
+          >
+            Explore Courses
+          </Text>
+      {renderExploreCourses()}
 
-      <View>
-        {/* Vertical Flex Box */}
-        <View style={styles.verticalFlex}>
-          {featuredCourses.map((featuredCourse) => (
-            <View style={styles.verticalItem} key={featuredCourse.id}>
-              <TouchableOpacity
-                onPress={() =>
-                  router.push({
-                    pathname: "/course/customcourse",
-                    params: {
-                      courseId: featuredCourse.id,
-                    },
-                  })
-                }
-              >
-                <Text>{featuredCourse.name || "No name"}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-      </View>
+      <TouchableOpacity
+      style = {{margin: 10}}
+      onPress={() =>
+        router.push({
+          pathname: "/course/allCourses", 
+        })
+      }
+      >
+      <Box
+        h={"50px"}
+        w={"380px"} // make this flexible later
+        borderRadius={"30px"}
+        backgroundColor={"#FFE500"}
+        padding={"15px"}
+      >
+        <Text
+        fontSize={"16px"}
+        fontWeight={"semibold"}
+        textAlign={"center"}
+        >More Courses</Text>
+      </Box>
+      </TouchableOpacity>
 
-        {/* Vertical Flex Box for featured courses */}
-        <View>
-          <View style={styles.verticalFlex}>
-            {featuredCourses.map((featuredCourse) => (
-              <View style={styles.verticalItem} key={featuredCourse.id}>
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push({
-                      pathname: "/course/customcourse",
-                      params: {
-                        courseId: featuredCourse.id,
-                      },
-                    })
-                  }
-                >
-                  <Text>{featuredCourse.name || "No name"}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        </View>
-
-    </DefaultLayout>
+    <Text
+    fontWeight="semibold"
+    fontSize={20}
+    >
+     Featured Courses
+    </Text>
+      {renderFeaturedCourses()}
+    </>
   );
 }
 
@@ -124,10 +160,15 @@ const CustomCourses = () => {
   const [user] = useAuthState(auth); 
   const router = useRouter();
 
+  // const otherCoursesElements = renderCustomCourses();
+  // const myCoursesElements = renderCourseHistory();
 
-  useEffect(() => {
+  // pathname
+  // const pathname = "/courses/CustomCourses";
+
+  useEffect(() => { 
     if (user == null) return;
-    const getCoursesURL = "http://localhost:8080/customCourses/getMyCourses";
+    const getCoursesURL = "http://localhost:8080/customCourses/customCoursesRoute";
 
     const fetchCourses = async () => {
       const token = await user.getIdToken();
@@ -135,6 +176,8 @@ const CustomCourses = () => {
         console.log("Token is empty or undefined");
         return;
       }
+
+      console.log(token);
       try {
         const response = await fetch(getCoursesURL, {
           method: "POST",
@@ -148,11 +191,12 @@ const CustomCourses = () => {
           console.log("SERVER ERROR");
           return Promise.reject("Server Error");
         }
-
+        
         const { myCourses, otherCourses } = await response.json();
 
         setOtherCourses(otherCourses);
         setMyCourses(myCourses);
+
       } catch (error) {
         console.error(error);
       }
@@ -160,59 +204,80 @@ const CustomCourses = () => {
     fetchCourses();
   }, [user]);
 
-  const onPressHandler = () => {
-    router.push("/course/allCourses/");
-  };
+  // render courses taken by the user
+  function renderCourseHistory() {
+
+    console.log("my courses before map: ", myCourses);
+    // const myCoursesElements: JSX.Element[] = [];
+    return myCourses?.map((course: Course, index) => {
+      // myCoursesElements.push(
+        return <CourseItem key={index} course={course}></CourseItem>
+      // );
+    });
+    console.log("my courses: ", myCourses);
+    // return myCourses;
+  }
+
+
+  // render all other custom courses
+  function renderCustomCourses() {
+    // const otherCoursesElements: JSX.Element[] = [];
+    console.log("other courses before map: ", otherCourses);
+    return otherCourses?.map((course: Course, index) => { 
+      // otherCoursesElements.push( 
+        return <CourseItem key={index} course={course}></CourseItem>
+      // );
+    });
+
+    console.log("other courses: ", otherCourses);
+    // return otherCourses;
+  }
+
   return (
-    <DefaultLayout>
-      <View style={styles.horizontalFlexMenu}>
-        {/* Horizontal flexbox for the menu */}
-        <View style={styles.leftItem}>
-          <Text style={styles.title}>My Courses</Text>
-        </View>
-        <View style={styles.circleStyle}>
-          <View style={styles.circle} />
-        </View>
-      </View>
+    <>
+    {/* {otherCoursesElements} */}
 
-      {/* Horizontal flex box for View All */}
-      <View style={styles.viewAllFlexBox}>
-        <Pressable style={styles.rightItem} onPress={() => onPressHandler()}>
-          <Text>View All</Text>
-        </Pressable>
-      </View>
+    <Text
+    fontWeight="semibold"
+    fontSize={20}
+    >
+      My Courses
+    </Text>
+    {renderCourseHistory()}
 
-      {/* Horizontal flex box for the courses taken */}
-      <View style={styles.horizontalFlexCourses}>
-        {myCourses.map((myCourse) => (
-          <View style={styles.courseItemHorizontal} key={myCourse.id}>
-            <Text>{myCourse.name || "No name"}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View>
-        {/* Vertical Flex Box */}
-        <View style={styles.verticalFlex}>
-          {otherCourses.map((otherCourse) => (
-            <View style={styles.verticalItem} key={otherCourse.id}>
-              <TouchableOpacity
-                onPress={() =>
-                  router.push({
-                    pathname: "/course/customcourse",
-                    params: {
-                      courseId: otherCourse.id,
-                    },
-                  })
-                }
-              >
-                <Text>{otherCourse.name || "No name"}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-      </View>
-    </DefaultLayout>
+    {/* button here */}
+    <TouchableOpacity
+      style = {{margin: 10}}
+      onPress={() =>
+        router.push({
+          pathname: "/course/allCourses", 
+        })
+      }
+      >
+      <Box
+        h={"50px"}
+        w={"380px"} // make this flexible later
+        borderRadius={"30px"}
+        backgroundColor={"#FFE500"}
+        padding={"15px"}
+      >
+        <Text
+        fontSize={"16px"}
+        fontWeight={"semibold"}
+        textAlign={"center"}
+        >More Courses</Text>
+      </Box>
+      </TouchableOpacity>
+    
+    <Text
+    fontWeight="semibold"
+    fontSize={20}
+    >
+     Custom Courses
+    </Text>
+    {renderCustomCourses()}
+    {/* {myCoursesElements} */}
+    </>
   );
 }
 
@@ -224,22 +289,39 @@ export default function LessonScreen() {
   // const router = useRouter();
 
   return (
-    <DefaultLayout>
+    
+    <DefaultLayout style = {{ backgroundColor: "#FFFFFF" }}>
+
+      <View style={styles.horizontalFlexMenu}>
+        {/* Horizontal flexbox for the menu */}
+
+        <TouchableOpacity onPress={() => setShowCustom(false)}>
+        {/* <View style={styles.leftItem}> */}
+          <Text style={styles.title}>Explore Courses</Text>
+        {/* </View> */}
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setShowCustom(true)}>
+        <Text style={styles.title}>Custom Courses</Text>
+        </TouchableOpacity>
+      </View> 
+
       {showCustom ? (
-        <ExploreCourses />
+        <CustomCourses /> // this is what you render when showCustom is true
       ) : (
-        <CustomCourses />
+        <ExploreCourses /> // this is what you render when showCustom is false
       )}
 
-      <Button
-        onPress={() => setShowCustom(true)}>
+      {/* <Button
+        onPress={() => setShowCustom(true)}> 
         <Text>Show Custom</Text>
         </Button>
 
       <Button 
         onPress={() => setShowCustom(false)}>
         <Text>Show Explore</Text>
-        </Button>
+        </Button> */}
+
     </DefaultLayout> 
   );
 }
@@ -275,8 +357,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "normal",
+    fontSize: 20,
+    fontWeight: "bold",
     fontFamily: "Arial",
   },
   menu: {
@@ -326,12 +408,29 @@ const styles = StyleSheet.create({
     padding: 15,
     gap: 20,
   },
+
   verticalItem: {
-    padding: 20,
+    padding: 10,
     height: 80,
-    width: 360,
-    backgroundColor: "#FFDC5F",
+    // width: 360,
+    backgroundColor: "#F4F4F4",
     borderRadius: 5,
-    borderColor: "black",
   },
+
+  courseName: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "600",
+    fontFamily: "Nunito",
+  },
+
+  courseLessonCount: {
+    color: "#808080",
+    fontSize: 12,
+    fontFamily: "Nunito",
+  },
+
+  button: {
+
+  }
 });

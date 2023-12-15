@@ -15,6 +15,9 @@ export abstract class Question {
     return this.type;
   }
 }
+// mcq , id tsx, index.tsx in firebase 
+
+// retrieving the same mediaRef from 
 export class QuestionMcq extends Question {
   private mediaRef: string;
   private answer: string;

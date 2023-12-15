@@ -105,8 +105,9 @@ export default function Page() {
       return;
     }
 
+    // this function is from firebase and it's used to create the user in Firebase
     createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential: UserCredential) => {
+      .then(async (userCredential: UserCredential) => { 
         // Signed in
         const user = userCredential.user;
         try {

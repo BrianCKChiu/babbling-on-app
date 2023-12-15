@@ -3,13 +3,14 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { View } from "native-base";
 import React, { useState, useEffect } from "react";
 // import { Image } from "react-native";
-import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
-import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
-import CustomButton from "../../../components/ui/selfAssessment/customButton";
+import SAHeaderSection from "../../components/ui/selfAssessment/headerSection";
+import DescriptionSection from "../../components/ui/selfAssessment/descriptionSection";
+import CustomButton from "../../components/ui/selfAssessment/customButton";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { StyleSheet } from 'react-native';
 
 // helper
-import { auth } from "../../../components/firebase";
+import { auth } from "../../components/firebase";
 
 interface Course {
   id?: string;
@@ -48,6 +49,8 @@ const lessonFetchFun = async (token: string, lessonId: string, setLessonData: Fu
 
 export default function Page() {
   const [courseData, setCourseData] = useState<Course>();
+
+  // @ts-ignore
   const [lessonData, setLessonData] = useState<Lesson>();
   const [user] = useAuthState(auth); 
   const router = useRouter();
@@ -93,35 +96,42 @@ export default function Page() {
           {courseData?.lessons.map((lesson) => {
             return (
               <CustomButton
+                  key={lesson.id}
                   text={lesson.name}
                   buttonColor="white"
-                  style={{marginTop: 10}}
+                  style={styles.button}
                   onPress={ async () => 
                   {const token = await user?.getIdToken()
                     lessonFetchFun(token || "", lesson.id || "", setLessonData);
+                    router.push(`/course/customlesson?lessonId=${lesson.id}`);
                   }
                 }
               />
             )
           })}
-
-          <CustomButton
-        text="Start"
-        buttonColor="white"
-        onPress={() =>
-          router.push({
-            pathname: "/course/customlesson",
-            params: {
-              lessonId: courseData?.lessons[0]?.id || "",
-              },
-            })
-          }
-        />
         </View>
       );
 
     }
 
-// create a table that joins the two entities
-
-// create a table that joins the two entities
+      const styles = StyleSheet.create({
+        button: { // because i dont have width: it will use the one from the parent aka customButton styling. 
+        height: '10%',
+        borderRadius: 7,
+        alignItems: 'center',
+        justifyContent: 'center', 
+        padding: 29,
+        marginLeft: 14,
+        marginRight: 14,
+        marginBottom:0,
+        marginTop: '5%',
+        backgroundColor: "white",
+        borderWidth:1,
+        borderColor:'#D8D8D8',
+      },
+      buttonText: {
+        color: 'black',
+        fontSize: 22,
+        fontWeight: 'bold'
+      },
+    });

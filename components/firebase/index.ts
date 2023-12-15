@@ -30,6 +30,8 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 const storage = getStorage();
 
+// WHERE MEDIAREF IS INITIALIZED BY CALLING FIREBASE STORAGE
+// the endpoint to get gesture should retrieve all the data from the backend including the image 
 export async function getFile(path: string): Promise<string> {
   const mediaRef = ref(storage, `gs://babbling-on-2023.appspot.com/${path}`);
   return await getDownloadURL(mediaRef);

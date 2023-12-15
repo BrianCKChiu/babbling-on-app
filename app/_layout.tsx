@@ -96,7 +96,17 @@ function RootLayoutNav() {
             headerTransparent: true,
           }}
         />
+        <Stack.Screen
+          name="customcourse"
+          options={{
+            // headerShown: false,
+            title: "",
+            headerTransparent: true,
+          }}
+        />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+
+        
       </Stack>
     </NativeBaseProvider>
   );

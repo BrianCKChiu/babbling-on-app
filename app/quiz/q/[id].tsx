@@ -127,7 +127,7 @@ export default function Page() {
     }
   }, [question]);
 
-  async function renderMcqQuestion() {
+  async function renderMcqQuestion() { // pass the url to getMediaLink
     const url = await getMediaLink((question as QuestionMcq).getMediaRef());
     setQuestionComponent(
       <McqQuestionComponent

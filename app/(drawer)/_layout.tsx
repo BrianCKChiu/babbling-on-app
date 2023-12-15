@@ -21,7 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 const drawerItemProps = {
-  drawerActiveBackgroundColor: "#FFF6A7",
+  drawerActiveBackgroundColor: "#FFFFFF",
   drawerActiveTintColor: "#000000",
   drawerItemStyle: {
     paddingHorizontal: 8,
@@ -77,7 +77,9 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Drawer.Screen
+
+        {/* This (Drawer Screen) may be what is making the default background grey in course page */}
+        <Drawer.Screen 
           name="course"
           options={{
             headerShown: false,
@@ -86,6 +88,9 @@ export default function TabLayout() {
             drawerIcon: ({ color, size }) => (
               <FontAwesome name="compass" size={size} color={color} />
             ),
+            // drawerStyle: {
+            //   backgroundColor: "red",
+            // },
           }}
         />
 
