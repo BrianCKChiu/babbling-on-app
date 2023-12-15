@@ -11,6 +11,7 @@ import { DisplayImage } from "../../../components/ui/selfAssessment/displayImage
 
 // helper
 import { auth } from "../../../components/firebase";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Lesson {
   id?: string;
@@ -116,12 +117,17 @@ export default function Page() {
     <View>
       <SAHeaderSection text={lessonData?.name || ''} />
       <DescriptionSection bodyText={lessonData?.description || ''} />
-      <Text>{gestureData?.phrase}</Text>
+      {/* <Text>{gestureData?.phrase}</Text> */}
       {/* {gestureData && <DisplayImage path={`images/${gestureData?.gestureMedia[0]}`} />} */}
-      
+
       {/* @ts-ignore */}
       <DisplayImage path={`${gestureData?.gestureMedia[0].mediaRef}`} />
       
+      <TouchableOpacity 
+      onPress={() => {
+        <Text>next</Text>
+      }}
+      />
        {/* map through the gesture array to render the gesture data  */}
       {lessonData?.gestures.map((gesture) => {
           return (
