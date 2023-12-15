@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View } from "native-base";
+import { View, Text } from "native-base";
 import React, { useState, useEffect } from "react";
 // import { Image } from "react-native";
 import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
@@ -89,6 +89,7 @@ export default function Page() {
       <SAHeaderSection text={courseData?.name || ""} />
       <DescriptionSection bodyText={courseData?.description || ""} />
 
+      <Text>Lessons</Text>
 
           {courseData?.lessons.map((lesson) => {
             return (

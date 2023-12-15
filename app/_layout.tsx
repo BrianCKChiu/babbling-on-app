@@ -102,7 +102,15 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
 
-        
+        <Stack.Screen 
+        name="customlesson"
+        options={{
+          headerShown: false,
+          title: "",
+          headerTransparent: true,
+        }}
+        />
+
       </Stack>
     </NativeBaseProvider>
   );

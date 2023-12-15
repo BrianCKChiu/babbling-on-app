@@ -53,7 +53,7 @@ export default function Page() {
             bgColor: "green.500",
             duration: 2000,
           });
-          router.replace("/(drawer)/home");  // /home
+          router.replace("/(drawer)/course");  // /home
         } else {
           // Email is not verified, so we send a verification email
           sendEmailVerification(user).then(() => {
