@@ -6,7 +6,7 @@
 import { useLocalSearchParams } from "expo-router";
 // import { Text, VStack, View, FlatList } from "native-base";
 import { View } from "native-base";
-import { Image } from "react-native";
+// import { Image } from "react-native";
 
 import React, { useState, useEffect } from "react";
 // import { useUserStore } from "../../../components/stores/userStore";
@@ -29,6 +29,7 @@ import { DisplayImage } from "../../../components/ui/selfAssessment/displayImage
 interface Gesture {
   id?: string;
   phrase: string;
+  //@ts-ignore
   mediaRef: any; // temporary any, will not be able to work in deployment
 }
 

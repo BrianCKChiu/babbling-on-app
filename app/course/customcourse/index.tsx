@@ -25,11 +25,12 @@ interface Lesson {
   courseId: string;
 }
 
+
 const lessonFetchFun = async (token: string, lessonId: string, setLessonData: Function) => {
   
   console.log("lessonId inside LessonFetchFun: ", lessonId);
 
-  const lessonResponse = await fetch("http://localhost:8080/customCourses/getLesson", {
+  const lessonResponse = await fetch("http://localhost:8080/lesson/getLesson", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
