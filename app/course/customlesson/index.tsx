@@ -6,7 +6,7 @@ import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection
 import DescriptionSection from "../../../components/ui/selfAssessment/descriptionSection";
 import CustomButton from "../../../components/ui/selfAssessment/customButton";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { DisplayImage } from "../../../components/ui/selfAssessment/displayImage";
 
 // helper
@@ -32,7 +32,7 @@ const gestureFetchFun = async (token: string, gestureId: string, setGestureData:
 
 console.log("gestureId inside gestureFetchFun: ",gestureId);
 
-const gestureResponse = await fetch('http://localhost:8080/gesture/getGesture', {
+const gestureResponse = await fetch('http://192.168.1.121:8080/gesture/getGesture', {
   method: 'POST',
   headers: {
     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export default function Page() {
 
       try{
       // fetch call for lesson data
-        const lessonResponse = await fetch("http://localhost:8080/lesson/getLesson", {
+        const lessonResponse = await fetch("http://192.168.1.121:8080/lesson/getLesson", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export default function Page() {
 
   console.log("gestureData before return: ", gestureData);
   return (
-    <View>
+    <ScrollView style={{flex: 1}}>
       <SAHeaderSection text={lessonData?.name || ''} />
       <DescriptionSection bodyText={lessonData?.description || ''} />
       {/* <Text>{gestureData?.phrase}</Text> */}
@@ -122,6 +122,12 @@ export default function Page() {
 
       {/* @ts-ignore */}
       <DisplayImage path={`${gestureData?.gestureMedia[0].mediaRef}`} />
+
+      <Text>If your component is not being used inside another component with a ScrollView, then it's not a nested ScrollView situation.
+
+If your ScrollView is still not scrolling, it could be due to the reasons I mentioned in the previous messages: the content might not be large enough to require scrolling, or the parent container might not have a defined height or flex value.
+
+You can also try to debug this by adding a large amount of content inside your ScrollView to see if it starts scrolling. For example, you can add a lot of Text components with some dummy text.</Text>
       
       <TouchableOpacity 
       onPress={() => {
@@ -145,7 +151,7 @@ export default function Page() {
             />
           )
       })}
-    </View>
+    </ScrollView>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DefaultLayout } from "@/layout/defaultLayout";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View, Box } from "native-base";
+import { Text, View, Box, ScrollView } from "native-base";
 
 import { useRouter } from "expo-router";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -24,7 +24,7 @@ const ExploreCourses = () => {
 
   useEffect(() => {
     if (user == null) return;
-    const getCoursesURL = "http://localhost:8080/customCourses/exploreCoursesRoute";
+    const getCoursesURL = "http://192.168.1.121:8080/customCourses/exploreCoursesRoute";
 
     const fetchCourses = async () => {
       const token = await user.getIdToken();
@@ -52,7 +52,7 @@ const ExploreCourses = () => {
         setExploreCourses(exploreCourses);
         setFeaturedCourses(featuredCourses);
 
-        console.log(exploreCourses);
+        console.log("explore Courses after setExploreCourses:", exploreCourses);
       } catch (error) {
         console.error(error);
       }
@@ -60,7 +60,7 @@ const ExploreCourses = () => {
     fetchCourses(); // calling it 
   }, [user]);
 
-  console.log("featured courses before render featured courses: ", featuredCourses);
+  console.log("featured courses before render featured courses: ", featuredCourses); // null
 
   function renderFeaturedCourses() {
     console.log("featured courses before map: ", featuredCourses);
@@ -97,7 +97,7 @@ const ExploreCourses = () => {
   //   router.push("/course/allCourses/");
   // };
   return (
-    <>
+    <ScrollView>
       {/* Button for see more courses */}
       {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <TouchableOpacity
@@ -151,7 +151,7 @@ const ExploreCourses = () => {
      Featured Courses
     </Text>
       {renderFeaturedCourses()}
-    </>
+    </ScrollView>
   );
 }
 
@@ -172,7 +172,7 @@ const CustomCourses = () => {
 
   useEffect(() => { 
     if (user == null) return;
-    const getCoursesURL = "http://localhost:8080/customCourses/customCoursesRoute";
+    const getCoursesURL = "http://192.168.1.121:8080/customCourses/customCoursesRoute";
 
     const fetchCourses = async () => {
       const token = await user.getIdToken();
@@ -238,7 +238,7 @@ const CustomCourses = () => {
   }
 
   return (
-    <>
+    <ScrollView>
     {/* {otherCoursesElements} */}
 
     <Text
@@ -281,7 +281,7 @@ const CustomCourses = () => {
     </Text>
     {renderCustomCourses()}
     {/* {myCoursesElements} */}
-    </>
+    </ScrollView>
   );
 }
 
@@ -293,7 +293,7 @@ export default function LessonScreen() {
   // const router = useRouter();
 
   return (
-    
+    <ScrollView>
     <DefaultLayout style = {{ backgroundColor: "#FFFFFF" }}>
 
       <View style={styles.horizontalFlexMenu}>
@@ -327,6 +327,7 @@ export default function LessonScreen() {
         </Button> */}
 
     </DefaultLayout> 
+    </ScrollView>
   );
 }
 

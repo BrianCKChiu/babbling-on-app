@@ -26,12 +26,11 @@ interface Lesson {
   courseId: string;
 }
 
-//@ts-ignore
 const lessonFetchFun = async (token: string, lessonId: string, setLessonData: Function) => {
   
   console.log("lessonId inside LessonFetchFun: ", lessonId);
 
-  const lessonResponse = await fetch("http://localhost:8080/lesson/getLesson", {
+  const lessonResponse = await fetch("http://192.168.1.121:8080/lesson/getLesson", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +50,7 @@ const lessonFetchFun = async (token: string, lessonId: string, setLessonData: Fu
 export default function Page() {
   const [courseData, setCourseData] = useState<Course>();
 
-  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [lessonData, setLessonData] = useState<Lesson>();
   const [user] = useAuthState(auth); 
   const router = useRouter();
@@ -61,7 +60,7 @@ export default function Page() {
   console.log(courseId);
 
   useEffect(() => {
-    fetch("http://localhost:8080/customCourses/getCourse", {
+    fetch("http://192.168.1.121:8080/customCourses/getCourse", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,8 +86,16 @@ export default function Page() {
   }, []);
 
   // useEffect
-  console.log("Course Data log before Return:", courseData);
+  // console.log("Course Data log before Return:", courseData);
+  if (courseData && courseData.lessons) {
+    courseData.lessons.forEach((lesson, index) => {
+      console.log(`Inside app/customcourse, Lesson ${index + 1}: ${lesson.name}`);
+    });
+  }
+
   return (
+
+    // make the text appear black, i think it's not showing up
         <View>
           <SAHeaderSection text={courseData?.name || ''} />
           <DescriptionSection bodyText={courseData?.description || ''} />

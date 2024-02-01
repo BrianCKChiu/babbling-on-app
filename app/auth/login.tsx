@@ -8,6 +8,7 @@ import {
   Button,
   useToast,
   Box,
+  ScrollView,
 } from "native-base";
 import { authInputStyle } from "@styles/authInputStyle";
 
@@ -53,7 +54,7 @@ export default function Page() {
             bgColor: "green.500",
             duration: 2000,
           });
-          router.replace("/(drawer)/course");  // /home
+          router.replace("/home");  // /home
         } else {
           // Email is not verified, so we send a verification email
           sendEmailVerification(user).then(() => {
@@ -80,7 +81,7 @@ export default function Page() {
 
   return (
     <AuthLayout>
-      <View>
+      <ScrollView>
         <VStack px={"40px"} py={"40px"} alignItems={"center"} mt={"30%"}>
           <Box mb={40}>
             <Heading fontSize={44} mb={1}>
@@ -133,7 +134,7 @@ export default function Page() {
             </Box>
           </VStack>
         </VStack>
-      </View>
+      </ScrollView>
     </AuthLayout>
   );
 }

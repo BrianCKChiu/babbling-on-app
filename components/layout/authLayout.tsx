@@ -27,6 +27,7 @@ export const AuthLayout = ({ children, ...props }: IBlock) => {
         />
         <VStack h={"full"} w="full" pt={"40px"} px={"16px"}>
           <Box>{children}</Box>
+          {/* EDIT: keep trying things to make this work */}
         </VStack>
       </ZStack>
     </View>

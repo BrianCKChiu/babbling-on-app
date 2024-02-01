@@ -14,7 +14,7 @@ import CustomButton from "@/ui/selfAssessment/customButton";
 
 export default function Page() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [courseData, setCourseData] = useState<Course[]>([]);
+  // const [courseData, setCourseData] = useState<Course[]>([]);
   const router = useRouter();
 
   // useEffect

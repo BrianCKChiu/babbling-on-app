@@ -2,7 +2,7 @@
 // import { auth } from "@/firebase";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View } from "native-base";
+import { ScrollView, View } from "native-base";
 import React, { useState, useEffect } from "react";
 // import { useUserStore } from "../../../components/stores/userStore";
 // import SAHeaderSection from "../../../components/ui/selfAssessment/headerSection";
@@ -73,10 +73,10 @@ export default function Page() {
 
   // useEffect
   return (
-    <View>
+    <ScrollView style={{flex: 1}}>
       {/* <SAHeaderSection text= {gestureData?.phrase} /> */}
       {/* <DisplayImage path={`images/${}`} /> */}
       <DescriptionSection bodyText={gestureData?.phrase || ''} />
-    </View>
+    </ScrollView>
   );
 }
