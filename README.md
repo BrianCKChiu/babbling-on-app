@@ -1,5 +1,6 @@
 # babbling-on-app
 
+Ballbing On is an interactive ASL Learning app powered by computer vison.
 Requires **Expo**
 
 Run the project using `npm start ios`
